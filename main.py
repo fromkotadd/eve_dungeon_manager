@@ -51,11 +51,14 @@ class DownloadAdaptor:
 class DbManager:
 
 	@staticmethod
-	def damp_to_db(adaptor_lst):
-		sqlite_connection = sqlite3.connect('pilot.db')
+	def db_connect(db_name):
+		sqlite_connection = sqlite3.connect(db_name)
 		cursor = sqlite_connection.cursor()
-		print("Подключен к SQLite")
+		return sqlite_connection, cursor
 
+	@staticmethod
+	def damp_to_db(adaptor_lst, db_name):
+		sqlite_connection, cursor = DbManager.db_connect(db_name)
 		sqlite_insert_with_param = f"""INSERT INTO pilot_card
 									({', '.join(adaptor_lst[0])})
 								VALUES (?, ?, ?, ?, ?, ?, ?);"""
@@ -77,4 +80,4 @@ if __name__ == "__main__":
 	# print(p.pilot_card_builder())
 	# print(p)
 	s = DownloadAdaptor(card).adaptor()
-	DbManager.damp_to_db(s)
+	DbManager.damp_to_db(s, 'pilot.db')
