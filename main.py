@@ -70,8 +70,14 @@ class DbManager:
 		cursor.close()
 
 	@staticmethod
-	def load_from_db():
-		pass
+	def load_from_db(pilot_id, db_name='pilot.db'):
+		sqlite_connection, cursor = DbManager.db_connect(db_name)
+		sqlite_select_query = """SELECT * from pilot_card where id = ?"""
+		cursor.execute(sqlite_select_query, (pilot_id, ))
+		print("Чтение одной строки \n")
+		record = cursor.fetchone()
+		cursor.close()
+		return record
 
 	@staticmethod
 	def table_update(table_name, pilot_id, changes, db_name='pilot.db'):
@@ -92,4 +98,4 @@ if __name__ == "__main__":
 	# s = DownloadAdaptor(card).adaptor()
 	# DbManager.damp_to_db(s, 'pilot.db')
 	# DbManager.table_update(table_name='implant_lvl', changes=7, pilot_id=1)
-	pass
+	DbManager.load_from_db(32)
