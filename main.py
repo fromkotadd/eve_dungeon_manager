@@ -1,117 +1,34 @@
 import sqlite3
+from dataclasses import dataclass, asdict
+from typing import Optional
 
 
+@dataclass
 class Person:
-	def __init__(self):
-		# Представление карточки пилота для юзера
-		self.pilot_name = None
-		self.ship_type = None
-		self.first_skill = None
-		self.second_skill = None
-		self.implant_lvl = None
-		self.fit_class = None
-		self.pilot_rating = None
-		# данные для БД
-		self.count_entry = None
-		self.id = None
-
-	def pilot_card_builder(self):
-		return {
-			'pilot_name': self.pilot_name,
-			'ship_type': self.ship_type,
-			'first_skill': self.first_skill,
-			'second_skill': self.second_skill,
-			'implant_lvl': self.implant_lvl,
-			'fit_class': self.fit_class,
-			'pilot_rating': self.pilot_rating,
-			'count_entry': self.count_entry,
-			'id': self.id,
-		}
-
-	def pilot_card_rebuilder(self, *args):
-
-		self.pilot_name, self.ship_type, self.first_skill, self.second_skill, self.implant_lvl, self.fit_class,\
-		self.pilot_rating, 	self.count_entry, self.id =  args
+	""" Person DTO. """
+	pilot_name: str
+	ship_type: str
+	first_skill: str
+	second_skill: str
+	implant_lvl: str
+	fit_class: str
+	pilot_rating: str
+	count_entry: Optional[int] = 10
+	id: Optional[int] = None
 
 	def __str__(self):
 		return f"pilot name: {self.pilot_name}, ship type: {self.ship_type}, first skill: {self.first_skill}," \
-				f" second skill: {self.second_skill}, implant lvl: {self.implant_lvl}, fit class: {self.fit_class}," \
-				f" pilot rating: {self.pilot_rating}, count entry: {self.count_entry}, id: {self.id}"
-
-
-class PersonBuilder:
-	def __init__(self, person=Person()):
-		self.person = person
-
-	@property
-	def for_initialization(self):
-		return PersonBuilderForInitialization(self.person)
-
-	@property
-	def for_download_to_database(self):
-		return PersonBuilderFromDb(self.person)
-
-	def build(self):
-		return self.person
-
-
-class PersonBuilderForInitialization(PersonBuilder):
-	def __init__(self, person=Person()):
-		super().__init__(person)
-
-	def pilot_name(self, pilot_name):
-		self.person.pilot_name = pilot_name
-		return self
-
-	def ship_type(self, ship_type):
-		self.person.ship_type = ship_type
-		return self
-
-	def first_skill(self, first_skill):
-		self.person.first_skill = first_skill
-		return self
-
-	def second_skill(self, second_skill):
-		self.person.second_skill = second_skill
-		return self
-
-	def implant_lvl(self, implant_lvl):
-		self.person.implant_lvl = implant_lvl
-		return self
-
-	def fit_class(self, fit_class):
-		self.person.fit_class = fit_class
-		return self
-
-	def pilot_rating(self, pilot_rating):
-		self.person.pilot_rating = pilot_rating
-		return self
-
-
-class PersonBuilderFromDb(PersonBuilder):
-	def __init__(self, person):
-		super().__init__(person)
-
-	def count_entry(self, count_entry):
-		self.person.count_entry = count_entry
-		return self
-
-	def id(self, id):
-		self.person.id = id
-		return self
+			   f" second skill: {self.second_skill}, implant lvl: {self.implant_lvl}, fit class: {self.fit_class}," \
+			   f" pilot rating: {self.pilot_rating}, count entry: {self.count_entry}, id: {self.id}"
 
 
 class DownloadAdaptor:
 	def __init__(self, pilot_card_dist):
 		self.pilot_card_dist = pilot_card_dist
-		self.table_cell_name = []
-		self.cell_content = []
 
 	def adaptor(self):
-		for key, value in self.pilot_card_dist.items():
-			self.table_cell_name.append(key)
-			self.cell_content.append(value)
-		return self.table_cell_name[:-1], self.cell_content[:-1]
+		self.pilot_card_dist.pop('id', None)
+		return list(self.pilot_card_dist.keys()), list(self.pilot_card_dist.values())
 
 	def __str__(self):
 		return self.pilot_card_dist
@@ -156,19 +73,19 @@ class DbManager:
 
 
 if __name__ == "__main__":
-	# pb = PersonBuilder()
-	# person = pb.for_initialization.pilot_name('Riva25 Wilson').ship_type('bk').first_skill('553').second_skill('553')\
-	# 	.implant_lvl('10').fit_class('c').pilot_rating('mid').for_download_to_database.count_entry('10').build()
-	# card = person.pilot_card_builder()
-	# print(person)
-	# pilot_card_to_dump = DownloadAdaptor(card).adaptor()
+	# person = Person(
+	# 	pilot_name='Riva25 Wilson',
+	# 	ship_type='bk',
+	# 	first_skill='553',
+	# 	second_skill='553',
+	# 	implant_lvl='10',
+	# 	fit_class='c',
+	# 	pilot_rating='mid'
+	# )
+	# pilot_card_to_dump = DownloadAdaptor(asdict(person)).adaptor()
 	# DbManager().damp_to_db(pilot_card_to_dump, 'pilot.db')
-	# s = DbManager.table_update('ship_type', '10', 'bh, bk', 'pilot.db')
-	s = DbManager.load_from_db(pilot_id='10', db_name='pilot.db')
+	# DbManager.table_update('ship_type', '12', 'bh, bk', 'pilot.db')
+	s = DbManager.load_from_db(pilot_id='12', db_name='pilot.db')
 	print(s)
-	# pb = PersonBuilder()
-	person = Person()
-	p = person.pilot_card_rebuilder(*s)
+	person = Person(*s)
 	print(person)
-
-
