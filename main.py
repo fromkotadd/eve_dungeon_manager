@@ -27,10 +27,16 @@ class Person:
 			'count_entry': self.count_entry,
 			'id': self.id,
 		}
+
+	def pilot_card_rebuilder(self, *args):
+
+		self.pilot_name, self.ship_type, self.first_skill, self.second_skill, self.implant_lvl, self.fit_class,\
+		self.pilot_rating, 	self.count_entry, self.id =  args
+
 	def __str__(self):
 		return f"pilot name: {self.pilot_name}, ship type: {self.ship_type}, first skill: {self.first_skill}," \
-				f" second skill: {self.second_skill}, implant lvl: {self.implant_lvl},fit class: {self.fit_class}," \
-				f" pilot rating: {self.pilot_rating}, count entry: {self.count_entry}, id: {self.id},"
+				f" second skill: {self.second_skill}, implant lvl: {self.implant_lvl}, fit class: {self.fit_class}," \
+				f" pilot rating: {self.pilot_rating}, count entry: {self.count_entry}, id: {self.id}"
 
 
 class PersonBuilder:
@@ -114,13 +120,13 @@ class DownloadAdaptor:
 class DbManager:
 
 	@staticmethod
-	def db_connect(db_name='pilot.db'):
+	def db_connect(db_name):
 		sqlite_connection = sqlite3.connect(db_name)
 		cursor = sqlite_connection.cursor()
 		return sqlite_connection, cursor
 
 	@staticmethod
-	def damp_to_db(adaptor_lst, db_name):
+	def damp_to_db(adaptor_lst, db_name='pilot.db'):
 		sqlite_connection, cursor = DbManager.db_connect(db_name)
 		param_names = [f"p{i}" for i in range(len(adaptor_lst[1]))]
 		sqlite_insert_with_param = f"""INSERT INTO pilot_card
@@ -129,34 +135,40 @@ class DbManager:
 
 		cursor.execute(sqlite_insert_with_param, adaptor_lst[1])
 		sqlite_connection.commit()
-		print("Переменные Python успешно вставлены в таблицу pilot")
 		cursor.close()
 
 	@staticmethod
-	def load_from_db(pilot_id, db_name):
+	def load_from_db(pilot_id, db_name='pilot.db'):
 		sqlite_connection, cursor = DbManager.db_connect(db_name)
 		sqlite_select_query = """SELECT * from pilot_card where id = ?"""
 		cursor.execute(sqlite_select_query, (pilot_id,))
-		print("Чтение одной строки \n")
 		record = cursor.fetchone()
 		cursor.close()
 		return record
 
 	@staticmethod
-	def table_update(table_name, pilot_id, changes, db_name):
+	def table_update(table_name, pilot_id, changes, db_name='pilot.db'):
 		sqlite_connection, cursor = DbManager.db_connect(db_name)
 		sql_update_query = f"""Update pilot_card set {table_name} = ? where id = ?"""
 		cursor.execute(sql_update_query, (changes, pilot_id))
 		sqlite_connection.commit()
-		print("Запись успешно обновлена")
 		cursor.close()
 
 
 if __name__ == "__main__":
-	pb = PersonBuilder()
-	person = pb.for_initialization.pilot_name('Riva25 Wilson').ship_type('bk').first_skill('553').second_skill('553')\
-		.implant_lvl('10').fit_class('c').pilot_rating('mid').for_download_to_database.count_entry('10').build()
-	card = person.pilot_card_builder()
-	pilot_card_to_dump = DownloadAdaptor(card).adaptor()
-	DbManager().damp_to_db(pilot_card_to_dump, 'pilot.db')
+	# pb = PersonBuilder()
+	# person = pb.for_initialization.pilot_name('Riva25 Wilson').ship_type('bk').first_skill('553').second_skill('553')\
+	# 	.implant_lvl('10').fit_class('c').pilot_rating('mid').for_download_to_database.count_entry('10').build()
+	# card = person.pilot_card_builder()
+	# print(person)
+	# pilot_card_to_dump = DownloadAdaptor(card).adaptor()
+	# DbManager().damp_to_db(pilot_card_to_dump, 'pilot.db')
+	# s = DbManager.table_update('ship_type', '10', 'bh, bk', 'pilot.db')
+	s = DbManager.load_from_db(pilot_id='10', db_name='pilot.db')
+	print(s)
+	# pb = PersonBuilder()
+	person = Person()
+	p = person.pilot_card_rebuilder(*s)
+	print(person)
+
 
