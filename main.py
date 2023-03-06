@@ -15,11 +15,13 @@ class Person:
 	pilot_rating: str
 	count_entry: Optional[int] = 10
 	id: Optional[int] = None
+	create_date: Optional[int] = None
 
 	def __str__(self):
 		return f"pilot name: {self.pilot_name}, ship type: {self.ship_type}, first skill: {self.first_skill}," \
 			   f" second skill: {self.second_skill}, implant lvl: {self.implant_lvl}, fit class: {self.fit_class}," \
-			   f" pilot rating: {self.pilot_rating}, count entry: {self.count_entry}, id: {self.id}"
+			   f" pilot rating: {self.pilot_rating}, count entry: {self.count_entry}, id: {self.id}, create_date: " \
+			   f"{self.create_date}"
 
 
 class DownloadAdaptor:
@@ -73,7 +75,7 @@ class DbManager:
 
 
 if __name__ == "__main__":
-	# person = Person(
+	# pilot = Person(
 	# 	pilot_name='Riva25 Wilson',
 	# 	ship_type='bk',
 	# 	first_skill='553',
@@ -82,7 +84,7 @@ if __name__ == "__main__":
 	# 	fit_class='c',
 	# 	pilot_rating='mid'
 	# )
-	# pilot_card_to_dump = DownloadAdaptor(asdict(person)).adaptor()
+	# pilot_card_to_dump = DownloadAdaptor(asdict(pilot)).adaptor()
 	# DbManager().damp_to_db(pilot_card_to_dump, 'pilot.db')
 	# DbManager.table_update('ship_type', '12', 'bh, bk', 'pilot.db')
 	s = DbManager.load_from_db(pilot_id='12', db_name='pilot.db')
