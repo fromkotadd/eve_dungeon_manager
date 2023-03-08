@@ -27,9 +27,6 @@ def pilots_for_first_dungeon() -> QuerySet[Pilot]:
 	week_beginning = get_week_beginning()
 	dungeon_name = Dungeons.I
 	required_skills = [SkillNames.LARGE_RAILGUN, SkillNames.BATTLESHIP_COMMAND, SkillNames.SMALL_LASER]
-	# skills_query = Q()
-	# for skill in required_skills:
-	# 	skills_query &= Q(skills__name=skill)
 	return Pilot.objects\
 		.annotate(
 			dungeon_visits_amount=Count(
@@ -59,10 +56,26 @@ def foo() -> QuerySet[Pilot]:
 	week_visits_limit = 10
 	week_beginning = get_week_beginning()
 	dungeon_name = Dungeons.I
-	required_skills = [SkillNames.LARGE_RAILGUN, SkillNames.BATTLESHIP_COMMAND, SkillNames.SMALL_DRONE]
-	skills_query = Q()
-	for skill in required_skills:
-		skills_query &= Q(skills__name=skill)
-	print(skills_query)
-	print(connection.queries)
-	return Pilot.objects.annotate(dungeon_visits_amount=Count('visits', filter=Q(visits__date_created__gte=week_beginning, visits__dungeon__dungeon_name=dungeon_name), distinct=True), skills_rating=Avg('skills__level', filter=Q(skills__name__in=required_skills))).filter(skills_query, dungeon_visits_amount__lt=week_visits_limit, pilot_ships__ship_name__in=[ShipNames.VINDICATOR]).order_by('-skills_rating')[:pilots_amount]
+	required_skills = [SkillNames.LARGE_RAILGUN, SkillNames.BATTLESHIP_COMMAND, SkillNames.SMALL_LASER]
+	return Pilot.objects\
+		.annotate(
+			dungeon_visits_amount=Count(
+				'visits',
+				filter=Q(
+					visits__date_created__gte=week_beginning,
+					visits__dungeon__dungeon_name=dungeon_name
+				),
+				distinct=True
+			),
+			required_skills_amount=Count('skills', filter=Q(skills__name__in=required_skills)),
+			skills_rating=Avg(
+				'skills__level',
+				filter=Q(skills__name__in=required_skills)
+			)
+		)\
+		.filter(
+			required_skills_amount=len(required_skills),
+			dungeon_visits_amount__lt=week_visits_limit,
+			pilot_ships__ship_name__in=[ShipNames.VINDICATOR]
+		)\
+		.order_by('-skills_rating')[:pilots_amount]
