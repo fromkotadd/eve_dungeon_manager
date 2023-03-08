@@ -56,7 +56,9 @@ def foo() -> QuerySet[Pilot]:
 	week_visits_limit = 10
 	week_beginning = get_week_beginning()
 	dungeon_name = Dungeons.I
-	required_skills = [SkillNames.LARGE_RAILGUN, SkillNames.BATTLESHIP_COMMAND, SkillNames.SMALL_LASER]
+	required_skills = [SkillNames.BATTLESHIP_COMMAND,
+					   SkillNames.BATTLESHIP_DEFENSE_UPGRADE,
+					   SkillNames.BATTLESHIP_ENGINEERING,]
 	return Pilot.objects\
 		.annotate(
 			dungeon_visits_amount=Count(
@@ -74,8 +76,8 @@ def foo() -> QuerySet[Pilot]:
 			)
 		)\
 		.filter(
+			Q(pilot_ships__ship_name__in=[ShipNames.VINDICATOR]) | Q(pilot_ships__ship_name__in=[ShipNames.BHAAlGORN]),
 			required_skills_amount=len(required_skills),
 			dungeon_visits_amount__lt=week_visits_limit,
-			pilot_ships__ship_name__in=[ShipNames.VINDICATOR]
 		)\
 		.order_by('-skills_rating')[:pilots_amount]
