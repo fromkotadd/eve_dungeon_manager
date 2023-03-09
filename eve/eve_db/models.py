@@ -12,7 +12,13 @@ class Pilot(models.Model):
     tech_level = models.PositiveSmallIntegerField(validators=[MaxValueValidator(10)])
     pilot_rating = models.CharField(max_length=4, choices=PilotRatings.choices)
 
-
+    def __str__(self):
+        return f"discord_id: {self.discord_id}," \
+               f" name: {self.name}," \
+               f" corporation: {self.corporation}," \
+               f" tech_level: {self.tech_level}, " \
+               f"tech_level: {self.tech_level}, " \
+               f"pilot_rating: {self.pilot_rating}"
 class Skill(models.Model):
     pilot = models.ForeignKey('Pilot', on_delete=models.CASCADE, related_name='skills')
     name = models.CharField(max_length=50, choices=SkillNames.choices)

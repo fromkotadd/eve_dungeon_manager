@@ -1,11 +1,10 @@
 from typing import Optional
 
 from django.db.models import QuerySet, Count, Q, Avg
-from django.db import connection
 
 
 from eve_db.models import Pilot
-from eve_db.choices import SkillNames, Dungeons, ShipNames
+from eve_db.choices import SkillNames, Dungeons, ShipNames, ImplantNames
 from eve_db.utils import get_week_beginning
 
 
@@ -56,9 +55,11 @@ def foo() -> QuerySet[Pilot]:
 	week_visits_limit = 10
 	week_beginning = get_week_beginning()
 	dungeon_name = Dungeons.I
-	required_skills = [SkillNames.BATTLESHIP_COMMAND,
-					   SkillNames.BATTLESHIP_DEFENSE_UPGRADE,
-					   SkillNames.BATTLESHIP_ENGINEERING,]
+	required_skills = [
+		SkillNames.BATTLESHIP_COMMAND,
+		SkillNames.BATTLESHIP_DEFENSE_UPGRADE,
+		SkillNames.BATTLESHIP_ENGINEERING
+	]
 	return Pilot.objects\
 		.annotate(
 			dungeon_visits_amount=Count(
@@ -73,10 +74,14 @@ def foo() -> QuerySet[Pilot]:
 			skills_rating=Avg(
 				'skills__level',
 				filter=Q(skills__name__in=required_skills)
-			)
+			),
 		)\
 		.filter(
+			Q(implants__implant_level__gte=15),
+			Q(implants__implant_name__in=[ImplantNames.HIGH_POWER_COIL])
+			| Q(implants__implant_name__in=[ImplantNames.FOCUSED_CRYSTAL]),
 			Q(pilot_ships__ship_name__in=[ShipNames.VINDICATOR]) | Q(pilot_ships__ship_name__in=[ShipNames.BHAAlGORN]),
+			Q(skills__name__in=[SkillNames.LARGE_RAILGUN]) | Q(skills__name__in=[SkillNames.LARGE_LASER]),
 			required_skills_amount=len(required_skills),
 			dungeon_visits_amount__lt=week_visits_limit,
 		)\
