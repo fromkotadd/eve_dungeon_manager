@@ -17,7 +17,6 @@ class Pilot(models.Model):
                f" name: {self.name}," \
                f" corporation: {self.corporation}," \
                f" tech_level: {self.tech_level}, " \
-               f"tech_level: {self.tech_level}, " \
                f"pilot_rating: {self.pilot_rating}"
 class Skill(models.Model):
     pilot = models.ForeignKey('Pilot', on_delete=models.CASCADE, related_name='skills')
