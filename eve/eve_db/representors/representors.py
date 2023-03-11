@@ -9,13 +9,11 @@ from eve_db.models import Skill, PilotShip, Implant, Pilot
 def foo() -> Optional[str]:
 	sample_of_pilots = pilots_for_first_dungeon().values()
 
-	# # print(sample_of_pilots[0])
-	# print(sample_of_pilots[0]['discord_id'])
-	# p = Pilot.objects.get(discord_id=sample_of_pilots[0]['discord_id'])
-	# print(p.implants.filter().values())
-	# print(p)
-	pilot = Pilot.objects.get(discord_id=sample_of_pilots[0]['discord_id'])
-	pilot_ships = pilot.pilot_ships.filter().values()
-	pilot_skills = pilot.skills.filter().values()
+	for p in sample_of_pilots:
+		pilot = Pilot.objects.get(discord_id=p['discord_id'])
+		pilot_ships = pilot.pilot_ships.filter().values()
+		pilot_skills = pilot.skills.filter().values()
+		pilot_implant = pilot.implants.filter().values()
+		print(Pilot.objects.filter(discord_id=p['discord_id']), pilot_ships, pilot_skills, pilot_implant)
 
 
