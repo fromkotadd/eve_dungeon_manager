@@ -1,11 +1,12 @@
-from prettytable import PrettyTable
+from asgiref.sync import sync_to_async
 
 from eve_db.selectors.pilot import pilots_for_first_dungeon
 
 
-def pilot_info_table() -> PrettyTable:
-	sample_of_pilots = pilots_for_first_dungeon()\
-		.values_list(
+@sync_to_async()
+def pilot_info_table_queryset() -> list:
+	sample_of_pilots = pilots_for_first_dungeon() \
+		.values(
 		'name',
 		'corporation',
 		'tech_level',
@@ -13,16 +14,4 @@ def pilot_info_table() -> PrettyTable:
 		'dungeon_visits_amount',
 		'skills_rating'
 	)
-	table = PrettyTable([
-			'name',
-			'corporation',
-			'tech_level',
-			'pilot_rating',
-			'dungeon_visits_amount',
-			'skills_rating'
-		])
-	for pilot in sample_of_pilots:
-		table.add_row(
-			pilot
-		)
-	return table
+	return list(sample_of_pilots)
