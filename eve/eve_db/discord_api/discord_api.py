@@ -33,8 +33,8 @@ async def foo(ctx):
 
 
 @bot.command()
-async def test(ctx):
-	pilots_cards = await pilot_info_table_queryset()
+async def test(ctx, pilots_amount=20, implant_level=15, skills_rating=2.0, gun_rating=2):
+	pilots_cards = await pilot_info_table_queryset(pilots_amount, implant_level, skills_rating, gun_rating)
 	for pilots_card in pilots_cards:
 		output = table2ascii(
 			header=['ИМЯ', 'КОРПА', 'ТЕХ.УР.', 'РЕЙТИНГ', 'ПРОХОДКИ', 'СРЕДНИЙ.УР.СКИЛЛОВ'],
@@ -50,7 +50,6 @@ async def test(ctx):
 			],
 			style=PresetStyle.plain
 		)
-		embed = discord.Embed(color=discord.Color.green(), description=output)
 		await ctx.channel.send(f"```\n{output}\n```")
 
 @bot.command()
