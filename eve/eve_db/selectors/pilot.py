@@ -20,7 +20,7 @@ def pilot_by_discord_id_exists_selector(discord_id: str) -> bool:
 		.exists()
 
 
-def pilots_for_first_dungeon(pilots_amount=20, implant_level=15, skills_rating=2.0, gun_rating=2) -> QuerySet[Pilot]:
+def pilots_for_first_dungeon(pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2) -> QuerySet[Pilot]:
 	week_visits_limit = 10
 	week_beginning = get_week_beginning()
 	dungeon_name = Dungeons.I
