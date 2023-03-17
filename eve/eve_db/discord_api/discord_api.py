@@ -4,8 +4,7 @@ from table2ascii import table2ascii, PresetStyle
 from discord.ext.commands.context import Context
 
 from eve_db.discord_api import config
-from eve_db.representors.representors import pilot_info_table_queryset
-from eve_db.representors.representors import registration_pilot
+from eve_db.representors.representors import pilot_info_table_queryset, registration_pilot, pilot_ship_add
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='~', intents=intents)  # инициализируем бота с префиксом '~'
@@ -15,7 +14,6 @@ ID_CHANNEL = config.config['ID_CHANNEL']
 @bot.command()
 async def ida(ctx):
 	author = ctx.message.author
-	print(type(ctx))
 	await ctx.send(author.id)  # выводит в чат id автора сообщения
 	await ctx.send(author.mention)  # выводит в чат имя автора сообщения
 
@@ -33,23 +31,24 @@ async def pilot_add(ctx: Context,  name: str, corporation: str, tech_level: str,
 			)
 		await ctx.send(reg)
 	except Exception as EX:
-		await ctx.send('Неверный формат ввода данных', EX)
+		await ctx.send(f'Неверный формат ввода данных: {EX}')
 
 
 @bot.command()
-async def ship_add(ctx: Context,  name: str, corporation: str, tech_level: str, pilot_rating: str):
+async def ship_add(ctx: Context, ship_name: str, core_color: str, core_lvl: str, fit_grade: str):
 	try:
 		discord_id = ctx.message.author.id
-		reg = await registration_pilot(
+		add = await pilot_ship_add(
 				discord_id=discord_id,
-				name=name,
-				corporation=corporation,
-				tech_level=tech_level,
-				pilot_rating=pilot_rating
+				ship_name=ship_name,
+				core_color=core_color,
+				core_lvl=core_lvl,
+				fit_grade=fit_grade
 			)
-		await ctx.send(reg)
-	except Exception as EX:
-		await ctx.send('Неверный формат ввода данных', EX)
+		print(add)
+		await ctx.send(add)
+	except Exception as ex:
+		await ctx.send(f'Неверный формат ввода данных: {ex}')
 
 
 @bot.command()
