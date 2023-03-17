@@ -6,7 +6,7 @@ from eve_db.selectors.pilot import pilot_by_discord_id_exists_selector
 
 class CreatePilotService(BaseDiscordActionService):
 
-	def __init__(self, name, corporation, tech_level, pilot_rating):
+	def __init__(self, name: str, corporation: str, tech_level: str, pilot_rating: str):
 		self._name = name
 		self._corporation = corporation
 		self._tech_level = tech_level

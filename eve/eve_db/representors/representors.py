@@ -18,11 +18,11 @@ def pilot_info_table_queryset(pilots_amount=20, implant_level=15, skills_rating=
 	return list(sample_of_pilots)
 
 @sync_to_async()
-def registration_pilot(discord_id,  name, corporation, tech_level, pilot_rating):
-		return CreatePilotService.load(
+def registration_pilot(discord_id: str,  name: str, corporation: str, tech_level: str, pilot_rating: str):
+		return str(CreatePilotService.load(
 		discord_id=str(discord_id),
 		name=str(name),
 		corporation=str(corporation),
 		tech_level=int(tech_level),
 		pilot_rating=str(pilot_rating)
-		)
+		))
