@@ -125,7 +125,6 @@ class ShipNames(models.TextChoices):
 	BHAAlGORN = 'bhaalgorn'
 	NIGHTMARE = 'nightmare'
 
-
 	# 2
 	APOCALYPSE_STRIKER = 'apocalypse striker'
 	MEGATHRON_STRIKER = 'megathron striker'

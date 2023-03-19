@@ -2,7 +2,7 @@ from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 
-from .choices import SkillNames, SkillLevels, CoreColors, PilotRatings, FitGrade, ImplantNames, Dungeons, ShipNames
+from .choices import SkillNames, CoreColors, PilotRatings, FitGrade, ImplantNames, Dungeons, ShipNames
 
 
 class Pilot(models.Model):
@@ -18,6 +18,8 @@ class Pilot(models.Model):
                f" corporation: {self.corporation}," \
                f" tech_level: {self.tech_level}, " \
                f"pilot_rating: {self.pilot_rating}"
+
+
 class Skill(models.Model):
     pilot = models.ForeignKey('Pilot', on_delete=models.CASCADE, related_name='skills')
     name = models.CharField(max_length=50, choices=SkillNames.choices)

@@ -4,6 +4,7 @@ from eve_db.forms.pilot import PilotForm
 from eve_db.services.base import BaseDiscordActionService
 from eve_db.selectors.pilot import pilot_by_discord_id_exists_selector
 
+
 class CreatePilotService(BaseDiscordActionService):
 
 	def __init__(self, name: str, corporation: str, tech_level: str, pilot_rating: str):

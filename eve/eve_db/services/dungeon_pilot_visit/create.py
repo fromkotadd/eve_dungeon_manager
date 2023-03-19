@@ -3,6 +3,7 @@ from eve_db.selectors.dungeon import dungeon_by_name_selector
 from eve_db.services.base import BaseDiscordActionService
 from eve_db.choices import Dungeons
 
+
 class CreateDungeonVisitService(BaseDiscordActionService):
 
 	def __init__(self, dungeon_name: str):
@@ -22,5 +23,3 @@ class CreateDungeonVisitService(BaseDiscordActionService):
 
 		form.save()
 		return f'Your visit to dungeon {self._dungeon_name} added'
-
-

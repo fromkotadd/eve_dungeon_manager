@@ -3,13 +3,12 @@ from eve_db.selectors.implant import implant_by_name_selector
 from eve_db.services.base import BaseDiscordActionService
 from eve_db.choices import ImplantNames
 
+
 class CreateImplantService(BaseDiscordActionService):
 
 	def __init__(self, implant_name: str, implant_level: str):
 		self._implant_name = ImplantNames(implant_name)
 		self._implant_level = implant_level
-
-
 
 	def execute(self) -> str:
 		implant = implant_by_name_selector(pilot=self._pilot, name=self._implant_name).first()
@@ -27,5 +26,3 @@ class CreateImplantService(BaseDiscordActionService):
 
 		form.save()
 		return f'Implant {self._implant_name} added'
-
-

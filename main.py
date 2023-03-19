@@ -91,3 +91,24 @@ if __name__ == "__main__":
 	print(s)
 	person = Person(*s)
 	print(person)
+
+
+
+async def skill_upd(ctx: Context, skill_name: str, level: str):
+	discord_id = ctx.author.id
+	person = Person.object.get(discord_id=discord_id)
+	p.skills.filter(name=skill_name).update(level=2)
+
+
+async def pilot_card_upd(ctx: Context, name: str, corporation: str, tech_level: str, pilot_rating: str):
+	discord_id = ctx.author.id
+	Pilot.objects\
+		.filter(
+			discord_id=1
+	)\
+		.update(
+			name=name,
+			corporation=corporation,
+			tech_level=tech_level,
+			pilot_rating=pilot_rating
+		)
