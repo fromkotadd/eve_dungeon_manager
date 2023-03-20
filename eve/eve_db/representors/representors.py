@@ -8,6 +8,8 @@ from eve_db.services.skill.create import CreateSkillService
 from eve_db.services.dungeon_pilot_visit.create import CreateDungeonVisitService
 from eve_db.forms.pilot import PilotForm
 from eve_db.forms.pilotship import ShipForm
+from eve_db.forms.implant import ImplantForm
+from eve_db.forms.skill import SkillForm
 from eve_db.models import Pilot
 from eve_db.selectors.pilot import pilot_by_discord_id_selector
 
@@ -68,6 +70,7 @@ def pilot_ship_upd(discord_id: str, ship_name: str, core_color: str, core_lvl: s
 	pilot = pilot_by_discord_id_selector(discord_id)
 	if not pilot:
 		return 'Pilot not found. Please register pilot'
+
 	form = ShipForm({
 			'pilot': pilot,
 			'ship_name': ship_name,
@@ -87,7 +90,7 @@ def pilot_ship_upd(discord_id: str, ship_name: str, core_color: str, core_lvl: s
 			core_lvl=core_lvl,
 			fit_grade=fit_grade
 		)
-	return 'Pilot ship card update'
+	return 'Pilot ship update'
 
 
 @sync_to_async()
@@ -102,6 +105,31 @@ def pilot_implant_add(discord_id: str, implant_name: str, implant_level: str):
 
 
 @sync_to_async()
+def pilot_implant_upd(discord_id: str, implant_name: str, implant_level: str):
+	pilot = pilot_by_discord_id_selector(discord_id)
+	if not pilot:
+		return 'Pilot not found. Please register pilot'
+
+	form = ImplantForm({
+			'pilot': pilot,
+			'implant_name': implant_name,
+			'implant_level': implant_level
+		})
+	if not form.is_valid():
+		return form.errors
+
+	pilot.implants\
+		.filter(
+			implant_name=implant_name
+		)\
+		.update(
+			implant_name=implant_name,
+			implant_level=implant_level
+		)
+	return 'Pilot implant update'
+
+
+@sync_to_async()
 def pilot_skill_add(discord_id: str, name: str, level: str):
 	return str(
 		CreateSkillService.load(
@@ -110,6 +138,31 @@ def pilot_skill_add(discord_id: str, name: str, level: str):
 			level=level
 		)
 	)
+
+
+@sync_to_async()
+def pilot_skill_upd(discord_id: str, name: str, level: str):
+	pilot = pilot_by_discord_id_selector(discord_id)
+	if not pilot:
+		return 'Pilot not found. Please register pilot'
+
+	form = SkillForm({
+			'pilot': pilot,
+			'name': name,
+			'level': level
+		})
+	if not form.is_valid():
+		return form.errors
+
+	pilot.skills\
+		.filter(
+			name=name
+		)\
+		.update(
+			name=name,
+			level=level
+		)
+	return 'Pilot skill update'
 
 
 @sync_to_async()

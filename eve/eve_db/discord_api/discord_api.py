@@ -5,7 +5,8 @@ from table2ascii import table2ascii, PresetStyle
 
 from eve_db.discord_api import config
 from eve_db.representors.representors import first, pilot_card_add, pilot_ship_add, \
-	pilot_implant_add, pilot_skill_add, dungeon_visit_add, pilot_card_upd, pilot_ship_upd
+	pilot_implant_add, pilot_skill_add, dungeon_visit_add, pilot_card_upd, pilot_ship_upd,\
+	pilot_implant_upd, pilot_skill_upd
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='~', intents=intents)  # инициализируем бота с префиксом '~'
@@ -25,10 +26,10 @@ async def pilot_add(ctx: Context, name: str, corporation: str, tech_level: str, 
 		discord_id = str(ctx.message.author.id)
 		reg = await pilot_card_add(
 			discord_id=discord_id,
-			name=name,
+			name=name.lower(),
 			corporation=corporation,
 			tech_level=tech_level,
-			pilot_rating=pilot_rating
+			pilot_rating=pilot_rating.lower()
 		)
 		await ctx.send(reg)
 	except Exception as EX:
@@ -41,10 +42,10 @@ async def pilot_upd(ctx: Context, name: str, corporation: str, tech_level: str, 
 		discord_id = str(ctx.message.author.id)
 		upd = await pilot_card_upd(
 			discord_id=discord_id,
-			name=name,
+			name=name.lower(),
 			corporation=corporation,
 			tech_level=tech_level,
-			pilot_rating=pilot_rating
+			pilot_rating=pilot_rating.lower()
 		)
 		await ctx.send(upd)
 	except Exception as EX:
@@ -57,10 +58,10 @@ async def ship_add(ctx: Context, ship_name: str, core_color: str, core_lvl: str,
 		discord_id = str(ctx.message.author.id)
 		add = await pilot_ship_add(
 			discord_id=discord_id,
-			ship_name=ship_name,
-			core_color=core_color,
+			ship_name=ship_name.lower(),
+			core_color=core_color.lower(),
 			core_lvl=core_lvl,
-			fit_grade=fit_grade
+			fit_grade=fit_grade.title()
 		)
 		await ctx.send(add)
 	except Exception as ex:
@@ -73,10 +74,10 @@ async def ship_upd(ctx: Context, ship_name: str, core_color: str, core_lvl: str,
 		discord_id = str(ctx.message.author.id)
 		upd = await pilot_ship_upd(
 			discord_id=discord_id,
-			ship_name=ship_name,
-			core_color=core_color,
+			ship_name=ship_name.lower(),
+			core_color=core_color.lower(),
 			core_lvl=core_lvl,
-			fit_grade=fit_grade
+			fit_grade=fit_grade.title()
 		)
 		await ctx.send(upd)
 	except Exception as EX:
@@ -89,7 +90,7 @@ async def implant_add(ctx: Context, implant_name: str, implant_level: str):
 		discord_id = str(ctx.message.author.id)
 		add = await pilot_implant_add(
 			discord_id=discord_id,
-			implant_name=implant_name,
+			implant_name=implant_name.lower(),
 			implant_level=implant_level
 		)
 		await ctx.send(add)
@@ -98,17 +99,45 @@ async def implant_add(ctx: Context, implant_name: str, implant_level: str):
 
 
 @bot.command()
+async def implant_upd(ctx: Context, implant_name: str, implant_level: str):
+	try:
+		discord_id = str(ctx.message.author.id)
+		upd = await pilot_implant_upd(
+			discord_id=discord_id,
+			implant_name=implant_name.lower(),
+			implant_level=implant_level
+		)
+		await ctx.send(upd)
+	except Exception as EX:
+		await ctx.send(f'Неверный формат ввода данных: {EX}')
+
+
+@bot.command()
 async def skill_add(ctx: Context, name: str, level: str):
 	try:
 		discord_id = str(ctx.message.author.id)
 		add = await pilot_skill_add(
 			discord_id=discord_id,
-			name=name,
+			name=name.lower(),
 			level=level
 		)
 		await ctx.send(add)
 	except Exception as ex:
 		await ctx.send(f'Неверный формат ввода данных: {ex}')
+
+
+@bot.command()
+async def skill_upd(ctx: Context, name: str, level: str):
+	try:
+		discord_id = str(ctx.message.author.id)
+		upd = await pilot_skill_upd(
+			discord_id=discord_id,
+			name=name.lower(),
+			level=level
+		)
+		await ctx.send(upd)
+	except Exception as EX:
+		await ctx.send(f'Неверный формат ввода данных: {EX}')
 
 
 @bot.command()
