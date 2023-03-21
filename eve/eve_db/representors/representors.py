@@ -1,6 +1,6 @@
 from asgiref.sync import sync_to_async
 
-from eve_db.selectors.pilot import pilots_for_first_dungeon
+from eve_db.selectors.pilot import pilots_for_first_dungeon, pilots_for_second_dungeon
 from eve_db.services.pilot.create import CreatePilotService
 from eve_db.services.pilotship.create import CreatePilotShipService
 from eve_db.services.implant.create import CreateImplantService
@@ -179,6 +179,22 @@ def dungeon_visit_add(discord_id: str, dungeon_name: str):
 def first(pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2) -> list:
 	sample_of_pilots = pilots_for_first_dungeon(pilots_amount, implant_level, skills_rating, gun_rating) \
 		.values(
+		'discord_id',
+		'name',
+		'corporation',
+		'tech_level',
+		'pilot_rating',
+		'dungeon_visits_amount',
+		'skills_rating'
+	)
+	return list(sample_of_pilots)
+
+
+@sync_to_async()
+def second(pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2) -> list:
+	sample_of_pilots = pilots_for_second_dungeon(pilots_amount, implant_level, skills_rating, gun_rating) \
+		.values(
+		'discord_id',
 		'name',
 		'corporation',
 		'tech_level',
