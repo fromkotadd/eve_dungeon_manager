@@ -20,7 +20,7 @@ def pilot_by_discord_id_exists_selector(discord_id: str) -> bool:
 		.exists()
 
 
-def pilots_for_first_dungeon(pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2) -> QuerySet[Pilot]:
+def test(pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2) -> QuerySet[Pilot]:
 	week_visits_limit = 10
 	week_beginning = get_week_beginning()
 	dungeon_name = Dungeons.I
@@ -87,3 +87,62 @@ def foo() -> QuerySet[Pilot]:
 			pilot_ships__ship_name__in=[ShipNames.VINDICATOR]
 		)\
 		.order_by('-skills_rating')[:pilots_amount]
+
+
+def pilots_for_first_dungeon(pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2) -> QuerySet[Pilot]:
+	week_visits_limit = 10
+	week_beginning = get_week_beginning()
+	dungeon_name = Dungeons.I
+	required_skills = [
+		SkillNames.BATTLESHIP_COMMAND,
+		SkillNames.BATTLESHIP_DEFENSE_UPGRADE,
+		SkillNames.BATTLESHIP_ENGINEERING
+	]
+	return Pilot.objects\
+		.annotate(
+			dungeon_visits_amount=Count(
+				'visits',
+				filter=Q(
+					visits__date_created__gte=week_beginning,
+					visits__dungeon__dungeon_name=dungeon_name
+				),
+				distinct=True
+			),
+			required_skills_amount=Count('skills', filter=Q(skills__name__in=required_skills)),
+			skills_rating=Avg(
+				'skills__level',
+				filter=Q(skills__name__in=required_skills)
+			),
+		)\
+		.filter(
+			Q(
+				Q(implants__implant_level__gte=implant_level),
+				Q(implants__implant_name__in=[ImplantNames.HIGH_POWER_COIL]),
+				Q(pilot_ships__ship_name__in=[ShipNames.VINDICATOR]),
+				Q(skills__name__in=[SkillNames.LARGE_RAILGUN], skills__level__gte=gun_rating),
+				required_skills_amount=len(required_skills),
+				dungeon_visits_amount__lt=week_visits_limit,
+				skills_rating__gte=skills_rating
+			  )
+		|
+			Q(
+				Q(implants__implant_level__gte=implant_level),
+				Q(implants__implant_name__in=[ImplantNames.FOCUSED_CRYSTAL]),
+				Q(pilot_ships__ship_name__in=[ShipNames.BHAAlGORN]),
+				Q(skills__name__in=[SkillNames.LARGE_LASER], skills__level__gte=gun_rating),
+				required_skills_amount=len(required_skills),
+				dungeon_visits_amount__lt=week_visits_limit,
+				skills_rating__gte=skills_rating
+			)
+		|
+			Q(
+				Q(implants__implant_level__gte=implant_level),
+				Q(implants__implant_name__in=[ImplantNames.FOCUSED_CRYSTAL]),
+				Q(pilot_ships__ship_name__in=[ShipNames.NIGHTMARE]),
+				Q(skills__name__in=[SkillNames.LARGE_LASER], skills__level__gte=2),
+				required_skills_amount=len(required_skills),
+				dungeon_visits_amount__lt=week_visits_limit,
+				skills_rating__gte=skills_rating
+			)
+		)\
+		.order_by('-skills_rating').distinct()[:pilots_amount]

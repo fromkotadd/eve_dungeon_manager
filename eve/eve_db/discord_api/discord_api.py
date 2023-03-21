@@ -14,7 +14,7 @@ ID_CHANNEL = config.config['ID_CHANNEL']
 
 
 @bot.command()
-async def ida(ctx):
+async def ida(ctx: Context):
 	author = ctx.message.author
 	await ctx.send(author.id)  # выводит в чат id автора сообщения
 	await ctx.send(author.mention)  # выводит в чат имя автора сообщения
@@ -156,7 +156,7 @@ async def v(ctx: Context, dungeon_name: str, visit_count: str):
 
 
 @bot.command()
-async def I(ctx, pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2):
+async def I(ctx: Context, pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2):
 	pilots_cards = await first(pilots_amount, implant_level, skills_rating, gun_rating)
 	for pilots_card in pilots_cards:
 		output = table2ascii(

@@ -162,7 +162,7 @@ def pilot_skill_upd(discord_id: str, name: str, level: str):
 			name=name,
 			level=level
 		)
-	return 'Pilot skill update'
+	return 'Pilot Skill update'
 
 
 @sync_to_async()
