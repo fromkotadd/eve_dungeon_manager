@@ -108,7 +108,7 @@ class ImplantNames(models.TextChoices):
 
 	# CARRIER IMPLANT
 	AUTHOMATIC_DEFENSE = 'authomatic defense'
-	BOMBARD_TACTICS = ' bombard tactics'
+	BOMBARD_TACTICS = 'bombard tactics'
 
 
 class Dungeons(models.IntegerChoices):

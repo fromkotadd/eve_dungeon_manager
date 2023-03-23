@@ -6,8 +6,9 @@ from table2ascii import table2ascii, PresetStyle
 from eve_db.discord_api import config
 from eve_db.representors.representors import first, pilot_card_add, pilot_ship_add, \
 	pilot_implant_add, pilot_skill_add, dungeon_visit_add, pilot_card_upd, pilot_ship_upd, \
-	pilot_implant_upd, pilot_skill_upd, second
-from eve_db.selectors.pilotship import ships_for_first_dungeon, ships_for_second_dungeon
+	pilot_implant_upd, pilot_skill_upd, second, third, fourth
+from eve_db.selectors.pilotship import ships_for_first_dungeon, ships_for_second_dungeon, ships_for_third_dungeon, \
+	ships_for_fourth_dungeon
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='~', intents=intents)  # инициализируем бота с префиксом '~'
@@ -206,6 +207,98 @@ async def II(ctx: Context, pilots_amount=20, implant_level=15, skills_rating=2, 
 	pilots_cards = await second(pilots_amount, implant_level, skills_rating, gun_rating)
 	for pilots_card in pilots_cards:
 		pilot_ships = await ships_for_second_dungeon(pilots_card['discord_id'])
+		ship_name = []
+		core_color = []
+		core_lvl = []
+		fit_grade = []
+		for ships in pilot_ships:
+			ship_name.append(ships['ship_name'])
+			core_color.append(ships['core_color'])
+			core_lvl.append(ships['core_lvl'])
+			fit_grade.append(ships['fit_grade'])
+		output = table2ascii(
+			header=['ИМЯ',
+					'ТАГ',
+					'TEХ.УР.',
+					'РЕЙТ',
+					'ПРО-КИ',
+					'СР.УР.НА-ОВ',
+					'НАЗ.КОР-ЛЯ',
+					'ЦВ.ЯДРА',
+					'УР.ЯДРА',
+					'ФИТ.ГР.'
+					],
+			body=[
+				[
+					pilots_card['name'],
+					pilots_card['corporation'],
+					pilots_card['tech_level'],
+					pilots_card['pilot_rating'],
+					pilots_card['dungeon_visits_amount'],
+					pilots_card['skills_rating'],
+					',\n'.join(ship_name),
+					',\n'.join(core_color),
+					',\n'.join([f'{x}' for x in core_lvl]),
+					',\n'.join(fit_grade)
+				]
+			],
+			style=PresetStyle.plain
+		)
+		await ctx.channel.send(f"```\n{output}\n```")
+
+
+@bot.command()
+async def III(ctx: Context, pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2):
+	pilots_cards_list = await third(pilots_amount, implant_level, skills_rating, gun_rating)
+	# print(pilots_cards_list)
+	for i in pilots_cards_list:
+		for pilots_card in i:
+			pilot_ships = await ships_for_third_dungeon(pilots_card['discord_id'])
+			ship_name = []
+			core_color = []
+			core_lvl = []
+			fit_grade = []
+			for ships in pilot_ships:
+				ship_name.append(ships['ship_name'])
+				core_color.append(ships['core_color'])
+				core_lvl.append(ships['core_lvl'])
+				fit_grade.append(ships['fit_grade'])
+			output = table2ascii(
+				header=['ИМЯ',
+						'ТАГ',
+						'TEХ.УР.',
+						'РЕЙТ',
+						'ПРО-КИ',
+						'СР.УР.НА-ОВ',
+						'НАЗ.КОР-ЛЯ',
+						'ЦВ.ЯДРА',
+						'УР.ЯДРА',
+						'ФИТ.ГР.'
+						],
+				body=[
+					[
+						pilots_card['name'],
+						pilots_card['corporation'],
+						pilots_card['tech_level'],
+						pilots_card['pilot_rating'],
+						pilots_card['dungeon_visits_amount'],
+						pilots_card['skills_rating'],
+						',\n'.join(ship_name),
+						',\n'.join(core_color),
+						',\n'.join([f'{x}' for x in core_lvl]),
+						',\n'.join(fit_grade)
+					]
+				],
+				style=PresetStyle.plain
+			)
+			await ctx.channel.send(f"```\n{output}\n```")
+
+
+@bot.command()
+async def IV(ctx: Context, pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2):
+	pilots_cards = await fourth(pilots_amount, implant_level, skills_rating, gun_rating)
+	for pilots_card in pilots_cards:
+		pilot_ships = await ships_for_fourth_dungeon(pilots_card['discord_id'])
 		ship_name = []
 		core_color = []
 		core_lvl = []

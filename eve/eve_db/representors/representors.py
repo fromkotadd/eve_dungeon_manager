@@ -1,6 +1,7 @@
 from asgiref.sync import sync_to_async
 
-from eve_db.selectors.pilot import pilots_for_first_dungeon, pilots_for_second_dungeon
+from eve_db.selectors.pilot import pilots_for_first_dungeon, pilots_for_second_dungeon, pilots_for_third_dungeon_dread, \
+	pilots_for_fourth_dungeon, pilots_for_third_dungeon_carrier
 from eve_db.services.pilot.create import CreatePilotService
 from eve_db.services.pilotship.create import CreatePilotShipService
 from eve_db.services.implant.create import CreateImplantService
@@ -193,6 +194,46 @@ def first(pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2) -> 
 @sync_to_async()
 def second(pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2) -> list:
 	sample_of_pilots = pilots_for_second_dungeon(pilots_amount, implant_level, skills_rating, gun_rating) \
+		.values(
+		'discord_id',
+		'name',
+		'corporation',
+		'tech_level',
+		'pilot_rating',
+		'dungeon_visits_amount',
+		'skills_rating'
+	)
+	return list(sample_of_pilots)
+
+
+@sync_to_async()
+def third(pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2) -> list:
+	sample_of_pilots_dread = pilots_for_third_dungeon_dread(pilots_amount, implant_level, skills_rating, gun_rating).\
+		values(
+			'discord_id',
+			'name',
+			'corporation',
+			'tech_level',
+			'pilot_rating',
+			'dungeon_visits_amount',
+			'skills_rating'
+		)
+	sample_of_pilots_carrier = pilots_for_third_dungeon_carrier(pilots_amount, implant_level, skills_rating, gun_rating).\
+		values(
+			'discord_id',
+			'name',
+			'corporation',
+			'tech_level',
+			'pilot_rating',
+			'dungeon_visits_amount',
+			'skills_rating'
+		)
+	return list(sample_of_pilots_dread), list(sample_of_pilots_carrier)
+
+
+@sync_to_async()
+def fourth(pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2) -> list:
+	sample_of_pilots = pilots_for_fourth_dungeon(pilots_amount, implant_level, skills_rating, gun_rating) \
 		.values(
 		'discord_id',
 		'name',

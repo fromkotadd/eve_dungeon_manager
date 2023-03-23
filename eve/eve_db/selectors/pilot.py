@@ -19,75 +19,6 @@ def pilot_by_discord_id_exists_selector(discord_id: str) -> bool:
 		.exists()
 
 
-def test(pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2) -> QuerySet[Pilot]:
-	week_visits_limit = 10
-	week_beginning = get_week_beginning()
-	dungeon_name = Dungeons.I
-	required_skills = [
-		SkillNames.BATTLESHIP_COMMAND,
-		SkillNames.BATTLESHIP_DEFENSE_UPGRADE,
-		SkillNames.BATTLESHIP_ENGINEERING
-	]
-	return Pilot.objects \
-			   .annotate(
-		dungeon_visits_amount=Count(
-			'visits',
-			filter=Q(
-				visits__date_created__gte=week_beginning,
-				visits__dungeon__dungeon_name=dungeon_name
-			),
-			distinct=True
-		),
-		required_skills_amount=Count('skills', filter=Q(skills__name__in=required_skills)),
-		skills_rating=Avg(
-			'skills__level',
-			filter=Q(skills__name__in=required_skills)
-		),
-	) \
-			   .filter(
-		Q(implants__implant_level__gte=implant_level),
-		Q(implants__implant_name__in=[ImplantNames.HIGH_POWER_COIL])
-		| Q(implants__implant_name__in=[ImplantNames.FOCUSED_CRYSTAL]),
-		Q(pilot_ships__ship_name__in=[ShipNames.VINDICATOR]) | Q(pilot_ships__ship_name__in=[ShipNames.BHAAlGORN]),
-		Q(skills__name__in=[SkillNames.LARGE_RAILGUN], skills__level__gte=gun_rating)
-		| Q(skills__name__in=[SkillNames.LARGE_LASER], skills__level__gte=gun_rating),
-		required_skills_amount=len(required_skills),
-		dungeon_visits_amount__lt=week_visits_limit,
-		skills_rating__gte=skills_rating
-	) \
-			   .order_by('-skills_rating')[:pilots_amount]
-
-
-def foo() -> QuerySet[Pilot]:
-	pilots_amount = 20
-	week_visits_limit = 10
-	week_beginning = get_week_beginning()
-	dungeon_name = Dungeons.I
-	required_skills = [SkillNames.LARGE_RAILGUN, SkillNames.BATTLESHIP_COMMAND, SkillNames.SMALL_LASER]
-	return Pilot.objects \
-			   .annotate(
-		dungeon_visits_amount=Count(
-			'visits',
-			filter=Q(
-				visits__date_created__gte=week_beginning,
-				visits__dungeon__dungeon_name=dungeon_name
-			),
-			distinct=True
-		),
-		required_skills_amount=Count('skills', filter=Q(skills__name__in=required_skills)),
-		skills_rating=Avg(
-			'skills__level',
-			filter=Q(skills__name__in=required_skills)
-		)
-	) \
-			   .filter(
-		required_skills_amount=len(required_skills),
-		dungeon_visits_amount__lt=week_visits_limit,
-		pilot_ships__ship_name__in=[ShipNames.VINDICATOR]
-	) \
-			   .order_by('-skills_rating')[:pilots_amount]
-
-
 def pilots_for_first_dungeon(pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2) -> QuerySet[Pilot]:
 	week_visits_limit = 10
 	week_beginning = get_week_beginning()
@@ -148,7 +79,7 @@ def pilots_for_first_dungeon(pilots_amount=20, implant_level=15, skills_rating=2
 def pilots_for_second_dungeon(pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2) -> QuerySet[Pilot]:
 	week_visits_limit = 10
 	week_beginning = get_week_beginning()
-	dungeon_name = Dungeons.I
+	dungeon_name = Dungeons.II
 	required_skills = [
 		SkillNames.BATTLESHIP_COMMAND,
 		SkillNames.BATTLESHIP_DEFENSE_UPGRADE,
@@ -184,10 +115,199 @@ def pilots_for_second_dungeon(pilots_amount=20, implant_level=15, skills_rating=
 		Q(
 			Q(implants__implant_level__gte=implant_level),
 			Q(pilot_ships__ship_name__in=[ShipNames.NIGHTMARE]),
-			Q(skills__name__in=[SkillNames.LARGE_LASER], skills__level__gte=2),
 			required_skills_amount=len(required_skills),
 			dungeon_visits_amount__lt=week_visits_limit,
 			skills_rating__gte=skills_rating
 		)
 	) \
 			   .order_by('-skills_rating').distinct()[:pilots_amount]
+
+
+def pilots_for_third_dungeon_dread(pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2) -> QuerySet[Pilot]:
+	week_visits_limit = 10
+	week_beginning = get_week_beginning()
+	dungeon_name = Dungeons.III
+	required_skills_dread = [
+		SkillNames.DREADNOUGHT_COMMAND,
+		SkillNames.DREADNOUGHT_DEFENSE_UPGRADE,
+		SkillNames.DREADNOUGHT_ENGINEERING
+	]
+	return Pilot.objects\
+			   .annotate(
+		dungeon_visits_amount=Count(
+			'visits',
+			filter=Q(
+				visits__date_created__gte=week_beginning,
+				visits__dungeon__dungeon_name=dungeon_name
+			),
+			distinct=True
+		),
+		required_skills_amount=Count('skills', filter=Q(skills__name__in=required_skills_dread)),
+		skills_rating=Avg(
+			'skills__level',
+			filter=Q(skills__name__in=required_skills_dread)
+		),
+	)\
+			   .filter(
+		Q(
+			Q(implants__implant_level__gte=implant_level),
+			Q(implants__implant_name__in=[ImplantNames.FOCUSED_CRYSTAL]),
+			Q(pilot_ships__ship_name__in=[ShipNames.REVELATION]),
+			Q(skills__name__in=[SkillNames.CAPITAL_LASER], skills__level__gte=gun_rating),
+			required_skills_amount=len(required_skills_dread),
+			dungeon_visits_amount__lt=week_visits_limit,
+			skills_rating__gte=skills_rating
+		)
+		|
+		Q(
+			Q(implants__implant_level__gte=implant_level),
+			Q(implants__implant_name__in=[ImplantNames.HIGH_POWER_COIL])
+			| Q(implants__implant_name__in=[ImplantNames.THERMAL_CIRCULATION]),
+			Q(pilot_ships__ship_name__in=[ShipNames.MOROS]),
+			Q(skills__name__in=[SkillNames.CAPITAL_RAILGUN], skills__level__gte=gun_rating),
+			required_skills_amount=len(required_skills_dread),
+			dungeon_visits_amount__lt=week_visits_limit,
+			skills_rating__gte=skills_rating
+		)
+		|
+		Q(
+			Q(implants__implant_level__gte=implant_level),
+			Q(implants__implant_name__in=[ImplantNames.SNIPING_TECHNOLOGY])
+			| Q(implants__implant_name__in=[ImplantNames.BARRAGE_REPRESSION]),
+			Q(pilot_ships__ship_name__in=[ShipNames.NAGLFAR]),
+			Q(skills__name__in=[SkillNames.CAPITAL_CANNON], skills__level__gte=gun_rating),
+			required_skills_amount=len(required_skills_dread),
+			dungeon_visits_amount__lt=week_visits_limit,
+			skills_rating__gte=skills_rating
+		)
+		|
+		Q(
+			Q(implants__implant_level__gte=implant_level),
+			Q(implants__implant_name__in=[ImplantNames.WARHEAD_CHARGE])
+			| Q(implants__implant_name__in=[ImplantNames.TACTICAL_MISSILES]),
+			Q(pilot_ships__ship_name__in=[ShipNames.PHOENIX]),
+			Q(skills__name__in=[SkillNames.CAPITAL_MISSILE], skills__level__gte=gun_rating),
+			required_skills_amount=len(required_skills_dread),
+			dungeon_visits_amount__lt=week_visits_limit,
+			skills_rating__gte=skills_rating
+		)
+	) \
+			.order_by('-skills_rating').distinct()[:pilots_amount]
+
+
+def pilots_for_third_dungeon_carrier(pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2) -> QuerySet[Pilot]:
+	week_visits_limit = 10
+	week_beginning = get_week_beginning()
+	dungeon_name = Dungeons.III
+	required_skills_carrier = [
+		SkillNames.CARRIER_COMMAND,
+		SkillNames.CARRIER_DEFENSE_UPGRADE,
+		SkillNames.CARRIER_ENGINEERING
+	]
+	return Pilot.objects \
+			   .annotate(
+		dungeon_visits_amount=Count(
+			'visits',
+			filter=Q(
+				visits__date_created__gte=week_beginning,
+				visits__dungeon__dungeon_name=dungeon_name
+			),
+			distinct=True
+		),
+		required_skills_amount=Count('skills', filter=Q(skills__name__in=required_skills_carrier)),
+		skills_rating=Avg(
+			'skills__level',
+			filter=Q(skills__name__in=required_skills_carrier)
+		),
+	) \
+			   .filter(
+		Q(
+			Q(implants__implant_level__gte=implant_level),
+			Q(implants__implant_name__in=[ImplantNames.BOMBARD_TACTICS]),
+			Q(pilot_ships__ship_name__in=[
+				ShipNames.NIDHOUGGUR,
+				ShipNames.CHIMERA,
+				ShipNames.ARCHON,
+				ShipNames.THANATOS
+			]),
+			Q(skills__name__in=[SkillNames.FIGHTER], skills__level__gte=gun_rating),
+			required_skills_amount=len(required_skills_carrier),
+			dungeon_visits_amount__lt=week_visits_limit,
+			skills_rating__gte=skills_rating
+		)
+	) \
+			.order_by('-skills_rating').distinct()[:pilots_amount]
+
+
+
+def pilots_for_fourth_dungeon(pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2) -> QuerySet[Pilot]:
+	week_visits_limit = 10
+	week_beginning = get_week_beginning()
+	dungeon_name = Dungeons.IV
+	required_skills_dread = [
+		SkillNames.DREADNOUGHT_COMMAND,
+		SkillNames.DREADNOUGHT_DEFENSE_UPGRADE,
+		SkillNames.DREADNOUGHT_ENGINEERING
+		]
+	return Pilot.objects \
+			.annotate(
+		dungeon_visits_amount=Count(
+			'visits',
+			filter=Q(
+				visits__date_created__gte=week_beginning,
+				visits__dungeon__dungeon_name=dungeon_name
+			),
+			distinct=True
+		),
+		required_skills_amount=Count('skills', filter=Q(skills__name__in=required_skills_dread)),
+		skills_rating=Avg(
+			'skills__level',
+			filter=Q(skills__name__in=required_skills_dread)
+		),
+	) \
+			.filter(
+		Q(
+			Q(implants__implant_level__gte=implant_level),
+			Q(implants__implant_name__in=[ImplantNames.FOCUSED_CRYSTAL]),
+			Q(pilot_ships__ship_name__in=[ShipNames.REVELATION]),
+			Q(skills__name__in=[SkillNames.CAPITAL_LASER], skills__level__gte=gun_rating),
+			required_skills_amount=len(required_skills_dread),
+			dungeon_visits_amount__lt=week_visits_limit,
+			skills_rating__gte=skills_rating
+		)
+		|
+		Q(
+			Q(implants__implant_level__gte=implant_level),
+			Q(implants__implant_name__in=[ImplantNames.HIGH_POWER_COIL])
+			| Q(implants__implant_name__in=[ImplantNames.THERMAL_CIRCULATION]),
+			Q(pilot_ships__ship_name__in=[ShipNames.MOROS]),
+			Q(skills__name__in=[SkillNames.CAPITAL_RAILGUN], skills__level__gte=gun_rating),
+			required_skills_amount=len(required_skills_dread),
+			dungeon_visits_amount__lt=week_visits_limit,
+			skills_rating__gte=skills_rating
+		)
+		|
+		Q(
+			Q(implants__implant_level__gte=implant_level),
+			Q(implants__implant_name__in=[ImplantNames.SNIPING_TECHNOLOGY])
+			| Q(implants__implant_name__in=[ImplantNames.BARRAGE_REPRESSION]),
+			Q(pilot_ships__ship_name__in=[ShipNames.NAGLFAR]),
+			Q(skills__name__in=[SkillNames.CAPITAL_CANNON], skills__level__gte=gun_rating),
+			required_skills_amount=len(required_skills_dread),
+			dungeon_visits_amount__lt=week_visits_limit,
+			skills_rating__gte=skills_rating
+		)
+		|
+		Q(
+			Q(implants__implant_level__gte=implant_level),
+			Q(implants__implant_name__in=[ImplantNames.WARHEAD_CHARGE])
+			| Q(implants__implant_name__in=[ImplantNames.TACTICAL_MISSILES]),
+			Q(pilot_ships__ship_name__in=[ShipNames.PHOENIX]),
+			Q(skills__name__in=[SkillNames.CAPITAL_MISSILE], skills__level__gte=gun_rating),
+			required_skills_amount=len(required_skills_dread),
+			dungeon_visits_amount__lt=week_visits_limit,
+			skills_rating__gte=skills_rating
+		)
+	) \
+			.order_by('-skills_rating').distinct()[:pilots_amount]
+
