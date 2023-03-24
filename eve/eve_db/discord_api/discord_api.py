@@ -11,7 +11,7 @@ from eve_db.selectors.pilotship import ships_for_first_dungeon, ships_for_second
 	ships_for_fourth_dungeon
 
 intents = discord.Intents.all()
-bot = commands.Bot(command_prefix='~', intents=intents)  # инициализируем бота с префиксом '~'
+bot = commands.Bot(command_prefix='~', intents=intents, owner_id=699256655837397132)  # инициализируем бота с префиксом '~'
 ID_CHANNEL = config.config['ID_CHANNEL']
 
 
@@ -172,16 +172,17 @@ async def I(ctx: Context, pilots_amount=20, implant_level=15, skills_rating=2, g
 			core_lvl.append(ships['core_lvl'])
 			fit_grade.append(ships['fit_grade'])
 		output = table2ascii(
-			header=['ИМЯ',
-					'ТАГ',
-					'TEХ.УР.',
-					'РЕЙТ',
-					'ПРО-КИ',
-					'СР.УР.НА-ОВ',
-					'НАЗ.КОР-ЛЯ',
-					'ЦВ.ЯДРА',
-					'УР.ЯДРА',
-					'ФИТ.ГР.'
+			header=[
+				'ИМЯ',
+				'ТАГ',
+				'TEХ.УР.',
+				'РЕЙТ',
+				'ПР-ДКИ',
+				'СР.УР.НАВ.',
+				'НАЗ.КОР.',
+				'ЦВ.ЯДРА',
+				'УР.ЯДРА',
+				'ФИТ.ГР.'
 					],
 			body=[
 				[
@@ -217,16 +218,17 @@ async def II(ctx: Context, pilots_amount=20, implant_level=15, skills_rating=2, 
 			core_lvl.append(ships['core_lvl'])
 			fit_grade.append(ships['fit_grade'])
 		output = table2ascii(
-			header=['ИМЯ',
-					'ТАГ',
-					'TEХ.УР.',
-					'РЕЙТ',
-					'ПРО-КИ',
-					'СР.УР.НА-ОВ',
-					'НАЗ.КОР-ЛЯ',
-					'ЦВ.ЯДРА',
-					'УР.ЯДРА',
-					'ФИТ.ГР.'
+			header=[
+				'ИМЯ',
+				'ТАГ',
+				'TEХ.УР.',
+				'РЕЙТ',
+				'ПР-ДКИ',
+				'СР.УР.НАВ.',
+				'НАЗ.КОР.',
+				'ЦВ.ЯДРА',
+				'УР.ЯДРА',
+				'ФИТ.ГР.'
 					],
 			body=[
 				[
@@ -250,9 +252,8 @@ async def II(ctx: Context, pilots_amount=20, implant_level=15, skills_rating=2, 
 @bot.command()
 async def III(ctx: Context, pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2):
 	pilots_cards_list = await third(pilots_amount, implant_level, skills_rating, gun_rating)
-	# print(pilots_cards_list)
-	for i in pilots_cards_list:
-		for pilots_card in i:
+	for pilots_cards in pilots_cards_list:
+		for pilots_card in pilots_cards:
 			pilot_ships = await ships_for_third_dungeon(pilots_card['discord_id'])
 			ship_name = []
 			core_color = []
@@ -264,17 +265,18 @@ async def III(ctx: Context, pilots_amount=20, implant_level=15, skills_rating=2,
 				core_lvl.append(ships['core_lvl'])
 				fit_grade.append(ships['fit_grade'])
 			output = table2ascii(
-				header=['ИМЯ',
-						'ТАГ',
-						'TEХ.УР.',
-						'РЕЙТ',
-						'ПРО-КИ',
-						'СР.УР.НА-ОВ',
-						'НАЗ.КОР-ЛЯ',
-						'ЦВ.ЯДРА',
-						'УР.ЯДРА',
-						'ФИТ.ГР.'
-						],
+				header=[
+					'ИМЯ',
+					'ТАГ',
+					'TEХ.УР.',
+					'РЕЙТ',
+					'ПР-ДКИ',
+					'СР.УР.НАВ.',
+					'НАЗ.КОР.',
+					'ЦВ.ЯДРА',
+					'УР.ЯДРА',
+					'ФИТ.ГР.'
+					],
 				body=[
 					[
 						pilots_card['name'],
@@ -309,16 +311,17 @@ async def IV(ctx: Context, pilots_amount=20, implant_level=15, skills_rating=2, 
 			core_lvl.append(ships['core_lvl'])
 			fit_grade.append(ships['fit_grade'])
 		output = table2ascii(
-			header=['ИМЯ',
-					'ТАГ',
-					'TEХ.УР.',
-					'РЕЙТ',
-					'ПРО-КИ',
-					'СР.УР.НА-ОВ',
-					'НАЗ.КОР-ЛЯ',
-					'ЦВ.ЯДРА',
-					'УР.ЯДРА',
-					'ФИТ.ГР.'
+			header=[
+				'ИМЯ',
+				'ТАГ',
+				'TEХ.УР.',
+				'РЕЙТ',
+				'ПР-ДКИ',
+				'СР.УР.НАВ.',
+				'НАЗ.КОР.',
+				'ЦВ.ЯДРА',
+				'УР.ЯДРА',
+				'ФИТ.ГР.'
 					],
 			body=[
 				[

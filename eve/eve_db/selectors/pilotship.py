@@ -9,7 +9,6 @@ def pilot_ship_by_name_selector(pilot: Pilot, name: ShipNames) -> QuerySet[Pilot
 	return pilot.pilot_ships.filter(ship_name=name)
 
 
-@sync_to_async()
 def ships_for_first_dungeon(discord_id: str) -> list:
 	pilot_cards = Pilot.objects.get(discord_id=discord_id)
 	required_ships = [

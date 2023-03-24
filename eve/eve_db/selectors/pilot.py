@@ -28,8 +28,8 @@ def pilots_for_first_dungeon(pilots_amount=20, implant_level=15, skills_rating=2
 		SkillNames.BATTLESHIP_DEFENSE_UPGRADE,
 		SkillNames.BATTLESHIP_ENGINEERING
 	]
-	return Pilot.objects \
-			   .annotate(
+	return Pilot.objects\
+				.annotate(
 		dungeon_visits_amount=Count(
 			'visits',
 			filter=Q(
@@ -123,7 +123,8 @@ def pilots_for_second_dungeon(pilots_amount=20, implant_level=15, skills_rating=
 			   .order_by('-skills_rating').distinct()[:pilots_amount]
 
 
-def pilots_for_third_dungeon_dread(pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2) -> QuerySet[Pilot]:
+def pilots_for_third_dungeon_dread(pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2) -> QuerySet[
+	Pilot]:
 	week_visits_limit = 10
 	week_beginning = get_week_beginning()
 	dungeon_name = Dungeons.III
@@ -132,7 +133,7 @@ def pilots_for_third_dungeon_dread(pilots_amount=20, implant_level=15, skills_ra
 		SkillNames.DREADNOUGHT_DEFENSE_UPGRADE,
 		SkillNames.DREADNOUGHT_ENGINEERING
 	]
-	return Pilot.objects\
+	return Pilot.objects \
 			   .annotate(
 		dungeon_visits_amount=Count(
 			'visits',
@@ -147,7 +148,7 @@ def pilots_for_third_dungeon_dread(pilots_amount=20, implant_level=15, skills_ra
 			'skills__level',
 			filter=Q(skills__name__in=required_skills_dread)
 		),
-	)\
+	) \
 			   .filter(
 		Q(
 			Q(implants__implant_level__gte=implant_level),
@@ -192,10 +193,11 @@ def pilots_for_third_dungeon_dread(pilots_amount=20, implant_level=15, skills_ra
 			skills_rating__gte=skills_rating
 		)
 	) \
-			.order_by('-skills_rating').distinct()[:pilots_amount]
+			   .order_by('-skills_rating').distinct()[:pilots_amount]
 
 
-def pilots_for_third_dungeon_carrier(pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2) -> QuerySet[Pilot]:
+def pilots_for_third_dungeon_carrier(pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2) -> QuerySet[
+	Pilot]:
 	week_visits_limit = 10
 	week_beginning = get_week_beginning()
 	dungeon_name = Dungeons.III
@@ -236,8 +238,7 @@ def pilots_for_third_dungeon_carrier(pilots_amount=20, implant_level=15, skills_
 			skills_rating__gte=skills_rating
 		)
 	) \
-			.order_by('-skills_rating').distinct()[:pilots_amount]
-
+			   .order_by('-skills_rating').distinct()[:pilots_amount]
 
 
 def pilots_for_fourth_dungeon(pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2) -> QuerySet[Pilot]:
@@ -248,9 +249,9 @@ def pilots_for_fourth_dungeon(pilots_amount=20, implant_level=15, skills_rating=
 		SkillNames.DREADNOUGHT_COMMAND,
 		SkillNames.DREADNOUGHT_DEFENSE_UPGRADE,
 		SkillNames.DREADNOUGHT_ENGINEERING
-		]
+	]
 	return Pilot.objects \
-			.annotate(
+			   .annotate(
 		dungeon_visits_amount=Count(
 			'visits',
 			filter=Q(
@@ -265,7 +266,7 @@ def pilots_for_fourth_dungeon(pilots_amount=20, implant_level=15, skills_rating=
 			filter=Q(skills__name__in=required_skills_dread)
 		),
 	) \
-			.filter(
+			   .filter(
 		Q(
 			Q(implants__implant_level__gte=implant_level),
 			Q(implants__implant_name__in=[ImplantNames.FOCUSED_CRYSTAL]),
@@ -309,5 +310,4 @@ def pilots_for_fourth_dungeon(pilots_amount=20, implant_level=15, skills_rating=
 			skills_rating__gte=skills_rating
 		)
 	) \
-			.order_by('-skills_rating').distinct()[:pilots_amount]
-
+			   .order_by('-skills_rating').distinct()[:pilots_amount]
