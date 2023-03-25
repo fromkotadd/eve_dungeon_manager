@@ -3,6 +3,7 @@ from eve_db.selectors.skill import pilot_skills_by_name_selector
 from eve_db.services.base import BaseDiscordActionService
 from eve_db.choices import SkillNames, SkillLevels
 
+
 class CreateSkillService(BaseDiscordActionService):
 
 	SKILL_LEVEL_MAP = {
@@ -30,5 +31,3 @@ class CreateSkillService(BaseDiscordActionService):
 
 		form.save()
 		return f'Skill {self._name} added'
-
-

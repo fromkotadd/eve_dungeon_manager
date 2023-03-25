@@ -1,6 +1,7 @@
 from asgiref.sync import sync_to_async
 
-from eve_db.selectors.pilot import pilots_for_first_dungeon, pilots_for_second_dungeon, pilots_for_third_dungeon_dread, \
+from eve_db.choices import SkillNames, SkillLevels
+from eve_db.selectors.pilot import pilots_for_first_dungeon, pilots_for_second_dungeon, pilots_for_third_dungeon_dread,\
 	pilots_for_fourth_dungeon, pilots_for_third_dungeon_carrier
 from eve_db.services.pilot.create import CreatePilotService
 from eve_db.services.pilotship.create import CreatePilotShipService
@@ -146,7 +147,12 @@ def pilot_skill_upd(discord_id: str, name: str, level: str):
 	pilot = pilot_by_discord_id_selector(discord_id)
 	if not pilot:
 		return 'Pilot not found. Please register pilot'
-
+	SKILL_LEVEL_MAP = {
+		'4-4': 1,
+		'4-5-3': 2,
+		'5-5-4': 3,
+	}
+	level = SKILL_LEVEL_MAP[level]
 	form = SkillForm({
 			'pilot': pilot,
 			'name': name,

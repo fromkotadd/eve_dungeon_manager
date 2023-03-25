@@ -1,5 +1,3 @@
-from django.db.models import QuerySet
-
 from eve_db.models import Dungeon
 from eve_db.choices import Dungeons
 

@@ -28,7 +28,6 @@ def ships_for_first_dungeon(discord_id: str) -> list:
 	return list(pilot_ship)
 
 
-
 def ships_for_second_dungeon(discord_id: str) -> list:
 	pilot_cards = Pilot.objects.get(discord_id=discord_id)
 	required_ships = [
@@ -46,7 +45,6 @@ def ships_for_second_dungeon(discord_id: str) -> list:
 			'fit_grade'
 		)
 	return list(pilot_ship)
-
 
 
 def ships_for_third_dungeon(discord_id: str) -> list:
@@ -72,7 +70,6 @@ def ships_for_third_dungeon(discord_id: str) -> list:
 			'fit_grade'
 		)
 	return list(pilot_ship)
-
 
 
 def ships_for_fourth_dungeon(discord_id: str) -> list:

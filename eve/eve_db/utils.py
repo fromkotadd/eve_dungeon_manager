@@ -9,6 +9,7 @@ def get_week_beginning() -> datetime:
 	now = timezone.now()
 	return now - timezone.timedelta(days=now.weekday(), hours=now.hour, minutes=now.minute, seconds=now.second)
 
+
 @sync_to_async()
 def table_create(pilots_cards, pilot_ships_func):
 	body = []
@@ -50,7 +51,7 @@ def table_create(pilots_cards, pilot_ships_func):
 				'ФИТ.ГР.'
 					],
 			body=body,
-			style=PresetStyle.ascii, #plain
+			style=PresetStyle.ascii,
 			alignments=Alignment.LEFT
 		)
 	return output
@@ -97,7 +98,7 @@ def table_create_(pilots_cards, pilot_ships_func):
 				'ФИТ.ГР.'
 					],
 			body=body,
-			style=PresetStyle.ascii,#plain,
+			style=PresetStyle.ascii,
 			alignments=Alignment.LEFT
 		)
 	return output

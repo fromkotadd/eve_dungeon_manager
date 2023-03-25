@@ -30,9 +30,6 @@ async def on_ready():
 guild = discord.Object(id='1065239528664739870')
 
 
-# Get Guild ID from right clicking on server icon
-# Must have devloper mode on discord on setting>Advance>Developer Mode
-# More info on tree can be found on discord.py Git Repo
 @bot.command()
 @commands.guild_only()
 @commands.is_owner()
@@ -200,11 +197,11 @@ async def v(interaction: discord.Interaction, dungeon_name: str, visit_count: st
 @bot.tree.command(name='first_dungeon', description='find pilots for the first dungeon')
 async def I(
 		interaction: discord.Interaction,
-			pilots_amount: str = '20',
-			implant_level: str = '15',
-			skills_rating: str = '2',
-			gun_rating: str = '2'
-		):
+		pilots_amount: str = '20',
+		implant_level: str = '15',
+		skills_rating: str = '2',
+		gun_rating: str = '2'
+):
 	pilots_cards = await first(int(pilots_amount), int(implant_level), int(skills_rating), int(gun_rating))
 	output = await table_create(pilots_cards=pilots_cards, pilot_ships_func=ships_for_first_dungeon)
 	await interaction.response.send_message(f"```\n{output}\n```")
@@ -212,11 +209,10 @@ async def I(
 
 @bot.tree.command(name='second_dungeon', description='find pilots for the second dungeon')
 async def II(
-			interaction: discord.Interaction,
-			pilots_amount: str = '20',
-			implant_level: str = '15',
-			skills_rating: str = '2',			gun_rating: str = '2'
-		):
+		interaction: discord.Interaction,
+		pilots_amount: str = '20',
+		implant_level: str = '15',
+		skills_rating: str = '2', gun_rating: str = '2'):
 	pilots_cards = await second(int(pilots_amount), int(implant_level), int(skills_rating), int(gun_rating))
 	output = await table_create(pilots_cards=pilots_cards, pilot_ships_func=ships_for_second_dungeon)
 	await interaction.response.send_message(f"```\n{output}\n```")
@@ -224,12 +220,11 @@ async def II(
 
 @bot.tree.command(name='third_dungeon', description='find pilots for the third dungeon')
 async def III(
-			interaction: discord.Interaction,
-			pilots_amount: str = '20',
-			implant_level: str = '15',
-			skills_rating: str = '2',
-			  gun_rating: str = '2'
-):
+		interaction: discord.Interaction,
+		pilots_amount: str = '20',
+		implant_level: str = '15',
+		skills_rating: str = '2',
+		gun_rating: str = '2'):
 	res = []
 	pilots_cards_list = await third(int(pilots_amount), int(implant_level), int(skills_rating), int(gun_rating))
 	for pilots_cards in pilots_cards_list:
@@ -239,8 +234,12 @@ async def III(
 
 
 @bot.tree.command(name='fourth_dungeon', description='find pilots for the first dungeon')
-async def IV(interaction: discord.Interaction, pilots_amount: str = '20', implant_level: str = '15',
-			 skills_rating: str = '2', gun_rating: str = '2'):
+async def IV(
+		interaction: discord.Interaction,
+		pilots_amount: str = '20',
+		implant_level: str = '15',
+		skills_rating: str = '2',
+		gun_rating: str = '2'):
 	pilots_cards = await fourth(int(pilots_amount), int(implant_level), int(skills_rating), int(gun_rating))
 	output = await table_create(pilots_cards=pilots_cards, pilot_ships_func=ships_for_fourth_dungeon)
 	await interaction.response.send_message(f"```\n{output}\n```")
