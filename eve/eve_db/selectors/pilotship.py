@@ -1,4 +1,3 @@
-from asgiref.sync import sync_to_async
 from django.db.models import QuerySet, Q
 
 from eve_db.models import PilotShip, Pilot
@@ -29,7 +28,7 @@ def ships_for_first_dungeon(discord_id: str) -> list:
 	return list(pilot_ship)
 
 
-@sync_to_async()
+
 def ships_for_second_dungeon(discord_id: str) -> list:
 	pilot_cards = Pilot.objects.get(discord_id=discord_id)
 	required_ships = [
@@ -49,7 +48,7 @@ def ships_for_second_dungeon(discord_id: str) -> list:
 	return list(pilot_ship)
 
 
-@sync_to_async()
+
 def ships_for_third_dungeon(discord_id: str) -> list:
 	pilot_cards = Pilot.objects.get(discord_id=discord_id)
 	required_ships = [
@@ -75,7 +74,7 @@ def ships_for_third_dungeon(discord_id: str) -> list:
 	return list(pilot_ship)
 
 
-@sync_to_async()
+
 def ships_for_fourth_dungeon(discord_id: str) -> list:
 	pilot_cards = Pilot.objects.get(discord_id=discord_id)
 	required_ships = [

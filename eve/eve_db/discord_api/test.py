@@ -3,9 +3,7 @@ from typing import Optional, Literal
 import discord
 from discord.ext import commands
 from discord.ext.commands.context import Context
-from table2ascii import table2ascii, PresetStyle
 from discord.ext.commands import Greedy
-# from discord import app_commands
 
 from eve_db.discord_api import config
 from eve_db.representors.representors import first, pilot_card_add, pilot_ship_add, \
@@ -13,7 +11,7 @@ from eve_db.representors.representors import first, pilot_card_add, pilot_ship_a
 	pilot_implant_upd, pilot_skill_upd, second, third, fourth
 from eve_db.selectors.pilotship import ships_for_first_dungeon, ships_for_second_dungeon, ships_for_third_dungeon, \
 	ships_for_fourth_dungeon
-from eve_db.utils import table_create
+from eve_db.utils import table_create, table_create_
 
 intents = discord.Intents.default()
 intents.members = True
@@ -21,22 +19,25 @@ intents.message_content = True
 bot = commands.Bot(command_prefix='~', intents=intents, owner_id=699256655837397132)
 ID_CHANNEL = config.config['ID_CHANNEL']
 
+
 @bot.event
 async def on_ready():
-	print(f'Logged in as {bot.user}') #Bot Name
-	print(bot.user.id) #Bot ID
+	print(f'Logged in as {bot.user}')  # Bot Name
+	print(bot.user.id)  # Bot ID
 
 
-#------ Sync Tree ------
+# ------ Sync Tree ------
 guild = discord.Object(id='1065239528664739870')
+
+
 # Get Guild ID from right clicking on server icon
 # Must have devloper mode on discord on setting>Advance>Developer Mode
-#More info on tree can be found on discord.py Git Repo
+# More info on tree can be found on discord.py Git Repo
 @bot.command()
 @commands.guild_only()
 @commands.is_owner()
 async def sync(
-  ctx: Context, guilds: Greedy[discord.Object], spec: Optional[Literal["~", "*", "^"]] = None) -> None:
+		ctx: Context, guilds: Greedy[discord.Object], spec: Optional[Literal["~", "*", "^"]] = None) -> None:
 	if not guilds:
 		if spec == "~":
 			synced = await ctx.bot.tree.sync(guild=ctx.guild)
@@ -51,8 +52,8 @@ async def sync(
 			synced = await ctx.bot.tree.sync()
 
 		await ctx.send(
-            f"Synced {len(synced)} commands {'globally' if spec is None else 'to the current guild.'}"
-        )
+			f"Synced {len(synced)} commands {'globally' if spec is None else 'to the current guild.'}"
+		)
 
 
 @bot.tree.command()
@@ -197,149 +198,52 @@ async def v(interaction: discord.Interaction, dungeon_name: str, visit_count: st
 
 
 @bot.tree.command(name='first_dungeon', description='find pilots for the first dungeon')
-async def I(interaction: discord.Interaction, pilots_amount: str='20', implant_level: str='15', skills_rating: str='2', gun_rating: str='2'):
+async def I(
+		interaction: discord.Interaction,
+			pilots_amount: str = '20',
+			implant_level: str = '15',
+			skills_rating: str = '2',
+			gun_rating: str = '2'
+		):
 	pilots_cards = await first(int(pilots_amount), int(implant_level), int(skills_rating), int(gun_rating))
 	output = await table_create(pilots_cards=pilots_cards, pilot_ships_func=ships_for_first_dungeon)
 	await interaction.response.send_message(f"```\n{output}\n```")
 
 
-@bot.command()
-async def II(ctx: Context, pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2):
-	pilots_cards = await second(pilots_amount, implant_level, skills_rating, gun_rating)
-	for pilots_card in pilots_cards:
-		pilot_ships = await ships_for_second_dungeon(pilots_card['discord_id'])
-		ship_name = []
-		core_color = []
-		core_lvl = []
-		fit_grade = []
-		for ships in pilot_ships:
-			ship_name.append(ships['ship_name'])
-			core_color.append(ships['core_color'])
-			core_lvl.append(ships['core_lvl'])
-			fit_grade.append(ships['fit_grade'])
-		output = table2ascii(
-			header=[
-				'ИМЯ',
-				'ТАГ',
-				'TEХ.УР.',
-				'РЕЙТ',
-				'ПР-ДКИ',
-				'СР.УР.НАВ.',
-				'НАЗ.КОР.',
-				'ЦВ.ЯДРА',
-				'УР.ЯДРА',
-				'ФИТ.ГР.'
-					],
-			body=[
-				[
-					pilots_card['name'],
-					pilots_card['corporation'],
-					pilots_card['tech_level'],
-					pilots_card['pilot_rating'],
-					pilots_card['dungeon_visits_amount'],
-					pilots_card['skills_rating'],
-					',\n'.join(ship_name),
-					',\n'.join(core_color),
-					',\n'.join([f'{x}' for x in core_lvl]),
-					',\n'.join(fit_grade)
-				]
-			],
-			style=PresetStyle.plain
-		)
-		await ctx.channel.send(f"```\n{output}\n```")
+@bot.tree.command(name='second_dungeon', description='find pilots for the second dungeon')
+async def II(
+			interaction: discord.Interaction,
+			pilots_amount: str = '20',
+			implant_level: str = '15',
+			skills_rating: str = '2',			gun_rating: str = '2'
+		):
+	pilots_cards = await second(int(pilots_amount), int(implant_level), int(skills_rating), int(gun_rating))
+	output = await table_create(pilots_cards=pilots_cards, pilot_ships_func=ships_for_second_dungeon)
+	await interaction.response.send_message(f"```\n{output}\n```")
 
 
-@bot.command()
-async def III(ctx: Context, pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2):
-	pilots_cards_list = await third(pilots_amount, implant_level, skills_rating, gun_rating)
+@bot.tree.command(name='third_dungeon', description='find pilots for the third dungeon')
+async def III(
+			interaction: discord.Interaction,
+			pilots_amount: str = '20',
+			implant_level: str = '15',
+			skills_rating: str = '2',
+			  gun_rating: str = '2'
+):
+	res = []
+	pilots_cards_list = await third(int(pilots_amount), int(implant_level), int(skills_rating), int(gun_rating))
 	for pilots_cards in pilots_cards_list:
-		for pilots_card in pilots_cards:
-			pilot_ships = await ships_for_third_dungeon(pilots_card['discord_id'])
-			ship_name = []
-			core_color = []
-			core_lvl = []
-			fit_grade = []
-			for ships in pilot_ships:
-				ship_name.append(ships['ship_name'])
-				core_color.append(ships['core_color'])
-				core_lvl.append(ships['core_lvl'])
-				fit_grade.append(ships['fit_grade'])
-			output = table2ascii(
-				header=[
-					'ИМЯ',
-					'ТАГ',
-					'TEХ.УР.',
-					'РЕЙТ',
-					'ПР-ДКИ',
-					'СР.УР.НАВ.',
-					'НАЗ.КОР.',
-					'ЦВ.ЯДРА',
-					'УР.ЯДРА',
-					'ФИТ.ГР.'
-					],
-				body=[
-					[
-						pilots_card['name'],
-						pilots_card['corporation'],
-						pilots_card['tech_level'],
-						pilots_card['pilot_rating'],
-						pilots_card['dungeon_visits_amount'],
-						pilots_card['skills_rating'],
-						',\n'.join(ship_name),
-						',\n'.join(core_color),
-						',\n'.join([f'{x}' for x in core_lvl]),
-						',\n'.join(fit_grade)
-					]
-				],
-				style=PresetStyle.plain
-			)
-			await ctx.channel.send(f"```\n{output}\n```")
+		output = await table_create_(pilots_cards=pilots_cards, pilot_ships_func=ships_for_third_dungeon)
+		res.append(output)
+	await interaction.response.send_message(f"```\n{res[0]}\n{res[1]}\n```")
 
 
-@bot.command()
-async def IV(ctx: Context, pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2):
-	pilots_cards = await fourth(pilots_amount, implant_level, skills_rating, gun_rating)
-	for pilots_card in pilots_cards:
-		pilot_ships = await ships_for_fourth_dungeon(pilots_card['discord_id'])
-		ship_name = []
-		core_color = []
-		core_lvl = []
-		fit_grade = []
-		for ships in pilot_ships:
-			ship_name.append(ships['ship_name'])
-			core_color.append(ships['core_color'])
-			core_lvl.append(ships['core_lvl'])
-			fit_grade.append(ships['fit_grade'])
-		output = table2ascii(
-			header=[
-				'ИМЯ',
-				'ТАГ',
-				'TEХ.УР.',
-				'РЕЙТ',
-				'ПР-ДКИ',
-				'СР.УР.НАВ.',
-				'НАЗ.КОР.',
-				'ЦВ.ЯДРА',
-				'УР.ЯДРА',
-				'ФИТ.ГР.'
-					],
-			body=[
-				[
-					pilots_card['name'],
-					pilots_card['corporation'],
-					pilots_card['tech_level'],
-					pilots_card['pilot_rating'],
-					pilots_card['dungeon_visits_amount'],
-					pilots_card['skills_rating'],
-					',\n'.join(ship_name),
-					',\n'.join(core_color),
-					',\n'.join([f'{x}' for x in core_lvl]),
-					',\n'.join(fit_grade)
-				]
-			],
-			style=PresetStyle.plain
-		)
-		await ctx.channel.send(f"```\n{output}\n```")
+@bot.tree.command(name='fourth_dungeon', description='find pilots for the first dungeon')
+async def IV(interaction: discord.Interaction, pilots_amount: str = '20', implant_level: str = '15',
+			 skills_rating: str = '2', gun_rating: str = '2'):
+	pilots_cards = await fourth(int(pilots_amount), int(implant_level), int(skills_rating), int(gun_rating))
+	output = await table_create(pilots_cards=pilots_cards, pilot_ships_func=ships_for_fourth_dungeon)
+	await interaction.response.send_message(f"```\n{output}\n```")
 
 
 def run():
