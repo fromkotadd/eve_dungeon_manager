@@ -2,6 +2,7 @@ from asgiref.sync import sync_to_async
 
 from eve_db.selectors.pilot import pilots_for_first_dungeon, pilots_for_second_dungeon, pilots_for_third_dungeon_dread,\
 	pilots_for_fourth_dungeon, pilots_for_third_dungeon_carrier
+from eve_db.services.implant.update import UpdateImplantService
 from eve_db.services.pilot.create import CreatePilotService
 from eve_db.services.pilot.update import UpdatePilotService
 from eve_db.services.pilotship.create import CreatePilotShipService
@@ -9,8 +10,6 @@ from eve_db.services.implant.create import CreateImplantService
 from eve_db.services.pilotship.update import UpdatePilotShipService
 from eve_db.services.skill.create import CreateSkillService
 from eve_db.services.dungeon_pilot_visit.create import CreateDungeonVisitService
-from eve_db.forms.pilotship import ShipForm
-from eve_db.forms.implant import ImplantForm
 from eve_db.forms.skill import SkillForm
 from eve_db.selectors.pilot import pilot_by_discord_id_selector
 
@@ -35,8 +34,9 @@ def pilot_card_upd(discord_id: str, name: str, corporation: str, tech_level: str
 			name=name,
 			corporation=corporation,
 			tech_level=tech_level,
-			pilot_rating=pilot_rating)\
-		.execute()
+			pilot_rating=pilot_rating
+		)\
+			.execute()
 
 
 @sync_to_async()
@@ -60,7 +60,8 @@ def pilot_ship_upd(discord_id: str, ship_name: str, core_color: str, core_lvl: s
 		core_color=core_color,
 		core_lvl=core_lvl,
 		fit_grade=fit_grade
-	).execute()
+	)\
+		.execute()
 
 
 @sync_to_async()
@@ -76,27 +77,12 @@ def pilot_implant_add(discord_id: str, implant_name: str, implant_level: str):
 
 @sync_to_async()
 def pilot_implant_upd(discord_id: str, implant_name: str, implant_level: str):
-	pilot = pilot_by_discord_id_selector(discord_id)
-	if not pilot:
-		return 'Pilot not found. Please register pilot'
-
-	form = ImplantForm({
-			'pilot': pilot,
-			'implant_name': implant_name,
-			'implant_level': implant_level
-		})
-	if not form.is_valid():
-		return form.errors
-
-	pilot.implants\
-		.filter(
-			implant_name=implant_name
-		)\
-		.update(
-			implant_name=implant_name,
-			implant_level=implant_level
-		)
-	return 'Pilot implant update'
+	return UpdateImplantService(
+		discord_id=discord_id,
+		implant_name=implant_name,
+		implant_level=implant_level
+	)\
+		.execute()
 
 
 @sync_to_async()
