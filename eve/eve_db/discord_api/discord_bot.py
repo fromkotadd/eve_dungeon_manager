@@ -12,6 +12,7 @@ from eve_db.representors.representors import first, pilot_card_add, pilot_ship_a
 from eve_db.selectors.pilotship import ships_for_first_dungeon, ships_for_second_dungeon, ships_for_third_dungeon, \
 	ships_for_fourth_dungeon
 from eve_db.utils import table_create, table_create_
+from eve_db.services.pilot.update import UpdatePilotService
 
 intents = discord.Intents.default()
 intents.members = True

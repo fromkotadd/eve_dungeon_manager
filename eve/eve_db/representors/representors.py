@@ -6,13 +6,12 @@ from eve_db.services.pilot.create import CreatePilotService
 from eve_db.services.pilot.update import UpdatePilotService
 from eve_db.services.pilotship.create import CreatePilotShipService
 from eve_db.services.implant.create import CreateImplantService
+from eve_db.services.pilotship.update import UpdatePilotShipService
 from eve_db.services.skill.create import CreateSkillService
 from eve_db.services.dungeon_pilot_visit.create import CreateDungeonVisitService
-from eve_db.forms.pilot import PilotForm
 from eve_db.forms.pilotship import ShipForm
 from eve_db.forms.implant import ImplantForm
 from eve_db.forms.skill import SkillForm
-from eve_db.models import Pilot
 from eve_db.selectors.pilot import pilot_by_discord_id_selector
 
 
@@ -31,34 +30,14 @@ def pilot_card_add(discord_id: str, name: str, corporation: str, tech_level: str
 
 @sync_to_async()
 def pilot_card_upd(discord_id: str, name: str, corporation: str, tech_level: str, pilot_rating: str):
-	return UpdatePilotService(discord_id=discord_id,
-					   name=name,
-					   corporation=corporation,
-					   tech_level=tech_level,
-					   pilot_rating=pilot_rating).execute()
+	return UpdatePilotService(
+			discord_id=discord_id,
+			name=name,
+			corporation=corporation,
+			tech_level=tech_level,
+			pilot_rating=pilot_rating)\
+		.execute()
 
-
-	# form = PilotForm({
-	# 	'discord_id': discord_id,
-	# 	'name': name,
-	# 	'corporation': corporation,
-	# 	'tech_level': tech_level,
-	# 	'pilot_rating': pilot_rating,
-	# })
-	# if not form.is_valid():
-	# 	return form.errors
-	#
-	# Pilot.objects\
-	# 	.filter(
-	# 		discord_id=discord_id
-	# 	)\
-	# 	.update(
-	# 		name=name,
-	# 		corporation=corporation,
-	# 		tech_level=tech_level,
-	# 		pilot_rating=pilot_rating
-	# 	)
-	# return 'Pilot card update'
 
 @sync_to_async()
 def pilot_ship_add(discord_id: str, ship_name: str, core_color: str, core_lvl: str, fit_grade: str):
@@ -75,30 +54,13 @@ def pilot_ship_add(discord_id: str, ship_name: str, core_color: str, core_lvl: s
 
 @sync_to_async()
 def pilot_ship_upd(discord_id: str, ship_name: str, core_color: str, core_lvl: str, fit_grade: str):
-	pilot = pilot_by_discord_id_selector(discord_id)
-	if not pilot:
-		return 'Pilot not found. Please register pilot'
-
-	form = ShipForm({
-			'pilot': pilot,
-			'ship_name': ship_name,
-			'core_color': core_color,
-			'core_lvl': core_lvl,
-			'fit_grade': fit_grade,
-		})
-	if not form.is_valid():
-		return form.errors
-
-	pilot.pilot_ships\
-		.filter(
-			ship_name=ship_name
-		)\
-		.update(
-			core_color=core_color,
-			core_lvl=core_lvl,
-			fit_grade=fit_grade
-		)
-	return 'Pilot ship update'
+	return UpdatePilotShipService(
+		discord_id=discord_id,
+		ship_name=ship_name,
+		core_color=core_color,
+		core_lvl=core_lvl,
+		fit_grade=fit_grade
+	).execute()
 
 
 @sync_to_async()
