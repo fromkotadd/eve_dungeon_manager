@@ -10,8 +10,7 @@ from eve_db.services.implant.create import CreateImplantService
 from eve_db.services.pilotship.update import UpdatePilotShipService
 from eve_db.services.skill.create import CreateSkillService
 from eve_db.services.dungeon_pilot_visit.create import CreateDungeonVisitService
-from eve_db.forms.skill import SkillForm
-from eve_db.selectors.pilot import pilot_by_discord_id_selector
+from eve_db.services.skill.update import UpdateSkillService
 
 
 @sync_to_async()
@@ -98,32 +97,12 @@ def pilot_skill_add(discord_id: str, name: str, level: str):
 
 @sync_to_async()
 def pilot_skill_upd(discord_id: str, name: str, level: str):
-	pilot = pilot_by_discord_id_selector(discord_id)
-	if not pilot:
-		return 'Pilot not found. Please register pilot'
-	SKILL_LEVEL_MAP = {
-		'4-4': 1,
-		'4-5-3': 2,
-		'5-5-4': 3,
-	}
-	level = SKILL_LEVEL_MAP[level]
-	form = SkillForm({
-			'pilot': pilot,
-			'name': name,
-			'level': level
-		})
-	if not form.is_valid():
-		return form.errors
-
-	pilot.skills\
-		.filter(
-			name=name
-		)\
-		.update(
-			name=name,
-			level=level
-		)
-	return 'Pilot Skill update'
+	return UpdateSkillService(
+		discord_id=discord_id,
+		name=name,
+		level=level
+	)\
+		.execute()
 
 
 @sync_to_async()
