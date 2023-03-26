@@ -54,7 +54,7 @@ async def sync(
 
 
 @bot.tree.command()
-async def ida(interaction: discord.Interaction):
+async def ida(interaction: discord.Interaction) -> None:
 	author = interaction.user
 	await interaction.response.send_message((author.id, author.name))  # выводит в чат id автора сообщения
 
@@ -65,8 +65,8 @@ async def pilot_add(interaction: discord.Interaction, name: str, corporation: st
 		discord_id = str(interaction.user.id)
 		reg = await pilot_card_add(
 			discord_id=discord_id,
-			name=name.lower(),
-			corporation=corporation,
+			name=name,
+			corporation=corporation.upper(),
 			tech_level=tech_level,
 			pilot_rating=pilot_rating.lower()
 		)
@@ -81,8 +81,8 @@ async def pilot_upd(interaction: discord.Interaction, name: str, corporation: st
 		discord_id = str(interaction.user.id)
 		upd = await pilot_card_upd(
 			discord_id=discord_id,
-			name=name.lower(),
-			corporation=corporation,
+			name=name,
+			corporation=corporation.upper(),
 			tech_level=tech_level,
 			pilot_rating=pilot_rating.lower()
 		)

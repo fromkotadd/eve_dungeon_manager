@@ -1,9 +1,9 @@
 from asgiref.sync import sync_to_async
 
-from eve_db.choices import SkillNames, SkillLevels
 from eve_db.selectors.pilot import pilots_for_first_dungeon, pilots_for_second_dungeon, pilots_for_third_dungeon_dread,\
 	pilots_for_fourth_dungeon, pilots_for_third_dungeon_carrier
 from eve_db.services.pilot.create import CreatePilotService
+from eve_db.services.pilot.update import UpdatePilotService
 from eve_db.services.pilotship.create import CreatePilotShipService
 from eve_db.services.implant.create import CreateImplantService
 from eve_db.services.skill.create import CreateSkillService
@@ -31,28 +31,34 @@ def pilot_card_add(discord_id: str, name: str, corporation: str, tech_level: str
 
 @sync_to_async()
 def pilot_card_upd(discord_id: str, name: str, corporation: str, tech_level: str, pilot_rating: str):
-	form = PilotForm({
-		'discord_id': discord_id,
-		'name': name,
-		'corporation': corporation,
-		'tech_level': tech_level,
-		'pilot_rating': pilot_rating,
-	})
-	if not form.is_valid():
-		return form.errors
+	return UpdatePilotService(discord_id=discord_id,
+					   name=name,
+					   corporation=corporation,
+					   tech_level=tech_level,
+					   pilot_rating=pilot_rating).execute()
 
-	Pilot.objects\
-		.filter(
-			discord_id=discord_id
-		)\
-		.update(
-			name=name,
-			corporation=corporation,
-			tech_level=tech_level,
-			pilot_rating=pilot_rating
-		)
-	return 'Pilot card update'
 
+	# form = PilotForm({
+	# 	'discord_id': discord_id,
+	# 	'name': name,
+	# 	'corporation': corporation,
+	# 	'tech_level': tech_level,
+	# 	'pilot_rating': pilot_rating,
+	# })
+	# if not form.is_valid():
+	# 	return form.errors
+	#
+	# Pilot.objects\
+	# 	.filter(
+	# 		discord_id=discord_id
+	# 	)\
+	# 	.update(
+	# 		name=name,
+	# 		corporation=corporation,
+	# 		tech_level=tech_level,
+	# 		pilot_rating=pilot_rating
+	# 	)
+	# return 'Pilot card update'
 
 @sync_to_async()
 def pilot_ship_add(discord_id: str, ship_name: str, core_color: str, core_lvl: str, fit_grade: str):
