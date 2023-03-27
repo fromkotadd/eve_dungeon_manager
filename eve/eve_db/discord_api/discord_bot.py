@@ -12,14 +12,13 @@ from eve_db.representors.representors import first, pilot_card_add, pilot_ship_a
 from eve_db.selectors.pilotship import ships_for_first_dungeon, ships_for_second_dungeon, ships_for_third_dungeon, \
 	ships_for_fourth_dungeon
 from eve_db.utils import table_create, table_create_
-from eve_db.services.pilot.update import UpdatePilotService
 
 intents = discord.Intents.default()
 intents.members = True
 intents.message_content = True
-bot = commands.Bot(command_prefix='~', intents=intents, owner_id=699256655837397132)
+bot = commands.Bot(command_prefix='~', intents=intents, owner_id=config.config['OWNER_ID'])
 ID_CHANNEL = config.config['ID_CHANNEL']
-
+guild = discord.Object(id=config.config['GUILD_ID'])
 
 @bot.event
 async def on_ready():
@@ -28,9 +27,6 @@ async def on_ready():
 
 
 # ------ Sync Tree ------
-guild = discord.Object(id='1065239528664739870')
-
-
 @bot.command()
 @commands.guild_only()
 @commands.is_owner()
