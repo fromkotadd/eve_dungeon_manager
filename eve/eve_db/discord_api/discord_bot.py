@@ -13,12 +13,26 @@ from eve_db.selectors.pilotship import ships_for_first_dungeon, ships_for_second
 	ships_for_fourth_dungeon
 from eve_db.utils import table_create, table_create_
 
-intents = discord.Intents.default()
+intents = discord.Intents.all()
 intents.members = True
 intents.message_content = True
 bot = commands.Bot(command_prefix='~', intents=intents, owner_id=config.config['OWNER_ID'])
 ID_CHANNEL = config.config['ID_CHANNEL']
 guild = discord.Object(id=config.config['GUILD_ID'])
+
+
+@bot.command()
+async def observe(ctx, id: int):
+	member = ctx.guild.get_member(int(id))
+	print(member.status)
+	if member is not None:
+		if member.status == discord.Status.online:
+			await ctx.send("True")
+		else:
+			await ctx.send("False")
+	else:
+		await ctx.send("User not found in this server")
+
 
 @bot.event
 async def on_ready():
