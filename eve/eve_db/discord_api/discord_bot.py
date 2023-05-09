@@ -21,19 +21,6 @@ ID_CHANNEL = config.config['ID_CHANNEL']
 guild = discord.Object(id=config.config['GUILD_ID'])
 
 
-@bot.command()
-async def observe(ctx, id: int):
-	member = ctx.guild.get_member(int(id))
-	print(member.status)
-	if member is not None:
-		if member.status == discord.Status.online:
-			await ctx.send("True")
-		else:
-			await ctx.send("False")
-	else:
-		await ctx.send("User not found in this server")
-
-
 @bot.event
 async def on_ready():
 	print(f'Logged in as {bot.user}')  # Bot Name
@@ -214,7 +201,13 @@ async def I(
 		gun_rating: str = '2'
 ):
 	pilots_cards = await first(int(pilots_amount), int(implant_level), int(skills_rating), int(gun_rating))
-	output = await table_create(pilots_cards=pilots_cards, pilot_ships_func=ships_for_first_dungeon)
+	lst = []
+	for pilot in range(len(pilots_cards)):
+		member = interaction.guild.get_member(int(pilots_cards[pilot]['discord_id']))
+		if member is not None:
+			if member.status != discord.Status.offline:
+				lst.append(pilots_cards[pilot])
+	output = await table_create(pilots_cards=lst, pilot_ships_func=ships_for_first_dungeon)
 	await interaction.response.send_message(f"```\n{output}\n```")
 
 
