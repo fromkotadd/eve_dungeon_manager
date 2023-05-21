@@ -119,8 +119,18 @@ def pilots_for_second_dungeon(pilots_amount=20, implant_level=15, skills_rating=
 			dungeon_visits_amount__lt=week_visits_limit,
 			skills_rating__gte=skills_rating
 		)
+		|
+		Q(
+			Q(implants__implant_level__gte=implant_level),
+			Q(implants__implant_name__in=[ImplantNames.HIGH_POWER_COIL]),
+			Q(pilot_ships__ship_name__in=[ShipNames.MEGATHRON_STRIKER]),
+			Q(skills__name__in=[SkillNames.LARGE_RAILGUN], skills__level__gte=3),
+			required_skills_amount=len(required_skills),
+			dungeon_visits_amount__lt=week_visits_limit,
+			skills_rating__gte=3
+		)
 	) \
-			   .order_by('-skills_rating').distinct()[:pilots_amount]
+			.order_by('-skills_rating').distinct()[:pilots_amount]
 
 
 def pilots_for_third_dungeon_dread(pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2) -> QuerySet[

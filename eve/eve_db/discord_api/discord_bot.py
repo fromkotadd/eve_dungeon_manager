@@ -193,17 +193,17 @@ async def v(interaction: discord.Interaction, dungeon_name: str, visit_count: st
 
 
 def status_check(pilots_cards, interaction, status):
-		lst = []
-		for pilot in range(len(pilots_cards)):
-			member = interaction.guild.get_member(int(pilots_cards[pilot]['discord_id']))
-			if member is not None:
-				if member.status != discord.Status.offline:
-					lst.append(pilots_cards[pilot])
+	lst = []
+	for pilot in range(len(pilots_cards)):
+		member = interaction.guild.get_member(int(pilots_cards[pilot]['discord_id']))
+		if member is not None:
+			if member.status != discord.Status.offline:
+				lst.append(pilots_cards[pilot])
 
-		if status == 'online':
-			return lst
-		else:
-			return pilots_cards
+	if status == 'online':
+		return lst
+	else:
+		return pilots_cards
 
 
 @bot.tree.command(name='first_dungeon', description='find pilots for the first dungeon')

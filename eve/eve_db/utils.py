@@ -14,7 +14,7 @@ def get_week_beginning() -> datetime:
 def table_create(pilots_cards, pilot_ships_func):
 	body = []
 	for pilots_card in pilots_cards:
-		pilot_ships = pilot_ships_func(discord_id=pilots_card['discord_id'])
+		pilot_ships = pilot_ships_func(discord_id=int(pilots_card['discord_id']))
 		ship_name = []
 		core_color = []
 		core_lvl = []
@@ -61,7 +61,7 @@ def table_create(pilots_cards, pilot_ships_func):
 def table_create_(pilots_cards, pilot_ships_func):
 	body = []
 	for pilots_card in pilots_cards:
-		pilot_ships = pilot_ships_func(discord_id=pilots_card['discord_id'])
+		pilot_ships = pilot_ships_func(discord_id=int(pilots_card['discord_id']))
 		ship_name = []
 		core_color = []
 		core_lvl = []
