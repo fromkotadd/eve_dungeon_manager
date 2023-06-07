@@ -116,8 +116,10 @@ def dungeon_visit_add(discord_id: str, dungeon_name: str):
 
 
 @sync_to_async()
-def first(pilots_amount: int=20, implant_level: int=15, skills_rating: int=2, gun_rating: int=2) -> list:
-	sample_of_pilots = pilots_for_first_dungeon(pilots_amount, implant_level, skills_rating, gun_rating) \
+def first(pilots_amount: int=20, implant_level: int=15, skills_rating: str='4-5-3', gun_rating: str='4-5-3') -> list:
+	skills_ratings = skill_level_map(skills_rating)
+	gun_ratings = gun_level_map(gun_rating)
+	sample_of_pilots = pilots_for_first_dungeon(pilots_amount, implant_level, skills_ratings, gun_ratings) \
 		.values(
 		'discord_id',
 		'name',
@@ -131,8 +133,10 @@ def first(pilots_amount: int=20, implant_level: int=15, skills_rating: int=2, gu
 
 
 @sync_to_async()
-def second(pilots_amount: int=20, implant_level: int=15, skills_rating: int=2, gun_rating: int=2) -> list:
-	sample_of_pilots = pilots_for_second_dungeon(pilots_amount, implant_level, skills_rating, gun_rating) \
+def second(pilots_amount: int=20, implant_level: int=15, skills_rating: str='4-5-3', gun_rating: str='4-5-3') -> list:
+	skills_ratings = skill_level_map(skills_rating)
+	gun_ratings = gun_level_map(gun_rating)
+	sample_of_pilots = pilots_for_second_dungeon(pilots_amount, implant_level, skills_ratings, gun_ratings) \
 		.values(
 		'discord_id',
 		'name',
@@ -146,8 +150,10 @@ def second(pilots_amount: int=20, implant_level: int=15, skills_rating: int=2, g
 
 
 @sync_to_async()
-def third(pilots_amount: int=20, implant_level: int=15, skills_rating: int=2, gun_rating: int=2) -> list:
-	sample_of_pilots_dread = pilots_for_third_dungeon_dread(pilots_amount, implant_level, skills_rating, gun_rating).\
+def third(pilots_amount: int=20, implant_level: int=15, skills_rating: str='4-5-3', gun_rating: str='4-5-3') -> list:
+	skills_ratings = skill_level_map(skills_rating)
+	gun_ratings = gun_level_map(gun_rating)
+	sample_of_pilots_dread = pilots_for_third_dungeon_dread(pilots_amount, implant_level, skills_ratings, gun_ratings).\
 		values(
 			'discord_id',
 			'name',
@@ -157,7 +163,7 @@ def third(pilots_amount: int=20, implant_level: int=15, skills_rating: int=2, gu
 			'dungeon_visits_amount',
 			'skills_rating'
 		)
-	sample_of_pilots_carrier = pilots_for_third_dungeon_carrier(pilots_amount, implant_level, skills_rating, gun_rating).\
+	sample_of_pilots_carrier = pilots_for_third_dungeon_carrier(pilots_amount, implant_level, skills_ratings, gun_ratings).\
 		values(
 			'discord_id',
 			'name',
@@ -171,8 +177,10 @@ def third(pilots_amount: int=20, implant_level: int=15, skills_rating: int=2, gu
 
 
 @sync_to_async()
-def fourth(pilots_amount: int=20, implant_level: int=15, skills_rating: int=2, gun_rating: int=2) -> list:
-	sample_of_pilots = pilots_for_fourth_dungeon(pilots_amount, implant_level, skills_rating, gun_rating) \
+def fourth(pilots_amount: int=20, implant_level: int=15, skills_rating: str='4-5-3', gun_rating: str='4-5-3') -> list:
+	skills_ratings = skill_level_map(skills_rating)
+	gun_ratings = gun_level_map(gun_rating)
+	sample_of_pilots = pilots_for_fourth_dungeon(pilots_amount, implant_level, skills_ratings, gun_ratings) \
 		.values(
 		'discord_id',
 		'name',
@@ -183,3 +191,20 @@ def fourth(pilots_amount: int=20, implant_level: int=15, skills_rating: int=2, g
 		'skills_rating'
 	)
 	return list(sample_of_pilots)
+
+
+def skill_level_map(abs_skill_level: str) -> int:
+	SKILL_LEVEL_MAP = {
+			'4-4': 1,
+			'4-5-3': 2,
+			'5-5-4': 3,
+		}
+	return SKILL_LEVEL_MAP.get(abs_skill_level, "Invalid skill level")
+
+def gun_level_map(abs_gun_level: str) -> int:
+	GUN_LEVEL_MAP = {
+			'4-4': 1,
+			'4-5-3': 2,
+			'5-5-4': 3,
+		}
+	return GUN_LEVEL_MAP.get(abs_gun_level, "Invalid gun level")

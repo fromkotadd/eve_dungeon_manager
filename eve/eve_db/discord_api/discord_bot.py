@@ -211,11 +211,11 @@ async def I(
 		interaction: discord.Interaction,
 		pilots_amount: str = '20',
 		implant_level: str = '15',
-		skills_rating: str = '2',
-		gun_rating: str = '2',
+		skills_rating: str = '4-5-3',
+		gun_rating: str = '4-5-3',
 		status: str = 'online'):
 
-	pilots_cards = await first(int(pilots_amount), int(implant_level), int(skills_rating), int(gun_rating))
+	pilots_cards = await first(int(pilots_amount), int(implant_level), skills_rating, gun_rating)
 	result = status_check(pilots_cards, interaction, status)
 	output = await table_create(pilots_cards=result, pilot_ships_func=ships_for_first_dungeon)
 	await interaction.response.send_message(f"```\n{output}\n```")
@@ -226,10 +226,10 @@ async def II(
 		interaction: discord.Interaction,
 		pilots_amount: str = '20',
 		implant_level: str = '15',
-		skills_rating: str = '2',
-		gun_rating: str = '2',
+		skills_rating: str = '4-5-3',
+		gun_rating: str = '4-5-3',
 		status: str = 'online'):
-	pilots_cards = await second(int(pilots_amount), int(implant_level), int(skills_rating), int(gun_rating))
+	pilots_cards = await second(int(pilots_amount), int(implant_level), skills_rating, gun_rating)
 	result = status_check(pilots_cards, interaction, status)
 	output = await table_create(pilots_cards=result, pilot_ships_func=ships_for_second_dungeon)
 	await interaction.response.send_message(f"```\n{output}\n```")
@@ -240,11 +240,11 @@ async def III(
 		interaction: discord.Interaction,
 		pilots_amount: str = '20',
 		implant_level: str = '15',
-		skills_rating: str = '2',
-		gun_rating: str = '2',
+		skills_rating: str = '4-5-3',
+		gun_rating: str = '4-5-3',
 		status: str = 'online'):
 	res = []
-	pilots_cards_list = await third(int(pilots_amount), int(implant_level), int(skills_rating), int(gun_rating))
+	pilots_cards_list = await third(int(pilots_amount), int(implant_level), skills_rating, gun_rating)
 	for pilots_cards in pilots_cards_list:
 		result = status_check(pilots_cards, interaction, status)
 		output = await table_create_(pilots_cards=result, pilot_ships_func=ships_for_third_dungeon)
@@ -257,10 +257,10 @@ async def IV(
 		interaction: discord.Interaction,
 		pilots_amount: str = '20',
 		implant_level: str = '15',
-		skills_rating: str = '2',
-		gun_rating: str = '2',
+		skills_rating: str = '4-5-3',
+		gun_rating: str = '4-5-3',
 		status: str = 'online'):
-	pilots_cards = await fourth(int(pilots_amount), int(implant_level), int(skills_rating), int(gun_rating))
+	pilots_cards = await fourth(int(pilots_amount), int(implant_level), skills_rating, gun_rating)
 	result = status_check(pilots_cards, interaction, status)
 	output = await table_create(pilots_cards=result, pilot_ships_func=ships_for_fourth_dungeon)
 	await interaction.response.send_message(f"```\n{output}\n```")
