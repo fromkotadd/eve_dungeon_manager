@@ -38,7 +38,7 @@ def pilots_for_first_dungeon(pilots_amount=20, implant_level=15, skills_rating=2
 			),
 			distinct=True
 		),
-		required_skills_amount=Count('skills', filter=Q(skills__name__in=required_skills)),
+		required_skills_amount=Count('skills', filter=Q(skills__name__in=required_skills), distinct=True),
 		skills_rating=Avg(
 			'skills__level',
 			filter=Q(skills__name__in=required_skills)
@@ -95,7 +95,7 @@ def pilots_for_second_dungeon(pilots_amount=20, implant_level=15, skills_rating=
 			),
 			distinct=True
 		),
-		required_skills_amount=Count('skills', filter=Q(skills__name__in=required_skills)),
+		required_skills_amount=Count('skills', filter=Q(skills__name__in=required_skills), distinct=True),
 		skills_rating=Avg(
 			'skills__level',
 			filter=Q(skills__name__in=required_skills)
@@ -153,7 +153,7 @@ def pilots_for_third_dungeon_dread(pilots_amount=20, implant_level=15, skills_ra
 			),
 			distinct=True
 		),
-		required_skills_amount=Count('skills', filter=Q(skills__name__in=required_skills_dread)),
+		required_skills_amount=Count('skills', filter=Q(skills__name__in=required_skills_dread), distinct=True),
 		skills_rating=Avg(
 			'skills__level',
 			filter=Q(skills__name__in=required_skills_dread)
@@ -226,7 +226,7 @@ def pilots_for_third_dungeon_carrier(pilots_amount=20, implant_level=15, skills_
 			),
 			distinct=True
 		),
-		required_skills_amount=Count('skills', filter=Q(skills__name__in=required_skills_carrier)),
+		required_skills_amount=Count('skills', filter=Q(skills__name__in=required_skills_carrier), distinct=True),
 		skills_rating=Avg(
 			'skills__level',
 			filter=Q(skills__name__in=required_skills_carrier)
@@ -270,7 +270,7 @@ def pilots_for_fourth_dungeon(pilots_amount=20, implant_level=15, skills_rating=
 			),
 			distinct=True
 		),
-		required_skills_amount=Count('skills', filter=Q(skills__name__in=required_skills_dread)),
+		required_skills_amount=Count('skills', filter=Q(skills__name__in=required_skills_dread), distinct=True),
 		skills_rating=Avg(
 			'skills__level',
 			filter=Q(skills__name__in=required_skills_dread)
