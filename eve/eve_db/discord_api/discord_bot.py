@@ -58,7 +58,7 @@ async def ida(interaction: discord.Interaction) -> None:
 
 
 @bot.tree.command(name="create_pilot_profile", description="registration in the system")
-async def pilot_add(interaction: discord.Interaction, name: str, corporation: str, tech_level: str, pilot_rating: str):
+async def pilot_add(interaction: discord.Interaction, name: str, corporation: str, tech_level: str):
 	try:
 		discord_id = str(interaction.user.id)
 		reg = await pilot_card_add(
@@ -66,7 +66,6 @@ async def pilot_add(interaction: discord.Interaction, name: str, corporation: st
 			name=name,
 			corporation=corporation.upper(),
 			tech_level=tech_level,
-			pilot_rating=pilot_rating.lower()
 		)
 		await interaction.response.send_message(reg)
 	except Exception as EX:
@@ -74,7 +73,7 @@ async def pilot_add(interaction: discord.Interaction, name: str, corporation: st
 
 
 @bot.tree.command(name='update_pilot_profile', description='update pilot card data')
-async def pilot_upd(interaction: discord.Interaction, name: str, corporation: str, tech_level: str, pilot_rating: str):
+async def pilot_upd(interaction: discord.Interaction, name: str, corporation: str, tech_level: str):
 	try:
 		discord_id = str(interaction.user.id)
 		upd = await pilot_card_upd(
@@ -82,7 +81,6 @@ async def pilot_upd(interaction: discord.Interaction, name: str, corporation: st
 			name=name,
 			corporation=corporation.upper(),
 			tech_level=tech_level,
-			pilot_rating=pilot_rating.lower()
 		)
 		await interaction.response.send_message(upd)
 	except Exception as EX:

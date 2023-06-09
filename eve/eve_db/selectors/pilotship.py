@@ -32,8 +32,10 @@ def ships_for_second_dungeon(discord_id: str) -> list:
 	pilot_cards = Pilot.objects.get(discord_id=discord_id)
 	required_ships = [
 		ShipNames.APOCALYPSE_STRIKER,
+		ShipNames.APOCALYPSE_NAVY_ISSUE,
 		ShipNames.NIGHTMARE,
-		ShipNames.MEGATHRON_STRIKER
+		ShipNames.MEGATHRON_STRIKER,
+		ShipNames.MEGATHRON_NAVY_ISSUE
 	]
 	pilot_ship = pilot_cards.pilot_ships.\
 		filter(

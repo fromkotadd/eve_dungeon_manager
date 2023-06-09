@@ -2,7 +2,7 @@ from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 
-from .choices import SkillNames, CoreColors, PilotRatings, FitGrade, ImplantNames, Dungeons, ShipNames
+from .choices import SkillNames, CoreColors, FitGrade, ImplantNames, Dungeons, ShipNames
 
 
 class Pilot(models.Model):
@@ -10,7 +10,6 @@ class Pilot(models.Model):
     name = models.CharField(max_length=32)
     corporation = models.CharField(max_length=6)
     tech_level = models.PositiveSmallIntegerField(validators=[MaxValueValidator(10)])
-    pilot_rating = models.CharField(max_length=4, choices=PilotRatings.choices)
 
 
 class Skill(models.Model):

@@ -28,7 +28,6 @@ def table_create(pilots_cards, pilot_ships_func):
 				pilots_card['name'],
 				pilots_card['corporation'],
 				pilots_card['tech_level'],
-				pilots_card['pilot_rating'],
 				pilots_card['dungeon_visits_amount'],
 				',\n'.join(ship_name),
 				',\n'.join(core_color),
@@ -39,14 +38,13 @@ def table_create(pilots_cards, pilot_ships_func):
 	output = table2ascii(
 			header=[
 				'ИМЯ',
-				'ТАГ',
+				'ТЕГ',
 				'УР.',
-				'РЕЙТ',
-				'ПР.РАЗ',
-				'КОР.',
+				'ПРОЙДЕНО.РАЗ',
+				'КОРАБЛИ',
 				'ЦВ.ЯДР',
 				'УР.ЯДР',
-				'ФИТ.ГР.'
+				'ФИТ'
 					],
 			body=body,
 			style=PresetStyle.ascii,
@@ -73,7 +71,6 @@ def table_create_(pilots_cards, pilot_ships_func):
 				pilots_card['name'],
 				pilots_card['corporation'],
 				pilots_card['tech_level'],
-				pilots_card['pilot_rating'],
 				pilots_card['dungeon_visits_amount'],
 				',\n'.join(ship_name),
 				',\n'.join(core_color),
@@ -84,14 +81,13 @@ def table_create_(pilots_cards, pilot_ships_func):
 	output = table2ascii(
 			header=[
 				'ИМЯ',
-				'ТАГ',
+				'ТЕГ',
 				'УР.',
-				'РЕЙТ',
-				'ПР.РАЗ',
-				'КОР.',
+				'ПРОЙДЕНО.РАЗ',
+				'КОРАБЛИ',
 				'ЦВ.ЯДР',
 				'УР.ЯДР',
-				'ФИТ.ГР.'
+				'ФИТ'
 					],
 			body=body,
 			style=PresetStyle.ascii,

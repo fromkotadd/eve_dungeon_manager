@@ -14,26 +14,24 @@ from eve_db.services.skill.update import UpdateSkillService
 
 
 @sync_to_async()
-def pilot_card_add(discord_id: str, name: str, corporation: str, tech_level: str, pilot_rating: str):
+def pilot_card_add(discord_id: str, name: str, corporation: str, tech_level: str):
 	return str(
 		CreatePilotService.load(
 			discord_id=str(discord_id),
 			name=str(name),
 			corporation=str(corporation),
 			tech_level=int(tech_level),
-			pilot_rating=str(pilot_rating)
 		)
 	)
 
 
 @sync_to_async()
-def pilot_card_upd(discord_id: str, name: str, corporation: str, tech_level: str, pilot_rating: str):
+def pilot_card_upd(discord_id: str, name: str, corporation: str, tech_level: str):
 	return UpdatePilotService(
 			discord_id=discord_id,
 			name=name,
 			corporation=corporation,
-			tech_level=tech_level,
-			pilot_rating=pilot_rating
+			tech_level=tech_level
 		)\
 			.execute()
 
@@ -125,7 +123,6 @@ def first(pilots_amount: int=20, implant_level: int=15, skills_rating: str='4-5-
 		'name',
 		'corporation',
 		'tech_level',
-		'pilot_rating',
 		'dungeon_visits_amount',
 		'skills_rating'
 	)
@@ -142,7 +139,6 @@ def second(pilots_amount: int=20, implant_level: int=15, skills_rating: str='4-5
 		'name',
 		'corporation',
 		'tech_level',
-		'pilot_rating',
 		'dungeon_visits_amount',
 		'skills_rating'
 	)
@@ -159,7 +155,6 @@ def third(pilots_amount: int=20, implant_level: int=15, skills_rating: str='4-5-
 			'name',
 			'corporation',
 			'tech_level',
-			'pilot_rating',
 			'dungeon_visits_amount',
 			'skills_rating'
 		)
@@ -169,7 +164,6 @@ def third(pilots_amount: int=20, implant_level: int=15, skills_rating: str='4-5-
 			'name',
 			'corporation',
 			'tech_level',
-			'pilot_rating',
 			'dungeon_visits_amount',
 			'skills_rating'
 		)
@@ -186,7 +180,6 @@ def fourth(pilots_amount: int=20, implant_level: int=15, skills_rating: str='4-5
 		'name',
 		'corporation',
 		'tech_level',
-		'pilot_rating',
 		'dungeon_visits_amount',
 		'skills_rating'
 	)

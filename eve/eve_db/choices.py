@@ -1,12 +1,6 @@
 from django.db import models
 
 
-class PilotRatings(models.TextChoices):
-	LOW = 'low'
-	MID = 'mid'
-	HIGH = 'high'
-
-
 class SkillNames(models.TextChoices):
 	SMALL_LASER = 'small laser'
 	MEDIUM_LASER = 'medium laser'
@@ -79,6 +73,7 @@ class CoreColors(models.TextChoices):
 	GREEN = 'green'
 	BLUE = 'blue'
 	VIOLET = 'violet'
+	GOLD = 'gold'
 	NONE = 'none'
 
 
@@ -127,7 +122,11 @@ class ShipNames(models.TextChoices):
 
 	# 2
 	APOCALYPSE_STRIKER = 'apocalypse striker'
+	APOCALYPSE_NAVY_ISSUE = 'apocalypse navy issue'
+
 	MEGATHRON_STRIKER = 'megathron striker'
+	MEGATHRON_NAVY_ISSUE = 'megathron navy issue'
+
 
 	# 3-4
 	PHOENIX = 'phoenix'
