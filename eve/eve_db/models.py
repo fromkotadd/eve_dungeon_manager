@@ -8,7 +8,7 @@ from .choices import SkillNames, CoreColors, FitGrade, ImplantNames, Dungeons, S
 class Pilot(models.Model):
     discord_id = models.CharField(max_length=200)
     name = models.CharField(max_length=32)
-    corporation = models.CharField(max_length=6)
+    corporation = models.CharField(max_length=4)
     tech_level = models.PositiveSmallIntegerField(validators=[MaxValueValidator(10)])
 
 
