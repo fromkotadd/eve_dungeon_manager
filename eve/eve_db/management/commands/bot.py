@@ -3,6 +3,7 @@ from eve_db.discord_api.discord_bot import run
 
 
 class Command(BaseCommand):
+    #python manage.py bot
     help = "Run a discord bot"
 
     def handle(self, *args, **options):
