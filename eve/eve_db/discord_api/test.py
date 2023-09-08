@@ -21,14 +21,14 @@ from sympy.abc import y
 intents = discord.Intents.all()
 intents.members = True
 intents.message_content = True
-bot = commands.Bot(command_prefix='~', intents=intents, owner_id=config.config['OWNER_ID'])
+bot = commands.Bot(command_prefix='.', intents=intents, owner_id=config.config['OWNER_ID'])
 ID_CHANNEL = config.config['ID_CHANNEL']
 guild = discord.Object(id=config.config['GUILD_ID'])
 
 def emoji_map(emoji):
 	emoji_num_dict = {
-		'1️⃣': '1', '2️⃣': '2', '3️⃣': '3', '4️⃣': '4', '5️': '5',
-		'6️': '6', '7️': '7', '8️':  '8', '9️': '9', '🔟': '10'
+		'1️⃣': '1', '2️⃣': '2', '3️⃣': '3', '4️⃣': '4', '5️⃣': '5',
+		'6️⃣': '6', '7️⃣': '7', '8️⃣':  '8', '9️⃣': '9', '🔟': '10'
 	}
 	return emoji_num_dict.get(emoji, 'хуй пизда')
 
@@ -56,8 +56,8 @@ class BaseView(View):
 
 async def pilot_card_reg(interaction: discord.Interaction):
 
-	await interaction.response.send_message('Input your in game nick-name - Jon '
-											'Dir, Bob33 etc. Warning! This nick-'
+	await interaction.response.send_message('Input your in game nick-name'
+											' Warning! This nick-'
 											'name will be used in the base')
 	answer_name = await bot.wait_for('message', check=lambda
 		message: message.author == interaction.user)
@@ -76,23 +76,28 @@ async def pilot_card_reg(interaction: discord.Interaction):
 
 	discord_id = str(interaction.user.id)
 
-	reg = await pilot_card_add(
-		discord_id=discord_id,
-		name=answer_name.content,
-		corporation=answer_corporation.content.upper(),
-		tech_level=answer_tech_level,
-	)
+	# reg = await pilot_card_add(
+	# 	discord_id=discord_id,
+	# 	name=answer_name.content,
+	# 	corporation=answer_corporation.content.upper(),
+	# 	tech_level=answer_tech_level,
+	# )
 	await interaction.followup.send(reg)
-	if reg == 'Pilot registered':
+	# if reg == 'Pilot registered':
+	if 1 == 1:
 		answer_ship = await ship_registration_choice(interaction)
-		core_choice = None
-		core_lvl = None
-		fit_grade = None
+		# answer_core_color = await core_color(interaction)
+		# answer_core_lvl = await core_level(interaction)
+		# answer_fit_grade = await fit_grade(interaction)
+		# core_choice = None
+		# core_lvl = None
+		# fit_grade = None
 
 
 async def ship_registration_choice(interaction: discord.Interaction):
 	async def dungeon_registration_choice(interaction: discord.Interaction):
-		message = await interaction.followup.send('Select your dungeon'
+		message = await interaction.followup.send('Choose a dungeon'
+												  ' for registration'
 												  '(Press the number)')
 		for emoji in range(4):
 			await message.add_reaction(emoji_list[emoji])
@@ -102,22 +107,65 @@ async def ship_registration_choice(interaction: discord.Interaction):
 			f'Your dungeon chose is {int(answer_dungeon)}')
 		return answer_dungeon
 
-	async def core(interaction: discord.Interaction):
-		message = await interaction.followup.send('Select your core'
+	async def core_color(interaction: discord.Interaction):
+		required_core_colors = {
+			1: 'GREEN',
+			2: 'BLUE',
+			3: 'VIOLET',
+			4: 'GOLD',
+			5: 'NONE',
+		}
+		message = await interaction.followup.send('Select your core color'
 												  '(Press the number)\n'
 												  '1: Green\n'
 												  '2: Blue\n'
 												  '3: Violet\n'
 												  '4: Gold\n'
 												  '5: None\n')
-
 		for emoji in range(5):
 			await message.add_reaction(emoji_list[emoji])
 		reaction = await bot.wait_for('raw_reaction_add')
-		answer_core = emoji_map(f'{reaction.emoji}')
+		answer_core_color = emoji_map(f'{reaction.emoji}')
 		await interaction.followup.send(
-			f'Selected core color is {int(answer_core)}')
-		return answer_core
+			f'Selected core_color color is {required_core_colors[int(answer_core_color)]}'
+		)
+		return required_core_colors[int(answer_core_color)]
+
+	async def core_level(interaction: discord.Interaction):
+		message = await interaction.followup.send('Select your core level'
+												  '(Press the number)')
+		for emoji in range(7):
+			await message.add_reaction(emoji_list[emoji])
+		reaction = await bot.wait_for('raw_reaction_add')
+		answer_core_lvl = emoji_map(f'{reaction.emoji}')
+		await interaction.followup.send(
+			f'Selected core level is {int(answer_core_lvl)}'
+		)
+		return answer_core_lvl
+
+	async def fit_grade(interaction: discord.Interaction):
+		required_fit_grade = {
+			1: 'C',
+			2: 'B',
+			3: 'A',
+			4: 'X',
+		}
+		message = await interaction.followup.send('Select your fit grade'
+												  '(Press the number)'
+												  '\n1: C-grade\n'
+												  '2: B-grade\n'
+												  '3: A-grade\n'
+												  '4: X-grade\n')
+		for emoji in range(4):
+			await message.add_reaction(emoji_list[emoji])
+
+		reaction = await bot.wait_for('raw_reaction_add')
+		answer_fit_grade = emoji_map(f'{reaction.emoji}')
+		await interaction.followup.send(
+			f'Selected fit grade is {required_fit_grade[int(answer_fit_grade)]}'
+		)
+		return required_fit_grade[int(answer_fit_grade)]
+
 
 	dungeon_choice = await dungeon_registration_choice(interaction)
 
@@ -137,12 +185,20 @@ async def ship_registration_choice(interaction: discord.Interaction):
 		reaction = await bot.wait_for('raw_reaction_add')
 		answer_ship_choice = emoji_map(f'{reaction.emoji}')
 
-		selected_ship = required_ships[int(answer_ship_choice)]
+		ship_name = required_ships[int(answer_ship_choice)]
 		await interaction.followup.send(
-			f'Selected ship: {selected_ship}')
+			f'Selected ship: {ship_name}')
 
-		core_choice = await core(interaction)
-		return selected_ship, core_choice
+		core_color = await core_color(interaction)
+		core_lvl = await core_level(interaction)
+		fit_grade = await fit_grade(interaction)
+		await interaction.followup.send(
+			f'Selected ship: {ship_name}\n'
+			f'Selected core color: {core_color}\n'
+			f'Selected core level: {core_lvl}\n'
+			f'Selected fit grade: {fit_grade}'
+		)
+		return ship_name, core_color, core_lvl, fit_grade
 
 	if dungeon_choice == '2':
 		required_ships = {
@@ -162,11 +218,20 @@ async def ship_registration_choice(interaction: discord.Interaction):
 		reaction = await bot.wait_for('raw_reaction_add')
 		answer_ship_choice = emoji_map(f'{reaction.emoji}')
 
-		selected_ship = required_ships[int(answer_ship_choice)]
+		ship_name = required_ships[int(answer_ship_choice)]
 		await interaction.followup.send(
-			f'Selected ship: {selected_ship}')
-		core_choice = await core(interaction)
-		return selected_ship, core_choice
+			f'Selected ship: {ship_name}')
+
+		core_color = await core_color(interaction)
+		core_lvl = await core_level(interaction)
+		fit_grade = await fit_grade(interaction)
+		await interaction.followup.send(
+			f'Selected ship: {ship_name}\n'
+			f'Selected core color: {core_color}\n'
+			f'Selected core level: {core_lvl}\n'
+			f'Selected fit grade: {fit_grade}'
+		)
+		return ship_name, core_color, core_lvl, fit_grade
 
 	if dungeon_choice == '3':
 		required_ships = {
@@ -189,11 +254,20 @@ async def ship_registration_choice(interaction: discord.Interaction):
 		reaction = await bot.wait_for('raw_reaction_add')
 		answer_ship_choice = emoji_map(f'{reaction.emoji}')
 
-		selected_ship = required_ships[int(answer_ship_choice)]
+		ship_name = required_ships[int(answer_ship_choice)]
 		await interaction.followup.send(
-			f'Selected ship: {selected_ship}')
-		core_choice = await core(interaction)
-		return selected_ship, core_choice
+			f'Selected ship: {ship_name}')
+
+		core_color = await core_color(interaction)
+		core_lvl = await core_level(interaction)
+		fit_grade = await fit_grade(interaction)
+		await interaction.followup.send(
+			f'Selected ship: {ship_name}\n'
+			f'Selected core color: {core_color}\n'
+			f'Selected core level: {core_lvl}\n'
+			f'Selected fit grade: {fit_grade}'
+		)
+		return ship_name, core_color, core_lvl, fit_grade
 
 
 	if dungeon_choice == '4':
@@ -213,11 +287,20 @@ async def ship_registration_choice(interaction: discord.Interaction):
 		reaction = await bot.wait_for('raw_reaction_add')
 		answer_ship_choice = emoji_map(f'{reaction.emoji}')
 
-		selected_ship = required_ships[int(answer_ship_choice)]
+		ship_name = required_ships[int(answer_ship_choice)]
 		await interaction.followup.send(
-			f'Selected ship: {selected_ship}')
-		core_choice = await core(interaction)
-		return selected_ship, core_choice
+			f'Selected ship: {ship_name}')
+
+		core_color = await core_color(interaction)
+		core_lvl = await core_level(interaction)
+		fit_grade = await fit_grade(interaction)
+		await interaction.followup.send(
+			f'Selected ship: {ship_name}\n'
+			f'Selected core color: {core_color}\n'
+			f'Selected core level: {core_lvl}\n'
+			f'Selected fit grade: {fit_grade}'
+		)
+		return ship_name, core_color, core_lvl, fit_grade
 
 
 @bot.command()
