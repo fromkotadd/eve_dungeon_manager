@@ -97,36 +97,43 @@ async def pilot_card_reg(interaction: discord.Interaction):
 		await interaction.followup.send(pilot_ship_reg)
 	if pilot_ship_reg.endswith('added'):
 	# if 1 == 1:
-		answer_skill_level, answer_skill_name = await gun_skill_reg(interaction, answer_ship_name)
+		answer_skill_level, answer_gun_type = await gun_skill_reg(interaction, answer_ship_name)
+		print(answer_gun_type)
 		pilot_gun_skill_reg = await pilot_skill_add(discord_id=discord_id,
-												name=answer_skill_name.lower(),
+												name=answer_gun_type.lower(),
 												level=answer_skill_level,
 												)
 		await interaction.followup.send(pilot_gun_skill_reg)
 	if pilot_gun_skill_reg.endswith('added'):
-	# if 1 == 1:
 
-		result = await ship_skills_reg(interaction, answer_ship_name)
-	answer_command_skill_reg = await pilot_skill_add(discord_id=discord_id,
-													 name=f"{result['ship_type']} command",
-													 level=result['command_skill_level'],
-													 )
-	await interaction.followup.send(answer_command_skill_reg)
-	answer_defense_upgrade_reg = await pilot_skill_add(discord_id=discord_id,
-													  name=f"{result['ship_type']} defense upgrade",
-													  level=result['defense_upgrade_skill_level'],
-													  )
-	await interaction.followup.send(answer_defense_upgrade_reg)
-	answer_engineering_reg = await pilot_skill_add(discord_id=discord_id,
-												   name=f"{result['ship_type']} engineering",
-												   level=result['engineering_skill_level'],
-												   )
-	await interaction.followup.send(answer_engineering_reg)
+		answer_command_skill = await ship_skills_reg(interaction, answer_ship_name)
+		command_skill_reg = await pilot_skill_add(discord_id=discord_id,
+														 name=f"{answer_command_skill['ship_type']} command",
+														 level=answer_command_skill['command_skill_level'],
+														 )
+		await interaction.followup.send(command_skill_reg)
 
-	if answer_command_skill_reg.endswith('added')\
-			and answer_defense_upgrade_reg.endswith('added')\
-			and answer_engineering_reg.endswith('added'):
-		pass
+		defense_upgrade_skill_reg = await pilot_skill_add(discord_id=discord_id,
+														  name=f"{answer_command_skill['ship_type']} defense upgrade",
+														  level=answer_command_skill['defense_upgrade_skill_level'],
+														  )
+
+		await interaction.followup.send(defense_upgrade_skill_reg)
+		engineering_skill_reg = await pilot_skill_add(discord_id=discord_id,
+													   name=f"{answer_command_skill['ship_type']} engineering",
+													   level=answer_command_skill['engineering_skill_level'],
+													   )
+		await interaction.followup.send(engineering_skill_reg)
+
+	if command_skill_reg.endswith('added')\
+			and defense_upgrade_skill_reg.endswith('added')\
+			and engineering_skill_reg.endswith('added'):
+		answer_implant = await implant(interaction=interaction, gun_type=answer_gun_type)
+		implant_reg = await pilot_implant_add(discord_id=discord_id,
+											  implant_name=answer_implant['implant_name'].lower(),
+											  implant_level=answer_implant['implant_level'],
+											  )
+		await interaction.followup.send(implant_reg)
 
 async def core_color(interaction: discord.Interaction):
 	required_core_colors = {
@@ -336,7 +343,6 @@ async def ship_skills_reg_fun_body(interaction: discord.Interaction,
 		'ship_name': answer_ship,
 		'ship_type': ship_type_dict.get(answer_ship)
 	}
-	print(result)
 	return result
 async def ship_skills_reg(interaction: discord.Interaction, answer_ship: str):
 	skill_map = {
@@ -372,21 +378,25 @@ async def ship_skills_reg(interaction: discord.Interaction, answer_ship: str):
 	if ship_type == 'carrier':
 		return await ship_skills_reg_fun_body(interaction, answer_ship, ships_type_dict, skill_map)
 
-async def Implant(interaction: discord.Interaction, gun_type: str):
+async def implant(interaction: discord.Interaction, gun_type: str):
 	implant_map = {
 		'LARGE RAILGUN': 'HIGH POWER COIL',
-		'CAPITAL RAILGUN':  ('HIGH POWER COIL', 'THERMAL CIRCULATION'),
+		'CAPITAL RAILGUN': 'HIGH POWER COIL',
 		'LARGE LASER': 'FOCUSED CRYSTAL',
 		'CAPITAL LASER': 'FOCUSED CRYSTAL',
-		'LARGE CANNON': ('BARRAGE REPRESSION', 'SNIPING TECHNOLOGY'),
-		'CAPITAL CANNON': ('BARRAGE REPRESSION', 'SNIPING TECHNOLOGY'),
-
+		'LARGE CANNON': 'BARRAGE REPRESSION',
+		'CAPITAL CANNON': 'BARRAGE REPRESSION',
+		'LARGE MISSILE': 'WARHEAD CHARGE',
+		'CAPITAL MISSILE': 'WARHEAD CHARGE',
 		}
-	if gun_type == 'LARGE RAILGUN':
-		await interaction.followup.send('Input yor HIGH POWER COIL implant level'
-										'\n integer range 1-45')
-		answer_implant_level = await bot.wait_for('message', check=lambda
-			message: message.author == interaction.user)
+	implant = implant_map.get(gun_type)
+	await interaction.followup.send(f'Input yor {implant} implant level'
+									'\n integer range 1-45')
+	answer_implant_level = await bot.wait_for('message', check=lambda
+		message: message.author == interaction.user)
+	await interaction.followup.send(f'Your {implant} implant level is {answer_implant_level.content}')
+	return {'implant_name': implant, 'implant_level': answer_implant_level.content}
+
 
 async def dungeon_registration_choice(interaction: discord.Interaction):
 	message = await interaction.followup.send('Choose a dungeon'

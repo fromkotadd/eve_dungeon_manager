@@ -192,8 +192,7 @@ def pilots_for_third_dungeon_dread(pilots_amount=20, implant_level=15, skills_ra
 		|
 		Q(
 			Q(implants__implant_level__gte=implant_level),
-			Q(implants__implant_name__in=[ImplantNames.HIGH_POWER_COIL])
-			| Q(implants__implant_name__in=[ImplantNames.THERMAL_CIRCULATION]),
+			Q(implants__implant_name__in=[ImplantNames.HIGH_POWER_COIL]),
 			Q(pilot_ships__ship_name__in=[ShipNames.MOROS]),
 			Q(skills__name__in=[SkillNames.CAPITAL_RAILGUN], skills__level__gte=gun_rating),
 			required_skills_amount=len(required_skills_dread),
@@ -203,8 +202,7 @@ def pilots_for_third_dungeon_dread(pilots_amount=20, implant_level=15, skills_ra
 		|
 		Q(
 			Q(implants__implant_level__gte=implant_level),
-			Q(implants__implant_name__in=[ImplantNames.SNIPING_TECHNOLOGY])
-			| Q(implants__implant_name__in=[ImplantNames.BARRAGE_REPRESSION]),
+			Q(implants__implant_name__in=[ImplantNames.BARRAGE_REPRESSION]),
 			Q(pilot_ships__ship_name__in=[ShipNames.NAGLFAR]),
 			Q(skills__name__in=[SkillNames.CAPITAL_CANNON], skills__level__gte=gun_rating),
 			required_skills_amount=len(required_skills_dread),
@@ -214,8 +212,7 @@ def pilots_for_third_dungeon_dread(pilots_amount=20, implant_level=15, skills_ra
 		|
 		Q(
 			Q(implants__implant_level__gte=implant_level),
-			Q(implants__implant_name__in=[ImplantNames.WARHEAD_CHARGE])
-			| Q(implants__implant_name__in=[ImplantNames.TACTICAL_MISSILES]),
+			Q(implants__implant_name__in=[ImplantNames.WARHEAD_CHARGE]),
 			Q(pilot_ships__ship_name__in=[ShipNames.PHOENIX]),
 			Q(skills__name__in=[SkillNames.CAPITAL_MISSILE], skills__level__gte=gun_rating),
 			required_skills_amount=len(required_skills_dread),
@@ -309,8 +306,7 @@ def pilots_for_fourth_dungeon(pilots_amount=20, implant_level=15, skills_rating=
 		|
 		Q(
 			Q(implants__implant_level__gte=implant_level),
-			Q(implants__implant_name__in=[ImplantNames.HIGH_POWER_COIL])
-			| Q(implants__implant_name__in=[ImplantNames.THERMAL_CIRCULATION]),
+			Q(implants__implant_name__in=[ImplantNames.HIGH_POWER_COIL]),
 			Q(pilot_ships__ship_name__in=[ShipNames.MOROS]),
 			Q(skills__name__in=[SkillNames.CAPITAL_RAILGUN], skills__level__gte=gun_rating),
 			required_skills_amount=len(required_skills_dread),
@@ -320,8 +316,7 @@ def pilots_for_fourth_dungeon(pilots_amount=20, implant_level=15, skills_rating=
 		|
 		Q(
 			Q(implants__implant_level__gte=implant_level),
-			Q(implants__implant_name__in=[ImplantNames.SNIPING_TECHNOLOGY])
-			| Q(implants__implant_name__in=[ImplantNames.BARRAGE_REPRESSION]),
+			Q(implants__implant_name__in=[ImplantNames.BARRAGE_REPRESSION]),
 			Q(pilot_ships__ship_name__in=[ShipNames.NAGLFAR]),
 			Q(skills__name__in=[SkillNames.CAPITAL_CANNON], skills__level__gte=gun_rating),
 			required_skills_amount=len(required_skills_dread),
@@ -331,8 +326,7 @@ def pilots_for_fourth_dungeon(pilots_amount=20, implant_level=15, skills_rating=
 		|
 		Q(
 			Q(implants__implant_level__gte=implant_level),
-			Q(implants__implant_name__in=[ImplantNames.WARHEAD_CHARGE])
-			| Q(implants__implant_name__in=[ImplantNames.TACTICAL_MISSILES]),
+			Q(implants__implant_name__in=[ImplantNames.WARHEAD_CHARGE]),
 			Q(pilot_ships__ship_name__in=[ShipNames.PHOENIX]),
 			Q(skills__name__in=[SkillNames.CAPITAL_MISSILE], skills__level__gte=gun_rating),
 			required_skills_amount=len(required_skills_dread),
