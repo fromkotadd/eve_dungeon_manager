@@ -44,7 +44,7 @@ class BaseButton(Button):
 
 	async def callback(self, interaction: discord.Interaction):
 		if self.custom_id == 'register':
-			await pilot_card_reg(interaction)
+			await register_fabric(interaction)
 		# await interaction.followup.send('You pressed the button!', ephemeral=True)
 
 class BaseView(View):
@@ -77,128 +77,78 @@ async def pilot_card_reg(interaction: discord.Interaction):
 	answer_tech_level = emoji_map(f'{reaction.emoji}')
 
 	discord_id = str(interaction.user.id)
+	print('asdasdasd')
+	return {'discord_id': discord_id,
+			'name': answer_name.content,
+			'corporation': answer_corporation.content.upper(),
+			'tech_level': answer_tech_level,
+			'interaction': interaction
+			}
 
-	pilot_card_reg = await pilot_card_add(
-		discord_id=discord_id,
-		name=answer_name.content,
-		corporation=answer_corporation.content.upper(),
-		tech_level=answer_tech_level,
-	)
-	await interaction.followup.send(pilot_card_reg)
-	if pilot_card_reg == 'Pilot registered':
-	# if 1==1:
-		answers_ship = await dungeon_registration_choice(interaction)
-		answer_ship_name = answers_ship[0]['ship_name'].upper()
-		pilot_ship_reg = await pilot_ship_add(discord_id=discord_id,
-								   ship_name=answer_ship_name.lower(),
-								   core_color=answers_ship[0]['core_color'].lower(),
-								   core_lvl=answers_ship[0]['core_lvl'],
-								   fit_grade=answers_ship[0]['fit_grade'].title())
-		await interaction.followup.send(pilot_ship_reg)
-	if pilot_ship_reg.endswith('added'):
-	# if 1 == 1:
-		answer_skill_level, answer_gun_type = await gun_skill_reg(interaction, answer_ship_name)
-		print(answer_gun_type)
-		pilot_gun_skill_reg = await pilot_skill_add(discord_id=discord_id,
-												name=answer_gun_type.lower(),
-												level=answer_skill_level,
-												)
-		await interaction.followup.send(pilot_gun_skill_reg)
-	if pilot_gun_skill_reg.endswith('added'):
+async def pilot_ship_reg(interaction: discord.Interaction,
+						 required_ships: dict):
+	async def core_color(interaction: discord.Interaction):
+		required_core_colors = {
+			1: 'GREEN',
+			2: 'BLUE',
+			3: 'VIOLET',
+			4: 'GOLD',
+			5: 'NONE',
+		}
+		message = await interaction.followup.send('Select your core color'
+												  '(Press the number)\n'
+												  '1: Green\n'
+												  '2: Blue\n'
+												  '3: Violet\n'
+												  '4: Gold\n'
+												  '5: None\n')
+		for emoji in range(5):
+			await message.add_reaction(emoji_list[emoji])
+		reaction = await bot.wait_for('raw_reaction_add', check=lambda
+			payload: payload.user_id == interaction.user.id)
+		answer_core_color = emoji_map(f'{reaction.emoji}')
+		await interaction.followup.send(
+			f'Selected core_color color is {required_core_colors[int(answer_core_color)]}'
+		)
+		return required_core_colors[int(answer_core_color)]
 
-		answer_command_skill = await ship_skills_reg(interaction, answer_ship_name)
-		command_skill_reg = await pilot_skill_add(discord_id=discord_id,
-														 name=f"{answer_command_skill['ship_type']} command",
-														 level=answer_command_skill['command_skill_level'],
-														 )
-		await interaction.followup.send(command_skill_reg)
+	async def core_level(interaction: discord.Interaction):
+		message = await interaction.followup.send('Select your core level'
+												  '(Press the number)')
+		for emoji in range(7):
+			await message.add_reaction(emoji_list[emoji])
+		reaction = await bot.wait_for('raw_reaction_add', check=lambda
+			payload: payload.user_id == interaction.user.id)
+		answer_core_lvl = emoji_map(f'{reaction.emoji}')
+		await interaction.followup.send(
+			f'Selected core level is {int(answer_core_lvl)}'
+		)
+		return answer_core_lvl
 
-		defense_upgrade_skill_reg = await pilot_skill_add(discord_id=discord_id,
-														  name=f"{answer_command_skill['ship_type']} defense upgrade",
-														  level=answer_command_skill['defense_upgrade_skill_level'],
-														  )
+	async def fit_grade(interaction: discord.Interaction):
+		required_fit_grade = {
+			1: 'C',
+			2: 'B',
+			3: 'A',
+			4: 'X',
+		}
+		message = await interaction.followup.send('Select your fit grade'
+												  '(Press the number)'
+												  '\n1: C-grade\n'
+												  '2: B-grade\n'
+												  '3: A-grade\n'
+												  '4: X-grade\n')
+		for emoji in range(4):
+			await message.add_reaction(emoji_list[emoji])
 
-		await interaction.followup.send(defense_upgrade_skill_reg)
-		engineering_skill_reg = await pilot_skill_add(discord_id=discord_id,
-													   name=f"{answer_command_skill['ship_type']} engineering",
-													   level=answer_command_skill['engineering_skill_level'],
-													   )
-		await interaction.followup.send(engineering_skill_reg)
+		reaction = await bot.wait_for('raw_reaction_add', check=lambda
+			payload: payload.user_id == interaction.user.id)
+		answer_fit_grade = emoji_map(f'{reaction.emoji}')
+		await interaction.followup.send(
+			f'Selected fit grade is {required_fit_grade[int(answer_fit_grade)]}'
+		)
+		return required_fit_grade[int(answer_fit_grade)]
 
-	if command_skill_reg.endswith('added')\
-			and defense_upgrade_skill_reg.endswith('added')\
-			and engineering_skill_reg.endswith('added'):
-		answer_implant = await implant(interaction=interaction, gun_type=answer_gun_type)
-		implant_reg = await pilot_implant_add(discord_id=discord_id,
-											  implant_name=answer_implant['implant_name'].lower(),
-											  implant_level=answer_implant['implant_level'],
-											  )
-		await interaction.followup.send(implant_reg)
-
-async def core_color(interaction: discord.Interaction):
-	required_core_colors = {
-		1: 'GREEN',
-		2: 'BLUE',
-		3: 'VIOLET',
-		4: 'GOLD',
-		5: 'NONE',
-	}
-	message = await interaction.followup.send('Select your core color'
-											  '(Press the number)\n'
-											  '1: Green\n'
-											  '2: Blue\n'
-											  '3: Violet\n'
-											  '4: Gold\n'
-											  '5: None\n')
-	for emoji in range(5):
-		await message.add_reaction(emoji_list[emoji])
-	reaction = await bot.wait_for('raw_reaction_add', check=lambda
-		payload: payload.user_id == interaction.user.id)
-	answer_core_color = emoji_map(f'{reaction.emoji}')
-	await interaction.followup.send(
-		f'Selected core_color color is {required_core_colors[int(answer_core_color)]}'
-	)
-	return required_core_colors[int(answer_core_color)]
-
-async def core_level(interaction: discord.Interaction):
-	message = await interaction.followup.send('Select your core level'
-											  '(Press the number)')
-	for emoji in range(7):
-		await message.add_reaction(emoji_list[emoji])
-	reaction = await bot.wait_for('raw_reaction_add', check=lambda
-		payload: payload.user_id == interaction.user.id)
-	answer_core_lvl = emoji_map(f'{reaction.emoji}')
-	await interaction.followup.send(
-		f'Selected core level is {int(answer_core_lvl)}'
-	)
-	return answer_core_lvl
-
-async def fit_grade(interaction: discord.Interaction):
-	required_fit_grade = {
-		1: 'C',
-		2: 'B',
-		3: 'A',
-		4: 'X',
-	}
-	message = await interaction.followup.send('Select your fit grade'
-											  '(Press the number)'
-											  '\n1: C-grade\n'
-											  '2: B-grade\n'
-											  '3: A-grade\n'
-											  '4: X-grade\n')
-	for emoji in range(4):
-		await message.add_reaction(emoji_list[emoji])
-
-	reaction = await bot.wait_for('raw_reaction_add', check=lambda
-		payload: payload.user_id == interaction.user.id)
-	answer_fit_grade = emoji_map(f'{reaction.emoji}')
-	await interaction.followup.send(
-		f'Selected fit grade is {required_fit_grade[int(answer_fit_grade)]}'
-	)
-	return required_fit_grade[int(answer_fit_grade)]
-
-async def ship_registration_function_body(interaction: discord.Interaction,
-										  required_ships: dict):
 	message = await interaction.followup.send(
 		f'Choose your ship for registration on first dungeon\n'
 		f'{[(x, y) for x, y in required_ships.items()]}'
@@ -285,65 +235,6 @@ async def gun_skill_reg(interaction: discord.Interaction,
 	if  gun_typ == 'FIGHTER':
 		return await gun_skill_fun_body(interaction, gun_typ, skill_map)
 
-async def ship_skills_reg_fun_body(interaction: discord.Interaction,
-								   answer_ship: str,
-								   ship_type_dict: dict,
-								   skill_map: dict,
-								   ):
-	message = await interaction.followup.send(
-		f'Select your command skill level for {answer_ship} (Press the number)\n'
-		'1: 4-4\n'
-		'2: 4-5-3\n'
-		'3: 5-5-4\n'
-	)
-	for emoji in range(3):
-		await message.add_reaction(emoji_list[emoji])
-	reaction = await bot.wait_for('raw_reaction_add', check=lambda
-		payload: payload.user_id == interaction.user.id)
-	answer_command_skill_level = skill_map.get(
-		emoji_map(f'{reaction.emoji}'))
-
-	message = await interaction.followup.send(
-		f'Select your defense upgrade skill level for {answer_ship} (Press the number)\n'
-		'1: 4-4\n'
-		'2: 4-5-3\n'
-		'3: 5-5-4\n'
-	)
-	for emoji in range(3):
-		await message.add_reaction(emoji_list[emoji])
-	reaction = await bot.wait_for('raw_reaction_add', check=lambda
-		payload: payload.user_id == interaction.user.id)
-	answer_defense_upgrade_level = skill_map.get(
-		emoji_map(f'{reaction.emoji}'))
-
-	message = await interaction.followup.send(
-		f'Select your engineering skill level for {answer_ship} (Press the number)\n'
-		'1: 4-4\n'
-		'2: 4-5-3\n'
-		'3: 5-5-4\n'
-	)
-	for emoji in range(3):
-		await message.add_reaction(emoji_list[emoji])
-	reaction = await bot.wait_for('raw_reaction_add', check=lambda
-		payload: payload.user_id == interaction.user.id)
-	answer_engineering_level = skill_map.get(emoji_map(f'{reaction.emoji}'))
-
-	await interaction.followup.send(
-		f'Your base ship skills are '
-		f'\n command skill level:{answer_command_skill_level},'
-		f'\n defense upgrade level: {answer_defense_upgrade_level},'
-		f'\n engineering_level: {answer_engineering_level}'
-		f'\n for {answer_ship}, '
-		f' and your ship type is {ship_type_dict.get(answer_ship)}'
-	)
-	result = {
-		'command_skill_level': answer_command_skill_level,
-		'defense_upgrade_skill_level': answer_defense_upgrade_level,
-		'engineering_skill_level': answer_engineering_level,
-		'ship_name': answer_ship,
-		'ship_type': ship_type_dict.get(answer_ship)
-	}
-	return result
 async def ship_skills_reg(interaction: discord.Interaction, answer_ship: str):
 	skill_map = {
 		'1': '4-4',
@@ -369,7 +260,65 @@ async def ship_skills_reg(interaction: discord.Interaction, answer_ship: str):
 	}
 	ship_type = ships_type_dict.get(answer_ship)
 
+	async def ship_skills_reg_fun_body(interaction: discord.Interaction,
+									   answer_ship: str,
+									   ship_type_dict: dict,
+									   skill_map: dict,
+									   ):
+		message = await interaction.followup.send(
+			f'Select your command skill level for {answer_ship} (Press the number)\n'
+			'1: 4-4\n'
+			'2: 4-5-3\n'
+			'3: 5-5-4\n'
+		)
+		for emoji in range(3):
+			await message.add_reaction(emoji_list[emoji])
+		reaction = await bot.wait_for('raw_reaction_add', check=lambda
+			payload: payload.user_id == interaction.user.id)
+		answer_command_skill_level = skill_map.get(
+			emoji_map(f'{reaction.emoji}'))
 
+		message = await interaction.followup.send(
+			f'Select your defense upgrade skill level for {answer_ship} (Press the number)\n'
+			'1: 4-4\n'
+			'2: 4-5-3\n'
+			'3: 5-5-4\n'
+		)
+		for emoji in range(3):
+			await message.add_reaction(emoji_list[emoji])
+		reaction = await bot.wait_for('raw_reaction_add', check=lambda
+			payload: payload.user_id == interaction.user.id)
+		answer_defense_upgrade_level = skill_map.get(
+			emoji_map(f'{reaction.emoji}'))
+
+		message = await interaction.followup.send(
+			f'Select your engineering skill level for {answer_ship} (Press the number)\n'
+			'1: 4-4\n'
+			'2: 4-5-3\n'
+			'3: 5-5-4\n'
+		)
+		for emoji in range(3):
+			await message.add_reaction(emoji_list[emoji])
+		reaction = await bot.wait_for('raw_reaction_add', check=lambda
+			payload: payload.user_id == interaction.user.id)
+		answer_engineering_level = skill_map.get(emoji_map(f'{reaction.emoji}'))
+
+		await interaction.followup.send(
+			f'Your base ship skills are '
+			f'\n command skill level:{answer_command_skill_level},'
+			f'\n defense upgrade level: {answer_defense_upgrade_level},'
+			f'\n engineering_level: {answer_engineering_level}'
+			f'\n for {answer_ship}, '
+			f' and your ship type is {ship_type_dict.get(answer_ship)}'
+		)
+		result = {
+			'command_skill_level': answer_command_skill_level,
+			'defense_upgrade_skill_level': answer_defense_upgrade_level,
+			'engineering_skill_level': answer_engineering_level,
+			'ship_name': answer_ship,
+			'ship_type': ship_type_dict.get(answer_ship)
+		}
+		return result
 
 	if ship_type == 'battleship':
 		return await ship_skills_reg_fun_body(interaction, answer_ship, ships_type_dict, skill_map)
@@ -416,7 +365,7 @@ async def dungeon_registration_choice(interaction: discord.Interaction):
 			2: 'BHAAlGORN',
 			3: 'NIGHTMARE',
 		}
-		return await ship_registration_function_body(interaction, required_ships), answer_dungeon
+		return await pilot_ship_reg(interaction, required_ships), answer_dungeon
 
 
 	if answer_dungeon == '2':
@@ -427,7 +376,7 @@ async def dungeon_registration_choice(interaction: discord.Interaction):
 			4: 'MEGATHRON STRIKER',
 			5: 'MEGATHRON NAVY ISSUE',
 		}
-		return await ship_registration_function_body(interaction, required_ships), answer_dungeon
+		return await pilot_ship_reg(interaction, required_ships), answer_dungeon
 
 
 	if answer_dungeon == '3':
@@ -441,7 +390,7 @@ async def dungeon_registration_choice(interaction: discord.Interaction):
 			7: 'CHIMERA',
 			8: 'NIDHOUGGUR',
 		}
-		return await ship_registration_function_body(interaction, required_ships), answer_dungeon
+		return await pilot_ship_reg(interaction, required_ships), answer_dungeon
 
 
 	if answer_dungeon == '4':
@@ -451,7 +400,69 @@ async def dungeon_registration_choice(interaction: discord.Interaction):
 			3: 'MOROS',
 			4: 'REVELATION',
 		}
-		return await ship_registration_function_body(interaction, required_ships), answer_dungeon
+		return await pilot_ship_reg(interaction, required_ships), answer_dungeon
+
+async def register_fabric(interaction: discord.Interaction):
+
+	pilot_card = await pilot_card_reg(interaction)
+	pilot_card_res = await pilot_card_add(
+		discord_id=pilot_card['discord_id'],
+		name=pilot_card['name'],
+		corporation=pilot_card['corporation'].upper(),
+		tech_level=pilot_card['tech_level'],
+	)
+	await interaction.followup.send(pilot_card_res)
+
+	if pilot_card_res == 'Pilot registered':
+		answers_ship = await dungeon_registration_choice(interaction)
+		answer_ship_name = answers_ship[0]['ship_name'].upper()
+		pilot_ship_reg = await pilot_ship_add(discord_id=pilot_card['discord_id'],
+								   ship_name=answer_ship_name.lower(),
+								   core_color=answers_ship[0]['core_color'].lower(),
+								   core_lvl=answers_ship[0]['core_lvl'],
+								   fit_grade=answers_ship[0]['fit_grade'].title())
+		await interaction.followup.send(pilot_ship_reg)
+
+	if pilot_ship_reg.endswith('added'):
+	# if 1 == 1:
+		answer_skill_level, answer_gun_type = await gun_skill_reg(interaction, answer_ship_name)
+		print(answer_gun_type)
+		pilot_gun_skill_reg = await pilot_skill_add(discord_id=pilot_card['discord_id'],
+												name=answer_gun_type.lower(),
+												level=answer_skill_level,
+												)
+		await interaction.followup.send(pilot_gun_skill_reg)
+	if pilot_gun_skill_reg.endswith('added'):
+
+		answer_command_skill = await ship_skills_reg(interaction, answer_ship_name)
+		command_skill_reg = await pilot_skill_add(discord_id=pilot_card['discord_id'],
+														 name=f"{answer_command_skill['ship_type']} command",
+														 level=answer_command_skill['command_skill_level'],
+														 )
+		await interaction.followup.send(command_skill_reg)
+
+		defense_upgrade_skill_reg = await pilot_skill_add(discord_id=pilot_card['discord_id'],
+														  name=f"{answer_command_skill['ship_type']} defense upgrade",
+														  level=answer_command_skill['defense_upgrade_skill_level'],
+														  )
+
+		await interaction.followup.send(defense_upgrade_skill_reg)
+		engineering_skill_reg = await pilot_skill_add(discord_id=pilot_card['discord_id'],
+													   name=f"{answer_command_skill['ship_type']} engineering",
+													   level=answer_command_skill['engineering_skill_level'],
+													   )
+		await interaction.followup.send(engineering_skill_reg)
+
+	if command_skill_reg.endswith('added')\
+			and defense_upgrade_skill_reg.endswith('added')\
+			and engineering_skill_reg.endswith('added'):
+		answer_implant = await implant(interaction=interaction, gun_type=answer_gun_type)
+		implant_reg = await pilot_implant_add(discord_id=pilot_card['discord_id'],
+											  implant_name=answer_implant['implant_name'].lower(),
+											  implant_level=answer_implant['implant_level'],
+											  )
+		await interaction.followup.send(implant_reg)
+		await interaction.followup.send('Registration complete!')
 
 @bot.command()
 async def reg(ctx: Context):
