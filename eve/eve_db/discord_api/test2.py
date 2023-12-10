@@ -26,8 +26,11 @@ class PersistentViewForRegister(discord.ui.View, Button):
         await interaction.followup.send(f'PilotCardAdd: {b}')
         c = await PilotShipAdd(interaction).load(required_ships)
         await interaction.followup.send(f'PilotShipAdd: {c}')
-        d = await PilotImplantAdd(interaction).implant('LARGE RAILGUN')
-        await interaction.followup.send(f'PilotImplantAdd: {d}')
+        d = await PilotSkillAdd(interaction, c['ship_name']).gun_skill_choices()
+        await interaction.followup.send(f'PilotSkillAdd: {d}')
+        e = await PilotImplantAdd(interaction).implant(d['gun_type'])
+        await interaction.followup.send(f'PilotImplantAdd: {e}')
+
 
 
 class PersistentViewBot(commands.Bot):
@@ -242,7 +245,27 @@ class PilotSkillAdd(BaseDiscordActionService):
             'NIDHOUGGUR': 'FIGHTER',
         }
 
-    async def gun_skill_reg(self, gun_type: str, skill_map: dict):
+    async def gun_skill_choices(self):
+        gun_type = self.ship_gun_typ_dict.get(self.answer_ship.upper(), None)
+        if gun_type:
+            return await self.gun_skill_reg(gun_type)
+        else:
+            return False
+
+        # if gun_type == 'LARGE LASER':
+        #     return await self.gun_skill_reg(gun_type, self.skill_map)
+        # if gun_type == 'LARGE RAILGUN':
+        #     return await self.gun_skill_reg(gun_type, self.skill_map)
+        # if gun_type == 'CAPITAL MISSILE':
+        #     return await self.gun_skill_reg(gun_type, self.skill_map)
+        # if gun_type == 'CAPITAL CANNON':
+        #     return await self.gun_skill_reg(gun_type, self.skill_map)
+        # if gun_type == 'CAPITAL RAILGUN':
+        #     return await self.gun_skill_reg(gun_type, self.skill_map)
+        # if gun_type == 'FIGHTER':
+        #     return await self.gun_skill_reg(gun_type, self.skill_map)
+
+    async def gun_skill_reg(self, gun_type: str):
         message = await self.followup_send_massage(
             f'Choose your level of {gun_type} skill (Press the number)\n'
             '1: 4-4\n'
@@ -252,25 +275,14 @@ class PilotSkillAdd(BaseDiscordActionService):
         await self.add_reactions(message=message, slice=3)
         reaction = await bot.wait_for('raw_reaction_add', check=lambda
             payload: payload.user_id == self.interaction.user.id)
-        answer_skill_level = skill_map.get(self.emoji_map(f'{reaction.emoji}'))
+        answer_skill_level = self.skill_map.get(self.emoji_map(f'{reaction.emoji}'))
         await self.followup_send_massage(
             f'Selected skill level: {answer_skill_level}'
         )
-        return answer_skill_level, gun_type
-
-        gun_typ = self.ship_gun_typ_dict.get(self.answer_ship.upper())
-        if gun_typ == 'LARGE LASER':
-            return await gun_skill_fun_body(interaction, gun_typ, skill_map)
-        if gun_typ == 'LARGE RAILGUN':
-            return await gun_skill_fun_body(interaction, gun_typ, skill_map)
-        if gun_typ == 'CAPITAL MISSILE':
-            return await gun_skill_fun_body(interaction, gun_typ, skill_map)
-        if gun_typ == 'CAPITAL CANNON':
-            return await gun_skill_fun_body(interaction, gun_typ, skill_map)
-        if gun_typ == 'CAPITAL RAILGUN':
-            return await gun_skill_fun_body(interaction, gun_typ, skill_map)
-        if gun_typ == 'FIGHTER':
-            return await gun_skill_fun_body(interaction, gun_typ, skill_map)
+        return {
+            'gun_type': gun_type,
+            'skill_level': answer_skill_level
+        }
 
 bot = PersistentViewBot()
 
@@ -283,7 +295,7 @@ required_ships = {
 		}
 @bot.command()
 @commands.is_owner()
-async def prepare(ctx: commands.Context):
+async def a(ctx: commands.Context): #prepare
     """Starts a persistent view."""
     # In order for a persistent view to be listened to, it needs to be sent to an actual message.
     # Call this method once just to store it somewhere.

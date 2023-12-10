@@ -24,3 +24,41 @@ class FitGradeChoices:
 
 	def get_fit_graded(self):
 		return self.fit_grade
+
+class ImplantChoices:
+
+	def __init__(self):
+		self.implant = {
+			'LARGE RAILGUN': 'HIGH POWER COIL',
+			'CAPITAL RAILGUN': 'HIGH POWER COIL',
+			'LARGE LASER': 'FOCUSED CRYSTAL',
+			'CAPITAL LASER': 'FOCUSED CRYSTAL',
+			'LARGE CANNON': 'BARRAGE REPRESSION',
+			'CAPITAL CANNON': 'BARRAGE REPRESSION',
+			'LARGE MISSILE': 'WARHEAD CHARGE',
+			'CAPITAL MISSILE': 'WARHEAD CHARGE',
+		}
+
+	def get_impant(self):
+		return self.implant
+
+
+class GunType:
+	def __init__(self):
+		self.ship_gun_typ_dict = {
+			'BHAAlGORN': 'LARGE LASER',
+			'NIGHTMARE': 'LARGE LASER',
+			'APOCALYPSE NAVY ISSUE': 'LARGE LASER',
+			'APOCALYPSE STRIKER': 'LARGE LASER',
+			'MEGATHRON NAVY ISSUE': 'LARGE RAILGUN',
+			'MEGATHRON STRIKER': 'LARGE RAILGUN',
+			'VINDICATOR': 'LARGE RAILGUN',
+			'PHOENIX': 'CAPITAL MISSILE',
+			'NAGLFAR': 'CAPITAL CANNON',
+			'MOROS': 'CAPITAL RAILGUN',
+			'REVELATION': 'CAPITAL LASER',
+			'THANATOS': 'FIGHTER',
+			'ARCHON': 'FIGHTER',
+			'CHIMERA': 'FIGHTER',
+			'NIDHOUGGUR': 'FIGHTER',
+		}
