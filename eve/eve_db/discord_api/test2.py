@@ -19,17 +19,21 @@ class PersistentViewForRegister(discord.ui.View, Button):
     @discord.ui.button(label='Register', style=discord.ButtonStyle.green, custom_id='Register')
     async def register(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.send_message('Welcome to registration!', ephemeral=False)
-        s = interaction.user.id
-        await interaction.followup.send(f'User: {s}')
-        await DungeonChoice(interaction).dungeon_choice()
+        a = interaction.user.id
+        await interaction.followup.send(f'User: {a}')
+        x = await DungeonChoice(interaction).dungeon_choice()
+
         b = await PilotCardAdd(interaction).pilot_card_add()
         await interaction.followup.send(f'PilotCardAdd: {b}')
-        c = await PilotShipAdd(interaction).load(required_ships)
+        c = await PilotShipAdd(interaction).load(x)
         await interaction.followup.send(f'PilotShipAdd: {c}')
         d = await PilotSkillAdd(interaction, c['ship_name']).gun_skill_choices()
-        await interaction.followup.send(f'PilotSkillAdd: {d}')
+        await interaction.followup.send(f'PilotSkillAdd.gun_skill_choices: {d}')
+        f = await PilotSkillAdd(interaction, c['ship_name']).base_ship_skills_reg()
+        await interaction.followup.send(f'PilotSkillAdd.base_ship_skills_reg: {f}')
         e = await PilotImplantAdd(interaction).implant(d['gun_type'])
         await interaction.followup.send(f'PilotImplantAdd: {e}')
+
 
 
 
@@ -52,6 +56,37 @@ class PersistentViewBot(commands.Bot):
 class DungeonChoice(BaseDiscordActionService):
     def __init__(self, interaction: discord.Interaction):
         super().__init__(interaction)
+        self.ship_for_dungeon = {
+            '1': {
+                1: 'VINDICATOR',
+                2: 'BHAAlGORN',
+                3: 'NIGHTMARE',
+		    },
+            '2': {
+                1: 'APOCALYPSE STRIKER',
+                2: 'APOCALYPSE NAVY ISSUE',
+                3: 'NIGHTMARE',
+                4: 'MEGATHRON STRIKER',
+                5: 'MEGATHRON NAVY ISSUE',
+            },
+            '3': {
+                1: 'NAGLFAR',
+                2: 'PHOENIX',
+                3: 'MOROS',
+                4: 'REVELATION',
+                5: 'THANATOS',
+                6: 'ARCHON',
+                7: 'CHIMERA',
+                8: 'NIDHOUGGUR',
+            },
+            '4': {
+                1: 'NAGLFAR',
+                2: 'PHOENIX',
+                3: 'MOROS',
+                4: 'REVELATION',
+            }
+        }
+
 
     async def dungeon_choice(self):
         message = await self.followup_send_massage('Choose a dungeon'
@@ -66,7 +101,7 @@ class DungeonChoice(BaseDiscordActionService):
         await self.followup_send_massage(
             f'Your dungeon chose is {int(answer_dungeon)}')
 
-        return answer_dungeon
+        return self.ship_for_dungeon.get(answer_dungeon)
 
 class PilotCardAdd(BaseDiscordActionService):
     def __init__(self, interaction: discord.Interaction):
@@ -198,7 +233,7 @@ class PilotImplantAdd(BaseDiscordActionService):
         super().__init__(interaction)
 
     async def implant(self, gun_type: str):
-        implant_map = {
+        self.implant_map = {
             'LARGE RAILGUN': 'HIGH POWER COIL',
             'CAPITAL RAILGUN': 'HIGH POWER COIL',
             'LARGE LASER': 'FOCUSED CRYSTAL',
@@ -208,7 +243,8 @@ class PilotImplantAdd(BaseDiscordActionService):
             'LARGE MISSILE': 'WARHEAD CHARGE',
             'CAPITAL MISSILE': 'WARHEAD CHARGE',
         }
-        implant = implant_map.get(gun_type)
+        print(gun_type.upper())
+        implant = self.implant_map.get(gun_type.upper())
         await self.followup_send_massage(f'Input yor {implant} implant level'
                                         '\n integer range 1-45')
         answer_implant_level = await bot.wait_for('message', check=lambda
@@ -244,6 +280,23 @@ class PilotSkillAdd(BaseDiscordActionService):
             'CHIMERA': 'FIGHTER',
             'NIDHOUGGUR': 'FIGHTER',
         }
+        self.ships_type_dict = {
+            'APOCALYPSE STRIKER': 'battleship',
+            'APOCALYPSE NAVY ISSUE': 'battleship',
+            'MEGATHRON STRIKER': 'battleship',
+            'MEGATHRON NAVY ISSUE': 'battleship',
+            'VINDICATOR': 'battleship',
+            'BHAAlGORN': 'battleship',
+            'NIGHTMARE': 'battleship',
+            'PHOENIX': 'dreadnought',
+            'NAGLFAR': 'dreadnought',
+            'MOROS': 'dreadnought',
+            'REVELATION': 'dreadnought',
+            'THANATOS': 'carrier',
+            'ARCHON': 'carrier',
+            'CHIMERA': 'carrier',
+            'NIDHOUGGUR': 'carrier',
+        }
 
     async def gun_skill_choices(self):
         gun_type = self.ship_gun_typ_dict.get(self.answer_ship.upper(), None)
@@ -251,19 +304,6 @@ class PilotSkillAdd(BaseDiscordActionService):
             return await self.gun_skill_reg(gun_type)
         else:
             return False
-
-        # if gun_type == 'LARGE LASER':
-        #     return await self.gun_skill_reg(gun_type, self.skill_map)
-        # if gun_type == 'LARGE RAILGUN':
-        #     return await self.gun_skill_reg(gun_type, self.skill_map)
-        # if gun_type == 'CAPITAL MISSILE':
-        #     return await self.gun_skill_reg(gun_type, self.skill_map)
-        # if gun_type == 'CAPITAL CANNON':
-        #     return await self.gun_skill_reg(gun_type, self.skill_map)
-        # if gun_type == 'CAPITAL RAILGUN':
-        #     return await self.gun_skill_reg(gun_type, self.skill_map)
-        # if gun_type == 'FIGHTER':
-        #     return await self.gun_skill_reg(gun_type, self.skill_map)
 
     async def gun_skill_reg(self, gun_type: str):
         message = await self.followup_send_massage(
@@ -280,9 +320,63 @@ class PilotSkillAdd(BaseDiscordActionService):
             f'Selected skill level: {answer_skill_level}'
         )
         return {
-            'gun_type': gun_type,
+            'gun_type': gun_type.upper(),
             'skill_level': answer_skill_level
         }
+
+    async def base_ship_skills_reg(self):
+        message = await self.followup_send_massage(
+            f'Select your command skill level for {self.answer_ship} (Press the number)\n'
+            '1: 4-4\n'
+            '2: 4-5-3\n'
+            '3: 5-5-4\n'
+        )
+        await self.add_reactions(message=message, slice=3)
+        reaction = await bot.wait_for('raw_reaction_add', check=lambda
+            payload: payload.user_id == self.interaction.user.id)
+        answer_command_skill_level = self.skill_map.get(
+            self.emoji_map(f'{reaction.emoji}'))
+
+        message = await self.followup_send_massage(
+            f'Select your defense upgrade skill level for {self.answer_ship} (Press the number)\n'
+            '1: 4-4\n'
+            '2: 4-5-3\n'
+            '3: 5-5-4\n'
+        )
+        await self.add_reactions(message=message, slice=3)
+        reaction = await bot.wait_for('raw_reaction_add', check=lambda
+            payload: payload.user_id == self.interaction.user.id)
+        answer_defense_upgrade_level = self.skill_map.get(
+            self.emoji_map(f'{reaction.emoji}'))
+
+        message = await self.followup_send_massage(
+            f'Select your engineering skill level for {self.answer_ship} (Press the number)\n'
+            '1: 4-4\n'
+            '2: 4-5-3\n'
+            '3: 5-5-4\n'
+        )
+        await self.add_reactions(message=message, slice=3)
+        reaction = await bot.wait_for('raw_reaction_add', check=lambda
+            payload: payload.user_id == self.interaction.user.id)
+        answer_engineering_level = self.skill_map.get(self.emoji_map(f'{reaction.emoji}'))
+
+        await self.followup_send_massage(
+            f'Your base ship skills are '
+            f'\n command skill level:{answer_command_skill_level},'
+            f'\n defense upgrade level: {answer_defense_upgrade_level},'
+            f'\n engineering_level: {answer_engineering_level}'
+            f'\n for {self.answer_ship}, '
+            f' and your ship type is {self.ships_type_dict.get(self.answer_ship.upper())}'
+        )
+        result = {
+            'command_skill_level': answer_command_skill_level,
+            'defense_upgrade_skill_level': answer_defense_upgrade_level,
+            'engineering_skill_level': answer_engineering_level,
+            'ship_name': self.answer_ship,
+            'ship_type': self.ships_type_dict.get(self.answer_ship.upper())
+        }
+        return result
+
 
 bot = PersistentViewBot()
 
