@@ -10,7 +10,7 @@ class PilotImplantAdd(BaseDiscordActionService):
         super().__init__(interaction)
 
     async def implant(self, gun_type: str):
-        self.implant_map = ImplantChoices.get_impant
+        self.implant_map = ImplantChoices().implant
 
         print(gun_type.upper())
         implant = self.implant_map.get(gun_type.upper())

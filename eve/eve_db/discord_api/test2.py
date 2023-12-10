@@ -10,11 +10,30 @@ from eve_db.representors.representors import first,\
 from discord.ext import commands
 import discord
 
+class PersistentViewBot(commands.Bot):
+    def __init__(self):
+        intents = discord.Intents.default()
+        intents.message_content = True
+
+        super().__init__(command_prefix=commands.when_mentioned_or('.'), intents=intents)
+
+    async def setup_hook(self) -> None:
+        self.add_view(PersistentViewForRegister())
+
+
+    async def on_ready(self):
+        print(f'Logged in as {self.user} (ID: {self.user.id})')
+        print('------')
+
+bot = PersistentViewBot()
+
 from eve_db.discord_api.services.dungeon.create import DungeonChoice
 from eve_db.discord_api.services.implant.create import PilotImplantAdd
 from eve_db.discord_api.services.pilot.create import PilotCardAdd
 from eve_db.discord_api.services.pilotship.create import PilotShipAdd
 from eve_db.discord_api.services.skill.create import PilotSkillAdd
+
+
 
 class PersistentViewForRegister(discord.ui.View, Button):
     def __init__(self):
@@ -38,22 +57,6 @@ class PersistentViewForRegister(discord.ui.View, Button):
         e = await PilotImplantAdd(interaction).implant(d['gun_type'])
         await interaction.followup.send(f'PilotImplantAdd: {e}')
 
-class PersistentViewBot(commands.Bot):
-    def __init__(self):
-        intents = discord.Intents.default()
-        intents.message_content = True
-
-        super().__init__(command_prefix=commands.when_mentioned_or('.'), intents=intents)
-
-    async def setup_hook(self) -> None:
-        self.add_view(PersistentViewForRegister())
-
-
-    async def on_ready(self):
-        print(f'Logged in as {self.user} (ID: {self.user.id})')
-        print('------')
-
-bot = PersistentViewBot()
 
 @bot.command()
 @commands.is_owner()

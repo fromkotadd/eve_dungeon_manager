@@ -12,6 +12,9 @@ class CoreColorsChoices:
 	def get_core_colors(self):
 		return self.core_colors
 
+	def __str__(self):
+		return self.core_colors
+
 class FitGradeChoices:
 
 	def __init__(self):

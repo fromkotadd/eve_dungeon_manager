@@ -8,8 +8,8 @@ from eve_db.discord_api.choices import CoreColorsChoices, FitGradeChoices
 class PilotShipAdd(BaseDiscordActionService):
     def __init__(self, interaction: discord.Interaction):
         super().__init__(interaction)
-        self.required_core_colors = CoreColorsChoices.get_core_colors
-        self.required_fit_grade = FitGradeChoices.get_fit_grade
+        self.required_core_colors = CoreColorsChoices().core_colors
+        self.required_fit_grade = FitGradeChoices().fit_grade
 
     async def core_color(self):
         message = await self.followup_send_massage('Select your core color'
@@ -24,7 +24,8 @@ class PilotShipAdd(BaseDiscordActionService):
         reaction = await bot.wait_for('raw_reaction_add', check=lambda
             payload: payload.user_id == self.interaction.user.id)
         answer_core_color = self.emoji_map(f'{reaction.emoji}')
-
+        print(self.required_core_colors)
+        print(type(self.required_core_colors))
         await self.followup_send_massage(
             f'Selected core_color color is {self.required_core_colors[int(answer_core_color)]}'
         )
