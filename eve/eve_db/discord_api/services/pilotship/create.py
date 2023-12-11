@@ -68,5 +68,5 @@ class PilotShipAdd(BaseDiscordActionService):
         core_lvl_ = await self.core_level()
         fit_grade_ = await self.fit_grade()
 
-        return {'ship_name': ship_name.lower(), 'core_color': core_color_,
+        return {'ship_name': ship_name.upper(), 'core_color': core_color_,
                 'core_lvl': core_lvl_, 'fit_grade': fit_grade_}
