@@ -40,6 +40,7 @@ class ImplantChoices:
 			'CAPITAL CANNON': 'BARRAGE REPRESSION',
 			'LARGE MISSILE': 'WARHEAD CHARGE',
 			'CAPITAL MISSILE': 'WARHEAD CHARGE',
+			'FIGHTER' : 'BOMBARD TACTICS'
 		}
 
 	def get_impant(self):

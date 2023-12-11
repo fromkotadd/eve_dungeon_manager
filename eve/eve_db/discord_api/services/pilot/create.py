@@ -28,9 +28,10 @@ class PilotCardAdd(BaseDiscordActionService):
             payload: payload.user_id == self.interaction.user.id)
         answer_tech_level = self.emoji_map(f'{reaction.emoji}')
 
-        return {'discord_id': self.discord_id,
-                'name': answer_name.content,
-                'corporation': answer_corporation.content.upper(),
-                'tech_level': answer_tech_level,
-                'interaction': self.interaction
-                }
+        return {
+            'discord_id': self.discord_id,
+            'name': answer_name.content,
+            'corporation': answer_corporation.content.upper(),
+            'tech_level': answer_tech_level,
+            'interaction': self.interaction
+        }

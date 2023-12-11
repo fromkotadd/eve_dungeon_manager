@@ -12,17 +12,18 @@ class PilotSkillAdd(BaseDiscordActionService):
         self.skill_map = PilotSkill().skill_map
         self.ship_gun_typ_dict = PilotSkill().ship_gun_typ_dict
         self.ships_type_dict = PilotSkill().ships_type_dict
+        self.gun_type = self.ship_gun_typ_dict.get(self.answer_ship.upper(), None)
 
     async def gun_skill_choices(self):
         gun_type = self.ship_gun_typ_dict.get(self.answer_ship.upper(), None)
         if gun_type:
-            return await self.gun_skill_reg(gun_type)
+            return await self.gun_skill_reg()
         else:
             return False
 
-    async def gun_skill_reg(self, gun_type: str):
+    async def gun_skill_reg(self):
         message = await self.followup_send_massage(
-            f'Choose your level of {gun_type} skill (Press the number)\n'
+            f'Choose your level of {self.gun_type} skill (Press the number)\n'
             '1: 4-4\n'
             '2: 4-5-3\n'
             '3: 5-5-4\n'
@@ -32,11 +33,8 @@ class PilotSkillAdd(BaseDiscordActionService):
             payload: payload.user_id == self.interaction.user.id)
         answer_skill_level = self.skill_map.get(
             self.emoji_map(f'{reaction.emoji}'))
-        await self.followup_send_massage(
-            f'Selected skill level: {answer_skill_level}'
-        )
         return {
-            'gun_type': gun_type.upper(),
+            'gun_type': self.gun_type.upper(),
             'skill_level': answer_skill_level
         }
 
@@ -77,14 +75,6 @@ class PilotSkillAdd(BaseDiscordActionService):
         answer_engineering_level = self.skill_map.get(
             self.emoji_map(f'{reaction.emoji}'))
 
-        await self.followup_send_massage(
-            f'Your base ship skills are '
-            f'\n command skill level:{answer_command_skill_level},'
-            f'\n defense upgrade level: {answer_defense_upgrade_level},'
-            f'\n engineering_level: {answer_engineering_level}'
-            f'\n for {self.answer_ship}, '
-            f' and your ship type is {self.ships_type_dict.get(self.answer_ship.upper())}'
-        )
         result = {
             'command_skill_level': answer_command_skill_level,
             'defense_upgrade_skill_level': answer_defense_upgrade_level,
@@ -98,7 +88,4 @@ class PilotSkillAdd(BaseDiscordActionService):
         gun_skill = await self.gun_skill_choices()
         base_ship_skills = await self.base_ship_skills_reg()
 
-        return {
-            'gun_skill': gun_skill,
-            'base_ship_skills': base_ship_skills
-        }
+        return gun_skill, base_ship_skills

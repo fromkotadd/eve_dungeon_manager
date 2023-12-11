@@ -24,11 +24,6 @@ class PilotShipAdd(BaseDiscordActionService):
         reaction = await BOT.wait_for('raw_reaction_add', check=lambda
             payload: payload.user_id == self.interaction.user.id)
         answer_core_color = self.emoji_map(f'{reaction.emoji}')
-        print(self.required_core_colors)
-        print(type(self.required_core_colors))
-        await self.followup_send_massage(
-            f'Selected core_color color is {self.required_core_colors[int(answer_core_color)]}'
-        )
         return self.required_core_colors[int(answer_core_color)]
 
     async def core_level(self):
@@ -38,9 +33,7 @@ class PilotShipAdd(BaseDiscordActionService):
         reaction = await BOT.wait_for('raw_reaction_add', check=lambda
             payload: payload.user_id == self.interaction.user.id)
         answer_core_lvl = self.emoji_map(f'{reaction.emoji}')
-        await self.followup_send_massage(
-            f'Selected core level is {int(answer_core_lvl)}'
-        )
+
         return answer_core_lvl
 
     async def fit_grade(self):
@@ -55,9 +48,6 @@ class PilotShipAdd(BaseDiscordActionService):
         reaction = await BOT.wait_for('raw_reaction_add', check=lambda
             payload: payload.user_id == self.interaction.user.id)
         answer_fit_grade = self.emoji_map(f'{reaction.emoji}')
-        await self.interaction.followup.send(
-            f'Selected fit grade is {self.required_fit_grade[int(answer_fit_grade)]}'
-        )
         return self.required_fit_grade[int(answer_fit_grade)]
 
 
@@ -74,17 +64,9 @@ class PilotShipAdd(BaseDiscordActionService):
         answer_ship_choice = self.emoji_map(f'{reaction.emoji}')
 
         ship_name = required_ships_dict[int(answer_ship_choice)]
-        await self.followup_send_massage(
-            f'Selected ship: {ship_name}')
-
         core_color_ = await self.core_color()
         core_lvl_ = await self.core_level()
         fit_grade_ = await self.fit_grade()
-        await self.followup_send_massage(
-            f'Selected ship: {ship_name}\n'
-            f'Selected core color: {core_color_}\n'
-            f'Selected core level: {core_lvl_}\n'
-            f'Selected fit grade: {fit_grade_}'
-        )
+
         return {'ship_name': ship_name.lower(), 'core_color': core_color_,
                 'core_lvl': core_lvl_, 'fit_grade': fit_grade_}

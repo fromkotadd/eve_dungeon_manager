@@ -16,7 +16,5 @@ class PilotImplantAdd(BaseDiscordActionService):
                                         '\n integer range 1-45')
         answer_implant_level = await BOT.wait_for('message', check=lambda
             message: message.author == self.interaction.user)
-        await self.followup_send_massage(
-            f'Your {implant} implant level is {answer_implant_level.content}')
         return {'implant_name': implant,
                 'implant_level': answer_implant_level.content}

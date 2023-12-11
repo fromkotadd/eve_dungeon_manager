@@ -19,7 +19,5 @@ class DungeonChoice(BaseDiscordActionService):
             payload: payload.user_id == self.interaction.user.id)
 
         answer_dungeon = self.emoji_map(f'{answer.emoji}')
-        await self.followup_send_massage(
-            f'Your dungeon chose is {int(answer_dungeon)}')
 
         return self.ship_for_dungeon.get(answer_dungeon)
