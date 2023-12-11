@@ -20,12 +20,11 @@ class PersistentViewBot(commands.Bot):
     async def setup_hook(self) -> None:
         self.add_view(PersistentViewForRegister())
 
-
     async def on_ready(self):
         print(f'Logged in as {self.user} (ID: {self.user.id})')
         print('------')
 
-bot = PersistentViewBot()
+BOT = PersistentViewBot()
 
 from eve_db.discord_api.services.dungeon.create import DungeonChoice
 from eve_db.discord_api.services.implant.create import PilotImplantAdd
@@ -58,7 +57,7 @@ class PersistentViewForRegister(discord.ui.View, Button):
         await interaction.followup.send(f'PilotImplantAdd: {e}')
 
 
-@bot.command()
+@BOT.command()
 @commands.is_owner()
 async def a(ctx: commands.Context): #prepare
     """Starts a persistent view."""
@@ -70,4 +69,4 @@ async def a(ctx: commands.Context): #prepare
     # The stored view can now be reused later on.
 
 def run():
-    bot.run(config.config['TOKEN'])
+    BOT.run(config.config['TOKEN'])

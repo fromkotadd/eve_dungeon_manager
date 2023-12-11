@@ -1,7 +1,7 @@
 import discord
 
 from eve_db.discord_api.services.base import BaseDiscordActionService
-from eve_db.discord_api.test2 import bot
+from eve_db.discord_api.test2 import BOT
 
 from eve_db.discord_api.choices import PilotSkill
 
@@ -28,7 +28,7 @@ class PilotSkillAdd(BaseDiscordActionService):
             '3: 5-5-4\n'
         )
         await self.add_reactions(message=message, slice=3)
-        reaction = await bot.wait_for('raw_reaction_add', check=lambda
+        reaction = await BOT.wait_for('raw_reaction_add', check=lambda
             payload: payload.user_id == self.interaction.user.id)
         answer_skill_level = self.skill_map.get(
             self.emoji_map(f'{reaction.emoji}'))
@@ -48,7 +48,7 @@ class PilotSkillAdd(BaseDiscordActionService):
             '3: 5-5-4\n'
         )
         await self.add_reactions(message=message, slice=3)
-        reaction = await bot.wait_for('raw_reaction_add', check=lambda
+        reaction = await BOT.wait_for('raw_reaction_add', check=lambda
             payload: payload.user_id == self.interaction.user.id)
         answer_command_skill_level = self.skill_map.get(
             self.emoji_map(f'{reaction.emoji}'))
@@ -60,7 +60,7 @@ class PilotSkillAdd(BaseDiscordActionService):
             '3: 5-5-4\n'
         )
         await self.add_reactions(message=message, slice=3)
-        reaction = await bot.wait_for('raw_reaction_add', check=lambda
+        reaction = await BOT.wait_for('raw_reaction_add', check=lambda
             payload: payload.user_id == self.interaction.user.id)
         answer_defense_upgrade_level = self.skill_map.get(
             self.emoji_map(f'{reaction.emoji}'))
@@ -72,7 +72,7 @@ class PilotSkillAdd(BaseDiscordActionService):
             '3: 5-5-4\n'
         )
         await self.add_reactions(message=message, slice=3)
-        reaction = await bot.wait_for('raw_reaction_add', check=lambda
+        reaction = await BOT.wait_for('raw_reaction_add', check=lambda
             payload: payload.user_id == self.interaction.user.id)
         answer_engineering_level = self.skill_map.get(
             self.emoji_map(f'{reaction.emoji}'))

@@ -1,7 +1,7 @@
 import discord
 
 from eve_db.discord_api.services.base import BaseDiscordActionService
-from eve_db.discord_api.test2 import bot
+from eve_db.discord_api.test2 import BOT
 
 from eve_db.discord_api.choices import CoreColorsChoices, FitGradeChoices
 
@@ -21,7 +21,7 @@ class PilotShipAdd(BaseDiscordActionService):
                                                   '5: None\n')
 
         await self.add_reactions(message=message, slice=5)
-        reaction = await bot.wait_for('raw_reaction_add', check=lambda
+        reaction = await BOT.wait_for('raw_reaction_add', check=lambda
             payload: payload.user_id == self.interaction.user.id)
         answer_core_color = self.emoji_map(f'{reaction.emoji}')
         print(self.required_core_colors)
@@ -35,7 +35,7 @@ class PilotShipAdd(BaseDiscordActionService):
         message = await self.followup_send_massage('Select your core level'
                                                   '(Press the number)')
         await self.add_reactions(message=message, slice=7)
-        reaction = await bot.wait_for('raw_reaction_add', check=lambda
+        reaction = await BOT.wait_for('raw_reaction_add', check=lambda
             payload: payload.user_id == self.interaction.user.id)
         answer_core_lvl = self.emoji_map(f'{reaction.emoji}')
         await self.followup_send_massage(
@@ -52,7 +52,7 @@ class PilotShipAdd(BaseDiscordActionService):
                                                   '3: A-grade\n'
                                                   '4: X-grade\n')
         await self.add_reactions(message=message, slice=4)
-        reaction = await bot.wait_for('raw_reaction_add', check=lambda
+        reaction = await BOT.wait_for('raw_reaction_add', check=lambda
             payload: payload.user_id == self.interaction.user.id)
         answer_fit_grade = self.emoji_map(f'{reaction.emoji}')
         await self.interaction.followup.send(
@@ -69,7 +69,7 @@ class PilotShipAdd(BaseDiscordActionService):
         )
 
         await self.add_reactions(message=message, slice=len(required_ships_dict))
-        reaction = await bot.wait_for('raw_reaction_add', check=lambda
+        reaction = await BOT.wait_for('raw_reaction_add', check=lambda
             payload: payload.user_id == self.interaction.user.id)
         answer_ship_choice = self.emoji_map(f'{reaction.emoji}')
 
