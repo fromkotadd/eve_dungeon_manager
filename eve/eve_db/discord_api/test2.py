@@ -4,7 +4,6 @@ from discord.ui import Button, View
 from discord.ext.commands.context import Context
 
 from eve_db.discord_api import config
-from eve_db.discord_api.services.registration.registration import Registration
 from eve_db.representors.representors import first,\
 	pilot_card_add, pilot_ship_add, pilot_implant_add, pilot_skill_add
 
@@ -33,6 +32,8 @@ class PersistentViewForRegister(discord.ui.View, Button):
 
     @discord.ui.button(label='Register', style=discord.ButtonStyle.green, custom_id='Register')
     async def register(self, interaction: discord.Interaction, button: discord.ui.Button):
+        from eve_db.discord_api.services.registration.registration import \
+            Registration
         registration = Registration(interaction)
         await registration.start()
 

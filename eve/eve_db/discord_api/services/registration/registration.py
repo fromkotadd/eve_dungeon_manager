@@ -30,3 +30,7 @@ class Registration:
             f'answer_implant: {answer_implant}'
         )
         await self.interaction.followup.send('Registration completed!')
+
+    async def write_to_db(self):
+        pass
+
