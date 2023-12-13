@@ -233,6 +233,7 @@ async def II(
 	output = await table_create(pilots_cards=result, pilot_ships_func=ships_for_second_dungeon)
 
 	await interaction.response.send_message(f"```\nВТОРОЙ ДОРМАНТ\n"
+											f"Статус пилотов: {status}\n"
 											f"УРОВЕНЬ ИМПЛАНТА>={implant_level} "
 											f" ПРОКАЧКА КОРАБЛЯ>={skills_rating} "
 											f"ПРОКАЧКА ОРУДИЙ>={gun_rating}"
