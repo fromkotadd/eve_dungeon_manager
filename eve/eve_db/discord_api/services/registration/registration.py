@@ -28,15 +28,15 @@ class Registration:
         dungeon_choice = await DungeonChoice(self.interaction, channel).dungeon_choice()
         answers_ship = await PilotShipAdd(self.interaction, channel).load(dungeon_choice)
         answer_gun_skill = await PilotSkillAdd(self.interaction, channel, answers_ship['ship_name']).gun_skill_reg()
-        # answer_ship_skill = await PilotSkillAdd(self.interaction, answers_ship['ship_name']).base_ship_skills_reg()
-        # answer_implant = await PilotImplantAdd(self.interaction).implant(answer_gun_skill['gun_type'])
+        answer_ship_skill = await PilotSkillAdd(self.interaction, channel, answers_ship['ship_name']).base_ship_skills_reg()
+        answer_implant = await PilotImplantAdd(self.interaction, channel).implant(answer_gun_skill['gun_type'])
         await channel.send(
             # f'pilot_card_reg: {pilot_card_reg}\n'
             f'dungeon_choice: {dungeon_choice}\n'
             f'answers_ship: {answers_ship}\n'
             f'answer_gun_skill: {answer_gun_skill}\n'
-            # f'answer_ship_skill: {answer_ship_skill}\n'
-            # f'answer_implant: {answer_implant}'
+            f'answer_ship_skill: {answer_ship_skill}\n'
+            f'answer_implant: {answer_implant}'
         )
         await channel.send('Registration completed!')
         await asyncio.sleep(60)

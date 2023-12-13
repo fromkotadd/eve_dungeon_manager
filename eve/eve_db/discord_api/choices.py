@@ -132,7 +132,7 @@ class PilotSkill:
 			'MEGATHRON STRIKER': 'battleship',
 			'MEGATHRON NAVY ISSUE': 'battleship',
 			'VINDICATOR': 'battleship',
-			'BHAAlGORN': 'battleship',
+			'BHAALGORN': 'battleship',
 			'NIGHTMARE': 'battleship',
 			'PHOENIX': 'dreadnought',
 			'NAGLFAR': 'dreadnought',

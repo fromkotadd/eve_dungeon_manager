@@ -117,7 +117,7 @@ class Dungeons(models.IntegerChoices):
 class ShipNames(models.TextChoices):
 	# 1
 	VINDICATOR = 'vindicator'
-	BHAAlGORN = 'bhaalgorn'
+	BHAALGORN = 'bhaalgorn'
 	NIGHTMARE = 'nightmare'
 
 	# 2
