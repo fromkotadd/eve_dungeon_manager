@@ -216,7 +216,8 @@ async def I(
 	pilots_cards = await first(int(pilots_amount), int(implant_level), skills_rating, gun_rating)
 	result = status_check(pilots_cards, interaction, status)
 	output = await table_create(pilots_cards=result, pilot_ships_func=ships_for_first_dungeon)
-	await interaction.response.send_message(f"```\n{output}\n```")
+
+	await interaction.response.send_message(f"```\nПЕРВЫЙ ДОРМАНТ\n``````\n{output}\n```")
 
 
 @bot.tree.command(name='second_dungeon', description='find pilots for the second dungeon')
@@ -230,7 +231,12 @@ async def II(
 	pilots_cards = await second(int(pilots_amount), int(implant_level), skills_rating, gun_rating)
 	result = status_check(pilots_cards, interaction, status)
 	output = await table_create(pilots_cards=result, pilot_ships_func=ships_for_second_dungeon)
-	await interaction.response.send_message(f"```\n{output}\n```")
+
+	await interaction.response.send_message(f"```\nВТОРОЙ ДОРМАНТ\n"
+											f"УРОВЕНЬ ИМПЛАНТА>={implant_level} "
+											f" ПРОКАЧКА КОРАБЛЯ>={skills_rating} "
+											f"ПРОКАЧКА ОРУДИЙ>={gun_rating}"
+											f"\n``````\n{output}\n```")
 
 
 @bot.tree.command(name='third_dungeon', description='find pilots for the third dungeon')
@@ -247,7 +253,7 @@ async def III(
 		result = status_check(pilots_cards, interaction, status)
 		output = await table_create_(pilots_cards=result, pilot_ships_func=ships_for_third_dungeon)
 		res.append(output)
-	await interaction.response.send_message(f"```\n{res[0]}\n{res[1]}\n```")
+	await interaction.response.send_message(f"```\nТРЕТИЙ ДОРМАНТ\n``````\n{res[0]}\n{res[1]}\n```")
 
 
 @bot.tree.command(name='fourth_dungeon', description='find pilots for the first dungeon')
@@ -261,7 +267,7 @@ async def IV(
 	pilots_cards = await fourth(int(pilots_amount), int(implant_level), skills_rating, gun_rating)
 	result = status_check(pilots_cards, interaction, status)
 	output = await table_create(pilots_cards=result, pilot_ships_func=ships_for_fourth_dungeon)
-	await interaction.response.send_message(f"```\n{output}\n```")
+	await interaction.response.send_message(f"```\nЧЕТВЕРТЫЙ ДОРМАНТ\n``````\n{output}\n```")
 
 
 def run():

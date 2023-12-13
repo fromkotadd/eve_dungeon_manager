@@ -11,7 +11,7 @@ from eve_db.services.pilotship.update import UpdatePilotShipService
 from eve_db.services.skill.create import CreateSkillService
 from eve_db.services.dungeon_pilot_visit.create import CreateDungeonVisitService
 from eve_db.services.skill.update import UpdateSkillService
-
+from eve_db.selectors.pilot import pilot_by_discord_id_exists_selector
 
 @sync_to_async()
 def pilot_card_add(discord_id: str, name: str, corporation: str, tech_level: str):
@@ -201,3 +201,9 @@ def gun_level_map(abs_gun_level: str) -> int:
 			'5-5-4': 3,
 		}
 	return GUN_LEVEL_MAP.get(abs_gun_level, "Invalid gun level")
+
+@sync_to_async()
+def pilot_exists(discord_id: str) -> bool:
+	if pilot_by_discord_id_exists_selector(discord_id=discord_id):
+		return True
+	return False
