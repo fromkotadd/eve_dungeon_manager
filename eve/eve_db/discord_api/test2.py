@@ -1,7 +1,10 @@
+import asyncio
+
 import discord
 from discord.ext import commands
 from discord.ui import Button, View
 from discord.ext.commands.context import Context
+from discord.utils import get
 
 from eve_db.discord_api import config
 from eve_db.representors.representors import first,\
@@ -14,6 +17,7 @@ class PersistentViewBot(commands.Bot):
     def __init__(self):
         intents = discord.Intents.default()
         intents.message_content = True
+        intents.guilds = True
 
         super().__init__(command_prefix=commands.when_mentioned_or('.'), intents=intents)
 
@@ -34,7 +38,9 @@ class PersistentViewForRegister(discord.ui.View, Button):
     async def register(self, interaction: discord.Interaction, button: discord.ui.Button):
         from eve_db.discord_api.services.registration.registration import \
             Registration
-        registration = Registration(interaction)
+
+        # channel = await interaction.guild.create_text_channel("registration", category=interaction.channel.category)
+        registration = Registration(interaction=interaction)
         await registration.start()
 
 @BOT.command()

@@ -110,7 +110,7 @@ class PilotSkill:
 			'3': '5-5-4',
 			}
 		self.ship_gun_typ_dict = {
-			'BHAAlGORN': 'LARGE LASER',
+			'BHAALGORN': 'LARGE LASER',
 			'NIGHTMARE': 'LARGE LASER',
 			'APOCALYPSE NAVY ISSUE': 'LARGE LASER',
 			'APOCALYPSE STRIKER': 'LARGE LASER',

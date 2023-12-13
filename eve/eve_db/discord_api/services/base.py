@@ -7,7 +7,6 @@ class BaseDiscordActionService(ABC):
     def __init__(self, interaction: discord.Interaction):
         self.interaction = interaction
         self.discord_id = interaction.user.id
-        self.followup_send_massage = self.interaction.followup.send
 
     async def add_reactions(self, message, slice: int=None):
         for emoji in self.emoji_list(slice=slice):
@@ -31,7 +30,3 @@ class BaseDiscordActionService(ABC):
             return emoji_list[:slice]
         else:
             return emoji_list
-
-    # @abstractmethod
-    # def render(self) -> str:
-    #     pass

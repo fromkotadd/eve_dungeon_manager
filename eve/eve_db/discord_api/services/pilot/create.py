@@ -5,29 +5,30 @@ from eve_db.discord_api.test2 import BOT
 
 
 class PilotCardAdd(BaseDiscordActionService):
-    def __init__(self, interaction: discord.Interaction):
+    def __init__(self, interaction: discord.Interaction, channel):
         super().__init__(interaction)
+        self.channel = channel
 
     async def pilot_card_add(self):
-        await self.followup_send_massage(
-            'Input your in game nick-name'
-            ' Warning! This nick-'
-            'name will be used in the base',
+        await self.channel.send(
+            'Введи свой игровой ник\n'
+            ' Острожно! Этот ник'
+            ' будет использоваться для цитирования и поиска вас в базе данных',
         )
         answer_name = await BOT.wait_for('message', check=lambda
 			message: message.author == self.interaction.user)
 
 
-        await self.followup_send_massage(
-            'Input your in game corporation'
-            ' teg (STEP, WGS, EVE, etc)',
+        await self.channel.send(
+            'Введи свой корп-тег '
+            '(STEP, WGS, EVE, etc)',
         )
         answer_corporation = await BOT.wait_for('message', check=lambda
 			message: message.author == self.interaction.user)
 
-        message = await self.followup_send_massage(
-            'Select your in game tech level'
-            ' (Press the number)'
+        message = await self.channel.send(
+            'Выбери свой игровой уровень'
+            ' (Жмакай эмодзи)'
         )
         await self.add_reactions(message=message, slice=10)
         reaction = await BOT.wait_for('raw_reaction_add', check=lambda

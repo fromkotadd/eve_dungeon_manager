@@ -6,24 +6,30 @@ from eve_db.discord_api.test2 import BOT
 from eve_db.discord_api.choices import PilotSkill
 
 class PilotSkillAdd(BaseDiscordActionService):
-    def __init__(self, interaction: discord.Interaction, answer_ship: str):
+    def __init__(self, interaction: discord.Interaction, channel, answer_ship: str):
         super().__init__(interaction)
+        self.channel = channel
         self.answer_ship = answer_ship
         self.skill_map = PilotSkill().skill_map
         self.ship_gun_typ_dict = PilotSkill().ship_gun_typ_dict
         self.ships_type_dict = PilotSkill().ships_type_dict
-        self.gun_type = self.ship_gun_typ_dict.get(self.answer_ship.upper(), None)
+        self.gun_type = self.ship_gun_typ_dict.get(self.answer_ship.upper(), 'ХУЙ ПИЗДА')
 
-    async def gun_skill_choices(self):
-        gun_type = self.ship_gun_typ_dict.get(self.answer_ship.upper(), None)
-        if gun_type:
-            return await self.gun_skill_reg()
-        else:
-            return False
+    # async def gun_skill_choices(self):
+    #     gun_type = self.ship_gun_typ_dict.get(self.answer_ship.upper(), None)
+    #     if gun_type:
+    #         return await self.gun_skill_reg()
+    #     else:
+    #         return False
 
     async def gun_skill_reg(self):
-        message = await self.followup_send_massage(
-            f'Choose your level of {self.gun_type} skill (Press the number)\n'
+        print(self.answer_ship)
+
+        print(self.ship_gun_typ_dict)
+
+        print(self.gun_type)
+        message = await self.channel.send(
+            f'Выбери уровень свой прокачки для навыка {self.gun_type} (Жмакай эмодзи)\n'
             '1: 4-4\n'
             '2: 4-5-3\n'
             '3: 5-5-4\n'
@@ -39,8 +45,8 @@ class PilotSkillAdd(BaseDiscordActionService):
         }
 
     async def base_ship_skills_reg(self):
-        message = await self.followup_send_massage(
-            f'Select your command skill level for {self.answer_ship} (Press the number)\n'
+        message = await self.channel.send(
+            f'Выбери свой уровень прокачки Управления для {self.answer_ship} (Жмакай)\n'
             '1: 4-4\n'
             '2: 4-5-3\n'
             '3: 5-5-4\n'
@@ -52,7 +58,7 @@ class PilotSkillAdd(BaseDiscordActionService):
             self.emoji_map(f'{reaction.emoji}'))
 
         message = await self.followup_send_massage(
-            f'Select your defense upgrade skill level for {self.answer_ship} (Press the number)\n'
+            f'Выбери свой уровень прокачки Защиты для {self.answer_ship} (Жмакай)\n'
             '1: 4-4\n'
             '2: 4-5-3\n'
             '3: 5-5-4\n'
@@ -63,8 +69,8 @@ class PilotSkillAdd(BaseDiscordActionService):
         answer_defense_upgrade_level = self.skill_map.get(
             self.emoji_map(f'{reaction.emoji}'))
 
-        message = await self.followup_send_massage(
-            f'Select your engineering skill level for {self.answer_ship} (Press the number)\n'
+        message = await self.channel.send(
+            f'Выбери свой уровень прокачки Инженерки для {self.answer_ship} (Жмакай)\n'
             '1: 4-4\n'
             '2: 4-5-3\n'
             '3: 5-5-4\n'
@@ -84,8 +90,8 @@ class PilotSkillAdd(BaseDiscordActionService):
         }
         return result
 
-    async def load(self):
-        gun_skill = await self.gun_skill_choices()
-        base_ship_skills = await self.base_ship_skills_reg()
-
-        return gun_skill, base_ship_skills
+    # async def load(self):
+    #     gun_skill = await self.gun_skill_choices()
+    #     base_ship_skills = await self.base_ship_skills_reg()
+    #
+    #     return gun_skill, base_ship_skills
