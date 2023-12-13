@@ -58,7 +58,7 @@ def pilots_for_first_dungeon(pilots_amount=20, implant_level=15, skills_rating=2
 		Q(
 			Q(implants__implant_level__gte=implant_level),
 			Q(implants__implant_name__in=[ImplantNames.FOCUSED_CRYSTAL]),
-			Q(pilot_ships__ship_name__in=[ShipNames.BHAAlGORN]),
+			Q(pilot_ships__ship_name__in=[ShipNames.BHAALGORN]),
 			Q(skills__name__in=[SkillNames.LARGE_LASER], skills__level__gte=gun_rating),
 			required_skills_amount=len(required_skills),
 			dungeon_visits_amount__lt=week_visits_limit,

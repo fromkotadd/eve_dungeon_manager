@@ -1,5 +1,3 @@
-import asyncio
-
 import discord
 from discord.ext import commands
 from discord.ui import Button, View
@@ -7,8 +5,7 @@ from discord.ext.commands.context import Context
 from discord.utils import get
 
 from eve_db.discord_api import config
-from eve_db.representors.representors import first,\
-	pilot_card_add, pilot_ship_add, pilot_implant_add, pilot_skill_add
+
 
 from discord.ext import commands
 import discord
@@ -39,7 +36,6 @@ class PersistentViewForRegister(discord.ui.View, Button):
         from eve_db.discord_api.services.registration.registration import \
             Registration
 
-        # channel = await interaction.guild.create_text_channel("registration", category=interaction.channel.category)
         registration = Registration(interaction=interaction)
         await registration.start()
 

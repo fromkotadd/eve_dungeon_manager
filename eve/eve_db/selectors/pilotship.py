@@ -12,7 +12,7 @@ def ships_for_first_dungeon(discord_id: str) -> list:
 	pilot_cards = Pilot.objects.get(discord_id=discord_id)
 	required_ships = [
 		ShipNames.VINDICATOR,
-		ShipNames.BHAAlGORN,
+		ShipNames.BHAALGORN,
 		ShipNames.NIGHTMARE
 	]
 	pilot_ship = pilot_cards.pilot_ships.\
