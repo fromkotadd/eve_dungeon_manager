@@ -2,6 +2,7 @@ import asyncio
 
 import discord
 
+from eve_db.discord_api.config import config
 from eve_db.discord_api.services.dungeon.create import DungeonChoice
 from eve_db.discord_api.services.implant.create import PilotImplantAdd
 from eve_db.discord_api.services.pilot.create import PilotCardAdd
@@ -16,7 +17,9 @@ class Registration:
         super().__init__()
         self.interaction = interaction
         self.user_name = interaction.user.name
+        self.user = interaction.user
         self.discord_id = interaction.user.id
+        self.role = interaction.guild.get_role(config['DORMANT_ROLE'])
 
     async def start(self):
         channel = await (self.interaction.guild.create_text_channel(
@@ -27,42 +30,45 @@ class Registration:
         pilot_exist = await pilot_exists(discord_id=self.discord_id)
         if not pilot_exist:
             pilot_card = await PilotCardAdd(self.interaction, channel).pilot_card_add()
+        else:
+            pilot_card = None
         dungeon_choice = await DungeonChoice(self.interaction, channel).dungeon_choice()
         answers_ship = await PilotShipAdd(self.interaction, channel).load(dungeon_choice)
         answer_gun_skill = await PilotSkillAdd(self.interaction, channel, answers_ship['ship_name']).gun_skill_reg()
         answer_ship_skill = await PilotSkillAdd(self.interaction, channel, answers_ship['ship_name']).base_ship_skills_reg()
         answer_implant = await PilotImplantAdd(self.interaction, channel).implant(answer_gun_skill['gun_type'])
-        if not pilot_exist:
-            await channel.send(
-                f'pilot_card_reg: {pilot_card}\n'
-                f'dungeon_choice: {dungeon_choice}\n'
-                f'answers_ship: {answers_ship}\n'
-                f'answer_gun_skill: {answer_gun_skill}\n'
-                f'answer_ship_skill: {answer_ship_skill}\n'
-                f'answer_implant: {answer_implant}'
-            )
-        else:
-            await channel.send(
-                f'dungeon_choice: {dungeon_choice}\n'
-                f'answers_ship: {answers_ship}\n'
-                f'answer_gun_skill: {answer_gun_skill}\n'
-                f'answer_ship_skill: {answer_ship_skill}\n'
-                f'answer_implant: {answer_implant}'
-            )
+        # if not pilot_exist:
+        #     await channel.send(
+        #         f'pilot_card_reg: {pilot_card}\n'
+        #         f'dungeon_choice: {dungeon_choice}\n'
+        #         f'answers_ship: {answers_ship}\n'
+        #         f'answer_gun_skill: {answer_gun_skill}\n'
+        #         f'answer_ship_skill: {answer_ship_skill}\n'
+        #         f'answer_implant: {answer_implant}'
+        #     )
+        # else:
+        #     await channel.send(
+        #         f'dungeon_choice: {dungeon_choice}\n'
+        #         f'answers_ship: {answers_ship}\n'
+        #         f'answer_gun_skill: {answer_gun_skill}\n'
+        #         f'answer_ship_skill: {answer_ship_skill}\n'
+        #         f'answer_implant: {answer_implant}'
+        #     )
         await channel.send('Registration completed!')
         if not pilot_exist:
-            write = await self.django_app_write(pilot_card, answers_ship, answer_gun_skill, answer_ship_skill, answer_implant)
+            write = await self.django_app_write(answers_ship, answer_gun_skill, answer_ship_skill, answer_implant, pilot_card=pilot_card)
         else:
-            write = await self.django_app_write(answers_ship, answer_gun_skill, answer_ship_skill, answer_implant)
+            write = await self.django_app_write(answers_ship, answer_gun_skill, answer_ship_skill, answer_implant, None)
         await channel.send('Django app write completed!')
-        await channel.send(write)
+        # await channel.send(write)
+        await self.user.add_roles(self.role)
         await asyncio.sleep(60)
         await channel.delete()
 
     async def django_app_write(self, answers_ship, answer_gun_skill, answer_ship_skill, answer_implant, pilot_card=None):
         if pilot_card is not None:
             pilot_card_res = await pilot_card_add(
-                discord_id=pilot_card['discord_id'],
+                discord_id=self.discord_id,
                 name=pilot_card['name'],
                 corporation=pilot_card['corporation'].upper(),
                 tech_level=pilot_card['tech_level'],
