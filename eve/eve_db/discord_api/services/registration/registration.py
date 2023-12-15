@@ -61,7 +61,9 @@ class Registration:
             write = await self.django_app_write(answers_ship, answer_gun_skill, answer_ship_skill, answer_implant, None)
         await channel.send('Django app write completed!')
         # await channel.send(write)
-        await self.user.add_roles(self.role)
+        if self.role not in self.user.roles:
+            await self.user.add_roles(self.role)
+
         await asyncio.sleep(60)
         await channel.delete()
 
