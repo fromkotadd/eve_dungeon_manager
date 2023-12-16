@@ -1,7 +1,9 @@
 from asgiref.sync import sync_to_async
 
-from eve_db.selectors.pilot import pilots_for_first_dungeon, pilots_for_second_dungeon, pilots_for_third_dungeon_dread,\
-	pilots_for_fourth_dungeon, pilots_for_third_dungeon_carrier
+from eve_db.selectors.pilot import pilots_for_first_dungeon, \
+	pilots_for_second_dungeon, pilots_for_third_dungeon_dread, \
+	pilots_for_fourth_dungeon, pilots_for_third_dungeon_carrier, \
+	pilots_for_third_dungeon
 from eve_db.services.implant.update import UpdateImplantService
 from eve_db.services.pilot.create import CreatePilotService
 from eve_db.services.pilot.update import UpdatePilotService
@@ -146,7 +148,7 @@ def second(pilots_amount: int=20, implant_level: int=15, skills_rating: str='4-5
 
 
 @sync_to_async()
-def third(pilots_amount: int=20, implant_level: int=15, skills_rating: str='4-5-3', gun_rating: str='4-5-3') -> list:
+def third_old(pilots_amount: int=20, implant_level: int=15, skills_rating: str='4-5-3', gun_rating: str='4-5-3') -> list:
 	skills_ratings = skill_level_map(skills_rating)
 	gun_ratings = gun_level_map(gun_rating)
 	sample_of_pilots_dread = pilots_for_third_dungeon_dread(pilots_amount, implant_level, skills_ratings, gun_ratings).\
@@ -169,6 +171,24 @@ def third(pilots_amount: int=20, implant_level: int=15, skills_rating: str='4-5-
 		)
 	return list(sample_of_pilots_dread), list(sample_of_pilots_carrier)
 
+@sync_to_async()
+def third(pilots_amount: int=20, implant_level: int=15, skills_rating: str='4-5-3', gun_rating: str='4-5-3') -> list:
+	skills_ratings = skill_level_map(skills_rating)
+	gun_ratings = gun_level_map(gun_rating)
+	# sample_of_pilots = pilots_for_third_dungeon(pilots_amount, implant_level, skills_ratings, gun_ratings).\
+	# 	values(
+	# 		'discord_id',
+	# 		'name',
+	# 		'corporation',
+	# 		'tech_level',
+	# 		'dungeon_visits_amount',
+	# 		'skills_rating'
+	# 	)
+	# return list(sample_of_pilots)
+	sample_of_pilots = pilots_for_third_dungeon(pilots_amount, implant_level,
+												skills_ratings, gun_ratings)
+
+	return sample_of_pilots
 
 @sync_to_async()
 def fourth(pilots_amount: int=20, implant_level: int=15, skills_rating: str='4-5-3', gun_rating: str='4-5-3') -> list:

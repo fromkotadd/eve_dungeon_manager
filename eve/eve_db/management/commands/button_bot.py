@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from eve_db.discord_api.test import run
+from eve_db.discord_api.button_bot import run
 
 
 class Command(BaseCommand):

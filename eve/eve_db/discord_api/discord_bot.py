@@ -11,7 +11,7 @@ from eve_db.representors.representors import first, pilot_card_add, pilot_ship_a
 	pilot_implant_upd, pilot_skill_upd, second, third, fourth
 from eve_db.selectors.pilotship import ships_for_first_dungeon, ships_for_second_dungeon, ships_for_third_dungeon, \
 	ships_for_fourth_dungeon
-from eve_db.utils import table_create, table_create_
+from eve_db.utils import table_create
 
 intents = discord.Intents.all()
 intents.members = True
@@ -253,18 +253,18 @@ async def III(
 		skills_rating: str = '4-5-3',
 		gun_rating: str = '4-5-3',
 		status: str = 'online'):
-	res = []
-	pilots_cards_list = await third(int(pilots_amount), int(implant_level), skills_rating, gun_rating)
-	for pilots_cards in pilots_cards_list:
-		result = status_check(pilots_cards, interaction, status)
-		output = await table_create_(pilots_cards=result, pilot_ships_func=ships_for_third_dungeon)
-		res.append(output)
+	pilots_cards = await third(int(pilots_amount), int(implant_level),
+								 skills_rating, gun_rating)
+	result = status_check(pilots_cards, interaction, status)
+	output = await table_create(pilots_cards=result,
+								pilot_ships_func=ships_for_third_dungeon)
+
 	await interaction.response.send_message(f"```\nТРЕТИЙ ДОРМАНТ\n"
 											f"Статус пилотов: {status}\n"
 											f"УРОВЕНЬ ИМПЛАНТА>={implant_level} "
 											f" ПРОКАЧКА КОРАБЛЯ>={skills_rating} "
 											f"ПРОКАЧКА ОРУДИЙ>={gun_rating}"
-											f"\n{res[0]}\n{res[1]}\n```")
+											f"\n{output}\n```", ephemeral=True)
 
 
 @bot.tree.command(name='fourth_dungeon', description='find pilots for the first dungeon')

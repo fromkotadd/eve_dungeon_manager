@@ -54,7 +54,7 @@ def table_create(pilots_cards, pilot_ships_func):
 
 
 @sync_to_async()
-def table_create_(pilots_cards, pilot_ships_func):
+def table_create_old(pilots_cards, pilot_ships_func):
 	body = []
 	for pilots_card in pilots_cards:
 		pilot_ships = pilot_ships_func(discord_id=int(pilots_card['discord_id']))

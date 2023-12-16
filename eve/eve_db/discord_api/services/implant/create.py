@@ -1,7 +1,7 @@
 import discord
 
 from eve_db.discord_api.services.base import BaseDiscordActionService
-from eve_db.discord_api.test2 import BOT
+from eve_db.discord_api.button_bot import BOT
 
 from eve_db.discord_api.choices import ImplantChoices
 

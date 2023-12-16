@@ -37,32 +37,23 @@ class Registration:
         answer_gun_skill = await PilotSkillAdd(self.interaction, channel, answers_ship['ship_name']).gun_skill_reg()
         answer_ship_skill = await PilotSkillAdd(self.interaction, channel, answers_ship['ship_name']).base_ship_skills_reg()
         answer_implant = await PilotImplantAdd(self.interaction, channel).implant(answer_gun_skill['gun_type'])
-        # if not pilot_exist:
-        #     await channel.send(
-        #         f'pilot_card_reg: {pilot_card}\n'
-        #         f'dungeon_choice: {dungeon_choice}\n'
-        #         f'answers_ship: {answers_ship}\n'
-        #         f'answer_gun_skill: {answer_gun_skill}\n'
-        #         f'answer_ship_skill: {answer_ship_skill}\n'
-        #         f'answer_implant: {answer_implant}'
-        #     )
-        # else:
-        #     await channel.send(
-        #         f'dungeon_choice: {dungeon_choice}\n'
-        #         f'answers_ship: {answers_ship}\n'
-        #         f'answer_gun_skill: {answer_gun_skill}\n'
-        #         f'answer_ship_skill: {answer_ship_skill}\n'
-        #         f'answer_implant: {answer_implant}'
-        #     )
         await channel.send('Registration completed!')
         if not pilot_exist:
             write = await self.django_app_write(answers_ship, answer_gun_skill, answer_ship_skill, answer_implant, pilot_card=pilot_card)
         else:
             write = await self.django_app_write(answers_ship, answer_gun_skill, answer_ship_skill, answer_implant, None)
         await channel.send('Django app write completed!')
-        # await channel.send(write)
-        if self.role not in self.user.roles:
-            await self.user.add_roles(self.role)
+        await channel.send(write)
+        try:
+            if self.role not in self.user.roles:
+                await self.user.add_roles(self.role)
+        except Exception as e:
+            print(e)
+            await channel.send('Не удалось добавить роль')
+            await channel.send(f'Ошибка: {e}')
+            await channel.send('Отправь плиз скрин в канал bug-report')
+            await asyncio.sleep(60)
+            await channel.delete()
 
         await asyncio.sleep(60)
         await channel.delete()

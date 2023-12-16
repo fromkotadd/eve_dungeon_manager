@@ -1,4 +1,5 @@
 from typing import Optional
+from itertools import chain
 
 from django.db.models import QuerySet, Count, Q, Avg
 
@@ -152,9 +153,16 @@ def pilots_for_second_dungeon(pilots_amount=20, implant_level=15, skills_rating=
 	) \
 			.order_by('-skills_rating').distinct()[:pilots_amount]
 
+def pilots_for_third_dungeon(pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2) -> QuerySet[Pilot]:
+	a = pilots_for_third_dungeon_dread(pilots_amount, implant_level, skills_rating, gun_rating)
+	b = pilots_for_third_dungeon_carrier(pilots_amount, implant_level, skills_rating, gun_rating)
+	result_list = list(chain(a.values(), b.values()))
+	id_by_dict = {i['id']: i for i in result_list}
+	clear_result_list = list(id_by_dict.values())
 
-def pilots_for_third_dungeon_dread(pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2) -> QuerySet[
-	Pilot]:
+	return clear_result_list[:pilots_amount]
+
+def pilots_for_third_dungeon_dread(pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2) -> QuerySet[Pilot]:
 	week_visits_limit = 10
 	week_beginning = get_week_beginning()
 	dungeon_name = Dungeons.III
@@ -223,8 +231,7 @@ def pilots_for_third_dungeon_dread(pilots_amount=20, implant_level=15, skills_ra
 			   .order_by('-skills_rating').distinct()[:pilots_amount]
 
 
-def pilots_for_third_dungeon_carrier(pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2) -> QuerySet[
-	Pilot]:
+def pilots_for_third_dungeon_carrier(pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2) -> QuerySet[Pilot]:
 	week_visits_limit = 10
 	week_beginning = get_week_beginning()
 	dungeon_name = Dungeons.III
