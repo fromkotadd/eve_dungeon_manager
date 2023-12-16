@@ -38,10 +38,16 @@ class PersistentViewForRegister(discord.ui.View, Button):
 
     @discord.ui.button(label='Register', style=discord.ButtonStyle.green, custom_id='Register')
     async def register(self, interaction: discord.Interaction, button: discord.ui.Button):
+
         from eve_db.discord_api.services.registration.registration import \
             Registration
-
         registration = Registration(interaction=interaction)
+        # channel = await (interaction.guild.create_text_channel(
+        #     name=interaction.user.name,
+        #     category=interaction.channel.category))
+        # await channel.send(f'<@{str(interaction.user.id)}>')
+        # await interaction.response.send_message(f'Для регистрации перейди в канал - <#{channel.id}>', ephemeral=True)
+
         await registration.start()
 
 class PersistentViewForRegisterDungeonVisits(discord.ui.View, Button):
@@ -238,7 +244,7 @@ async def register(ctx: commands.Context): #prepare
 @BOT.command()
 @commands.is_owner()
 async def filter(ctx: commands.Context): #prepare
-    await ctx.send("Поиск пилотов",
+    await ctx.send("Поиск пилотов в дормант Он-лайн",
                    view=PersistentViewForPilotFilter())
     # The stored view can now be reused later on.
 def run():

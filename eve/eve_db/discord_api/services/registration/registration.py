@@ -16,16 +16,19 @@ class Registration:
     def __init__(self, interaction: discord.Interaction):
         super().__init__()
         self.interaction = interaction
-        self.user_name = interaction.user.name
+        # self.user_name = interaction.user.name
         self.user = interaction.user
         self.discord_id = interaction.user.id
         self.role = interaction.guild.get_role(config['DORMANT_ROLE'])
 
     async def start(self):
         channel = await (self.interaction.guild.create_text_channel(
-            name=self.user_name,
+            name=self.interaction.user.name,
             category=self.interaction.channel.category))
         await channel.send(f'<@{str(self.interaction.user.id)}>')
+        await self.interaction.response.send_message(
+            f'Для регистрации перейди в канал - <#{channel.id}>',
+            ephemeral=True)
 
         pilot_exist = await pilot_exists(discord_id=self.discord_id)
         if not pilot_exist:
@@ -56,6 +59,7 @@ class Registration:
             await channel.delete()
 
         await asyncio.sleep(60)
+        await self.interaction.delete_original_response()
         await channel.delete()
 
     async def django_app_write(self, answers_ship, answer_gun_skill, answer_ship_skill, answer_implant, pilot_card=None):
