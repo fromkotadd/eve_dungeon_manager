@@ -24,7 +24,8 @@ class PersistentViewBot(commands.Bot):
     async def setup_hook(self) -> None:
         self.add_view(PersistentViewForRegister())
         self.add_view(PersistentViewForRegisterDungeonVisits())
-        self.add_view(PersistentViewForPilotFilter())
+        self.add_view(PersistentViewForPilotFilterOnLine())
+        self.add_view(PersistentViewForPilotFilterOffLine())
 
     async def on_ready(self):
         print(f'Logged in as {self.user} (ID: {self.user.id})')
@@ -42,11 +43,6 @@ class PersistentViewForRegister(discord.ui.View, Button):
         from eve_db.discord_api.services.registration.registration import \
             Registration
         registration = Registration(interaction=interaction)
-        # channel = await (interaction.guild.create_text_channel(
-        #     name=interaction.user.name,
-        #     category=interaction.channel.category))
-        # await channel.send(f'<@{str(interaction.user.id)}>')
-        # await interaction.response.send_message(f'Для регистрации перейди в канал - <#{channel.id}>', ephemeral=True)
 
         await registration.start()
 
@@ -118,7 +114,7 @@ class PersistentViewForRegisterDungeonVisits(discord.ui.View, Button):
         await asyncio.sleep(10)
         await interaction.delete_original_response()
 
-class PersistentViewForPilotFilter(discord.ui.View, Button):
+class PersistentViewForPilotFilterOnLine(discord.ui.View, Button):
     def __init__(self):
         super().__init__(timeout=None)
 
@@ -218,6 +214,107 @@ class PersistentViewForPilotFilter(discord.ui.View, Button):
         await asyncio.sleep(600)
         await interaction.delete_original_response()
 
+class PersistentViewForPilotFilterOffLine(discord.ui.View, Button):
+    def __init__(self):
+        super().__init__(timeout=None)
+
+    @discord.ui.button(label='I', style=discord.ButtonStyle.gray, custom_id='First+')
+    async def I(
+            self,
+            interaction: discord.Interaction,
+            button: discord.ui.Button,
+            pilots_amount: str = '20',
+            implant_level: str = '15',
+            skills_rating: str = '4-5-3',
+            gun_rating: str = '4-5-3',
+            status: str = 'Any',):
+        pilots_cards = await first(int(pilots_amount), int(implant_level),
+                                   skills_rating, gun_rating)
+        result = status_check(pilots_cards, interaction, status)
+        output = await table_create(pilots_cards=result,
+                                    pilot_ships_func=ships_for_first_dungeon)
+
+        await interaction.response.send_message(f"```\nПЕРВЫЙ ДОРМАНТ\n"
+                                                f"Статус пилотов: {status}\n"
+                                                f"УРОВЕНЬ ИМПЛАНТА>={implant_level} "
+                                                f" ПРОКАЧКА КОРАБЛЯ>={skills_rating} "
+                                                f"ПРОКАЧКА ОРУДИЙ>={gun_rating}"
+                                                f"\n{output}\n```", ephemeral=True)
+        await asyncio.sleep(600)
+        await interaction.delete_original_response()
+
+    @discord.ui.button(label='II', style=discord.ButtonStyle.gray,
+                       custom_id='Second+')
+    async def II(
+            self,
+            interaction: discord.Interaction,
+            button: discord.ui.Button,
+            pilots_amount: str = '20',
+            implant_level: str = '15',
+            skills_rating: str = '4-5-3',
+            gun_rating: str = '4-5-3',
+            status: str = 'Any'):
+        pilots_cards = await second(int(pilots_amount), int(implant_level), skills_rating, gun_rating)
+        result = status_check(pilots_cards, interaction, status)
+        output = await table_create(pilots_cards=result, pilot_ships_func=ships_for_second_dungeon)
+
+        await interaction.response.send_message(f"```\nВТОРОЙ ДОРМАНТ\n"
+                                                f"Статус пилотов: {status}\n"
+                                                f"УРОВЕНЬ ИМПЛАНТА>={implant_level} "
+                                                f" ПРОКАЧКА КОРАБЛЯ>={skills_rating} "
+                                                f"ПРОКАЧКА ОРУДИЙ>={gun_rating}"
+                                                f"\n{output}\n```", ephemeral=True)
+        await asyncio.sleep(600)
+        await interaction.delete_original_response()
+
+    @discord.ui.button(label='III', style=discord.ButtonStyle.gray,
+                       custom_id='Third+')
+    async def III(
+            self,
+            interaction: discord.Interaction,
+            button: discord.ui.Button,
+            pilots_amount: str = '20',
+            implant_level: str = '15',
+            skills_rating: str = '4-5-3',
+            gun_rating: str = '4-5-3',
+            status: str = 'Any'):
+        pilots_cards = await third(int(pilots_amount), int(implant_level), skills_rating, gun_rating)
+        result = status_check(pilots_cards, interaction, status)
+        output = await table_create(pilots_cards=result, pilot_ships_func=ships_for_third_dungeon)
+
+        await interaction.response.send_message(f"```\nТРЕТИЙ ДОРМАНТ\n"
+                                                f"Статус пилотов: {status}\n"
+                                                f"УРОВЕНЬ ИМПЛАНТА>={implant_level} "
+                                                f" ПРОКАЧКА КОРАБЛЯ>={skills_rating} "
+                                                f"ПРОКАЧКА ОРУДИЙ>={gun_rating}"
+                                                f"\n{output}\n```", ephemeral=True)
+        await asyncio.sleep(600)
+        await interaction.delete_original_response()
+
+    @discord.ui.button(label='IV', style=discord.ButtonStyle.gray,
+                       custom_id='Fourth+')
+    async def IV(
+            self,
+            interaction: discord.Interaction,
+            button: discord.ui.Button,
+            pilots_amount: str = '20',
+            implant_level: str = '15',
+            skills_rating: str = '4-5-3',
+            gun_rating: str = '4-5-3',
+            status: str = 'Any'):
+        pilots_cards = await fourth(int(pilots_amount), int(implant_level), skills_rating, gun_rating)
+        result = status_check(pilots_cards, interaction, status)
+        output = await table_create(pilots_cards=result, pilot_ships_func=ships_for_fourth_dungeon)
+        await interaction.response.send_message(f"```\nЧЕТВЕРТЫЙ ДОРМАНТ\n"
+                                                f"Статус пилотов: {status}\n"
+                                                f"УРОВЕНЬ ИМПЛАНТА>={implant_level} "
+                                                f" ПРОКАЧКА КОРАБЛЯ>={skills_rating} "
+                                                f"ПРОКАЧКА ОРУДИЙ>={gun_rating}"
+                                                f"\n{output}\n```", ephemeral=True)
+        await asyncio.sleep(600)
+        await interaction.delete_original_response()
+
+
 @BOT.command()
 @commands.is_owner()
 async def visits(ctx: commands.Context): #prepare
@@ -244,8 +341,11 @@ async def register(ctx: commands.Context): #prepare
 @BOT.command()
 @commands.is_owner()
 async def filter(ctx: commands.Context): #prepare
-    await ctx.send("Поиск пилотов в дормант Он-лайн",
-                   view=PersistentViewForPilotFilter())
+    await ctx.send("Поиск пилотов Онлайн",
+                   view=PersistentViewForPilotFilterOnLine())
+    await ctx.send("========================\n\n\n\n\n========================")
+    await ctx.send("Поиск пилотов Офлайн",
+                   view=PersistentViewForPilotFilterOffLine())
     # The stored view can now be reused later on.
 def run():
     BOT.run(config.config['TOKEN'])

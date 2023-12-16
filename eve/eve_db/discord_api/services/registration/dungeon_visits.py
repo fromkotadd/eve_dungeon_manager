@@ -1,5 +1,3 @@
-from typing import List
-
 import discord
 
 from eve_db.representors.representors import pilot_exists
