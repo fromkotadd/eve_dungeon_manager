@@ -44,7 +44,7 @@ class PersistentViewForRegister(discord.ui.View, Button):
         super().__init__(timeout=None)
 
     @discord.ui.button(label='Register', style=discord.ButtonStyle.green, custom_id='Register')
-    async def register(self, interaction: discord.Interaction):
+    async def register(self, interaction: discord.Interaction, button: discord.ui.Button):
 
         from eve_db.discord_api.services.registration.registration import \
             Registration
