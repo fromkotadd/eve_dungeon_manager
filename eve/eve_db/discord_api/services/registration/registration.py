@@ -18,7 +18,7 @@ class Registration:
         self.interaction = interaction
         # self.user_name = interaction.user.name
         self.user = self.interaction.user
-        self.discord_id = self,interaction.user.id
+        self.discord_id = self.interaction.user.id
         self.role = self.interaction.guild.get_role(config['DORMANT_ROLE'])
         self.faq_channel = 1184803402115457054
 
