@@ -17,9 +17,10 @@ class Registration:
         super().__init__()
         self.interaction = interaction
         # self.user_name = interaction.user.name
-        self.user = interaction.user
-        self.discord_id = interaction.user.id
-        self.role = interaction.guild.get_role(config['DORMANT_ROLE'])
+        self.user = self.interaction.user
+        self.discord_id = self,interaction.user.id
+        self.role = self.interaction.guild.get_role(config['DORMANT_ROLE'])
+        self.faq_channel = 1184803402115457054
 
     async def start(self):
         channel = await (self.interaction.guild.create_text_channel(
@@ -45,8 +46,8 @@ class Registration:
             write = await self.django_app_write(answers_ship, answer_gun_skill, answer_ship_skill, answer_implant, pilot_card=pilot_card)
         else:
             write = await self.django_app_write(answers_ship, answer_gun_skill, answer_ship_skill, answer_implant, None)
-        await channel.send('Django app write completed!')
-        await channel.send(write)
+        await channel.send(f'Ознакомится с функционалом бота можно в канале <#{self.faq_channel}>')
+        # await channel.send(write)
         try:
             if self.role not in self.user.roles:
                 await self.user.add_roles(self.role)
