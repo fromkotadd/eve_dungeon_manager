@@ -320,14 +320,8 @@ class PersistentViewForPilotFilterOffLine(discord.ui.View, Button):
 @BOT.command()
 @commands.is_owner()
 async def visits(ctx: commands.Context): #prepare
-    """Starts a persistent view."""
-    # In order for a persistent view to be listened to, it needs to be sent to an actual message.
-    # Call this method once just to store it somewhere.
-    # In a more complicated program you might fetch the message_id from a database for use later.
-    # However this is outside of the scope of this simple example.
     await ctx.send("Отметить посещение дорманта",
                    view=PersistentViewForRegisterDungeonVisits())
-    # The stored view can now be reused later on.
 @BOT.command()
 @commands.is_owner()
 async def register(ctx: commands.Context): #prepare 1
