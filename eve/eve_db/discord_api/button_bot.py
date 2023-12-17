@@ -57,7 +57,7 @@ class PersistentViewForRegisterDungeonVisits(discord.ui.View, Button):
         super().__init__(timeout=None)
 
     @discord.ui.button(label='I', style=discord.ButtonStyle.green, custom_id='I')
-    async def visit_registration_I(self, interaction: discord.Interaction):
+    async def visit_registration_I(self, interaction: discord.Interaction, button: discord.ui.Button):
         from eve_db.discord_api.services.registration.dungeon_visits import \
             DungeonVisits
         dungeon_name = '1'
@@ -69,7 +69,7 @@ class PersistentViewForRegisterDungeonVisits(discord.ui.View, Button):
 
     @discord.ui.button(label='II', style=discord.ButtonStyle.green,
                        custom_id='II')
-    async def visit_registration_II(self, interaction: discord.Interaction):
+    async def visit_registration_II(self, interaction: discord.Interaction, button: discord.ui.Button):
         from eve_db.discord_api.services.registration.dungeon_visits import \
             DungeonVisits
         dungeon_name = '2'
@@ -81,7 +81,7 @@ class PersistentViewForRegisterDungeonVisits(discord.ui.View, Button):
 
     @discord.ui.button(label='III', style=discord.ButtonStyle.green,
                        custom_id='III')
-    async def visit_registration_III(self, interaction: discord.Interaction):
+    async def visit_registration_III(self, interaction: discord.Interaction, button: discord.ui.Button):
         from eve_db.discord_api.services.registration.dungeon_visits import \
             DungeonVisits
         dungeon_name = '3'
@@ -93,7 +93,7 @@ class PersistentViewForRegisterDungeonVisits(discord.ui.View, Button):
 
     @discord.ui.button(label='IV', style=discord.ButtonStyle.green,
                        custom_id='IV')
-    async def visit_registration_IV(self, interaction: discord.Interaction):
+    async def visit_registration_IV(self, interaction: discord.Interaction, button: discord.ui.Button):
         from eve_db.discord_api.services.registration.dungeon_visits import \
             DungeonVisits
         dungeon_name = '4'
@@ -105,7 +105,7 @@ class PersistentViewForRegisterDungeonVisits(discord.ui.View, Button):
 
     @discord.ui.button(label='ALL', style=discord.ButtonStyle.red,
                        custom_id='ALL')
-    async def visit_registration_ALL(self, interaction: discord.Interaction):
+    async def visit_registration_ALL(self, interaction: discord.Interaction, button: discord.ui.Button):
         from eve_db.discord_api.services.registration.dungeon_visits import \
             DungeonVisits
         dungeon_name = ['1', '2', '3', '4']
@@ -124,6 +124,7 @@ class PersistentViewForPilotFilterOnLine(discord.ui.View, Button):
     async def I(
             self,
             interaction: discord.Interaction,
+            button: discord.ui.Button,
             pilots_amount: str = '20',
             implant_level: str = '15',
             skills_rating: str = '4-5-3',
@@ -149,6 +150,7 @@ class PersistentViewForPilotFilterOnLine(discord.ui.View, Button):
     async def II(
             self,
             interaction: discord.Interaction,
+            button: discord.ui.Button,
             pilots_amount: str = '20',
             implant_level: str = '15',
             skills_rating: str = '4-5-3',
@@ -172,6 +174,7 @@ class PersistentViewForPilotFilterOnLine(discord.ui.View, Button):
     async def III(
             self,
             interaction: discord.Interaction,
+            button: discord.ui.Button,
             pilots_amount: str = '20',
             implant_level: str = '15',
             skills_rating: str = '4-5-3',
@@ -195,6 +198,7 @@ class PersistentViewForPilotFilterOnLine(discord.ui.View, Button):
     async def IV(
             self,
             interaction: discord.Interaction,
+            button: discord.ui.Button,
             pilots_amount: str = '20',
             implant_level: str = '15',
             skills_rating: str = '4-5-3',
@@ -220,6 +224,7 @@ class PersistentViewForPilotFilterOffLine(discord.ui.View, Button):
     async def I(
             self,
             interaction: discord.Interaction,
+            button: discord.ui.Button,
             pilots_amount: str = '20',
             implant_level: str = '15',
             skills_rating: str = '4-5-3',
@@ -245,6 +250,7 @@ class PersistentViewForPilotFilterOffLine(discord.ui.View, Button):
     async def II(
             self,
             interaction: discord.Interaction,
+            button: discord.ui.Button,
             pilots_amount: str = '20',
             implant_level: str = '15',
             skills_rating: str = '4-5-3',
@@ -268,6 +274,7 @@ class PersistentViewForPilotFilterOffLine(discord.ui.View, Button):
     async def III(
             self,
             interaction: discord.Interaction,
+            button: discord.ui.Button,
             pilots_amount: str = '20',
             implant_level: str = '15',
             skills_rating: str = '4-5-3',
@@ -291,6 +298,7 @@ class PersistentViewForPilotFilterOffLine(discord.ui.View, Button):
     async def IV(
             self,
             interaction: discord.Interaction,
+            button: discord.ui.Button,
             pilots_amount: str = '20',
             implant_level: str = '15',
             skills_rating: str = '4-5-3',
@@ -317,12 +325,12 @@ async def visits(ctx: commands.Context): #prepare
     # Call this method once just to store it somewhere.
     # In a more complicated program you might fetch the message_id from a database for use later.
     # However this is outside of the scope of this simple example.
-    await ctx.send("Посещение дорманта",
+    await ctx.send("Отметить посещение дорманта",
                    view=PersistentViewForRegisterDungeonVisits())
     # The stored view can now be reused later on.
 @BOT.command()
 @commands.is_owner()
-async def register(ctx: commands.Context): #prepare
+async def register(ctx: commands.Context): #prepare 1
     """Starts a persistent view."""
     # In order for a persistent view to be listened to, it needs to be sent to an actual message.
     # Call this method once just to store it somewhere.
