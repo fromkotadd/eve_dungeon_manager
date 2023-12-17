@@ -53,7 +53,7 @@ class Registration:
         except Exception as e:
             print(e)
             await channel.send('Не удалось добавить роль')
-            await channel.send(f'Ошибка: {e}')
+            await channel.send(f'Ошибка- {e}')
             await channel.send('Отправь пожалуйста скрин в канал bug-report')
             await asyncio.sleep(60)
             await channel.delete()
