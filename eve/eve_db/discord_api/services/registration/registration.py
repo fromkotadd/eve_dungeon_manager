@@ -16,7 +16,6 @@ class Registration:
     def __init__(self, interaction: discord.Interaction):
         super().__init__()
         self.interaction = interaction
-        # self.user_name = interaction.user.name
         self.user = self.interaction.user
         self.discord_id = self.interaction.user.id
         self.role = self.interaction.guild.get_role(config['DORMANT_ROLE'])
@@ -55,7 +54,7 @@ class Registration:
             print(e)
             await channel.send('Не удалось добавить роль')
             await channel.send(f'Ошибка: {e}')
-            await channel.send('Отправь плиз скрин в канал bug-report')
+            await channel.send('Отправь пожалуйста скрин в канал bug-report')
             await asyncio.sleep(60)
             await channel.delete()
 
