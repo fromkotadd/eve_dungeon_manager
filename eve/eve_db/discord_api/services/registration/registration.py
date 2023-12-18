@@ -25,42 +25,52 @@ class Registration:
         channel = await (self.interaction.guild.create_text_channel(
             name=self.interaction.user.name,
             category=self.interaction.channel.category))
-        await channel.send(f'<@{str(self.interaction.user.id)}>')
-        await self.interaction.response.send_message(
-            f'Для регистрации перейди в канал - <#{channel.id}>',
-            ephemeral=True)
 
-        pilot_exist = await pilot_exists(discord_id=self.discord_id)
-        if not pilot_exist:
-            pilot_card = await PilotCardAdd(self.interaction, channel).pilot_card_add()
-        else:
-            pilot_card = None
-        dungeon_choice = await DungeonChoice(self.interaction, channel).dungeon_choice()
-        answers_ship = await PilotShipAdd(self.interaction, channel).load(dungeon_choice)
-        answer_gun_skill = await PilotSkillAdd(self.interaction, channel, answers_ship['ship_name']).gun_skill_reg()
-        answer_ship_skill = await PilotSkillAdd(self.interaction, channel, answers_ship['ship_name']).base_ship_skills_reg()
-        answer_implant = await PilotImplantAdd(self.interaction, channel).implant(answer_gun_skill['gun_type'])
-        await channel.send('Registration completed!')
-        if not pilot_exist:
-            write = await self.django_app_write(answers_ship, answer_gun_skill, answer_ship_skill, answer_implant, pilot_card=pilot_card)
-        else:
-            write = await self.django_app_write(answers_ship, answer_gun_skill, answer_ship_skill, answer_implant, None)
-        await channel.send(f'Ознакомится с функционалом бота можно в канале <#{self.faq_channel}>')
-        # await channel.send(write)
-        try:
-            if self.role not in self.user.roles:
-                await self.user.add_roles(self.role)
-        except Exception as e:
-            print(e)
-            await channel.send('Не удалось добавить роль')
-            await channel.send(f'Ошибка- {e}')
-            await channel.send('Отправь пожалуйста скрин в канал bug-report')
+        async def normal_thread():
+            await channel.send(f'<@{str(self.interaction.user.id)}>')
+            await self.interaction.response.send_message(
+                f'Для регистрации перейди в канал - <#{channel.id}>',
+                ephemeral=True)
+
+            pilot_exist = await pilot_exists(discord_id=self.discord_id)
+            if not pilot_exist:
+                pilot_card = await PilotCardAdd(self.interaction, channel).pilot_card_add()
+            else:
+                pilot_card = None
+            dungeon_choice = await DungeonChoice(self.interaction, channel).dungeon_choice()
+            answers_ship = await PilotShipAdd(self.interaction, channel).load(dungeon_choice)
+            answer_gun_skill = await PilotSkillAdd(self.interaction, channel, answers_ship['ship_name']).gun_skill_reg()
+            answer_ship_skill = await PilotSkillAdd(self.interaction, channel, answers_ship['ship_name']).base_ship_skills_reg()
+            answer_implant = await PilotImplantAdd(self.interaction, channel).implant(answer_gun_skill['gun_type'])
+            await channel.send('Registration completed!')
+            if not pilot_exist:
+                write = await self.django_app_write(answers_ship, answer_gun_skill, answer_ship_skill, answer_implant, pilot_card=pilot_card)
+            else:
+                write = await self.django_app_write(answers_ship, answer_gun_skill, answer_ship_skill, answer_implant, None)
+            await channel.send(f'Ознакомится с функционалом бота можно в канале <#{self.faq_channel}>')
+            # await channel.send(write)
+            try:
+                if self.role not in self.user.roles:
+                    await self.user.add_roles(self.role)
+            except Exception as e:
+                print(e)
+                await channel.send('Не удалось добавить роль')
+                await channel.send(f'Ошибка- {e}')
+                await channel.send('Отправь пожалуйста скрин в канал bug-report')
+                await asyncio.sleep(60)
+                await channel.delete()
+
             await asyncio.sleep(60)
+            await self.interaction.delete_original_response()
+            await channel.delete()
+        async def kill_thread():
+            await asyncio.sleep(600)
+            await self.interaction.delete_original_response()
             await channel.delete()
 
-        await asyncio.sleep(60)
-        await self.interaction.delete_original_response()
-        await channel.delete()
+        asyncio.create_task(normal_thread())
+        asyncio.create_task(kill_thread())
+
 
     async def django_app_write(self, answers_ship, answer_gun_skill, answer_ship_skill, answer_implant, pilot_card=None):
         if pilot_card is not None:
