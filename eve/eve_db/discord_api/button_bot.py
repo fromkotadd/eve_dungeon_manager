@@ -1,4 +1,5 @@
 import asyncio
+import os
 from typing import Optional, Literal
 
 import discord
@@ -8,7 +9,6 @@ from discord.ext import commands
 from discord.ext.commands.context import Context
 from discord.ext.commands import Greedy
 
-# from eve_db.discord_api.discord_bot import status_check
 from eve_db.representors.representors import first, second, third, fourth, \
     pilot_card_add, pilot_card_upd, pilot_ship_add, pilot_ship_upd, \
     pilot_implant_add, pilot_implant_upd, pilot_skill_add, pilot_skill_upd, \
@@ -17,6 +17,7 @@ from eve_db.selectors.pilotship import ships_for_first_dungeon, \
     ships_for_second_dungeon, ships_for_third_dungeon, ships_for_fourth_dungeon
 from eve_db.utils import table_create
 
+base_dir = os.path.dirname(os.path.realpath(__file__))
 
 class PersistentViewBot(commands.Bot):
     def __init__(self):
@@ -339,7 +340,7 @@ async def register(ctx: commands.Context): #prepare 1
 async def filter(ctx: commands.Context):
     await ctx.send("Поиск пилотов Онлайн",
                    view=PersistentViewForPilotFilterOnLine())
-    await ctx.send("========================\n\n\n\n\n========================")
+    await ctx.send(file=discord.File(os.path.join(base_dir, 'content/rainbow_cat.jpg')))
     await ctx.send("Поиск пилотов Офлайн",
                    view=PersistentViewForPilotFilterOffLine())
     # The stored view can now be reused later on.
