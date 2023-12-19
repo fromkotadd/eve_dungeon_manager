@@ -27,7 +27,6 @@ class Registration:
             category=self.interaction.channel.category))
 
         async def normal_thread():
-            #
             await channel.send(f'<@{str(self.interaction.user.id)}>')
             await self.interaction.response.send_message(
                 f'Для регистрации перейди в канал - <#{channel.id}>',
