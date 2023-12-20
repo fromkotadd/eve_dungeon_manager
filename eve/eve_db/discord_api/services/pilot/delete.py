@@ -11,9 +11,9 @@ class PilotCardDelete():
 		self.discord_id = self.interaction.user.id
 
 	async def pilot_card_delete(self):
-			result = await pilot_card_delete(
-				discord_id=self.discord_id
-			)
-			await self.interaction.response.send_message(result, ephemeral=True)
-			await asyncio.sleep(10)
-			await self.interaction.delete_original_response()
+		result = await pilot_card_delete(
+			discord_id=self.discord_id
+		)
+		await self.interaction.response.send_message(result, ephemeral=True)
+		await asyncio.sleep(10)
+		await self.interaction.delete_original_response()
