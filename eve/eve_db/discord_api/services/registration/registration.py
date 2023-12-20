@@ -24,7 +24,8 @@ class Registration:
     async def start(self):
         channel = await (self.interaction.guild.create_text_channel(
             name=self.interaction.user.name,
-            category=self.interaction.channel.category))
+            category=self.interaction.channel.category)
+        )
 
         async def normal_thread():
             await channel.send(f'<@{str(self.interaction.user.id)}>')

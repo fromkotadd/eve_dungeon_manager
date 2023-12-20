@@ -33,12 +33,25 @@ class PersistentViewBot(commands.Bot):
         self.add_view(PersistentViewForRegisterDungeonVisits())
         self.add_view(PersistentViewForPilotFilterOnLine())
         self.add_view(PersistentViewForPilotFilterOffLine())
+        self.add_view(PersistentViewForDelete())
 
     async def on_ready(self):
         print(f'Logged in as {self.user} (ID: {self.user.id})')
         print('------')
 
 BOT = PersistentViewBot()
+
+class PersistentViewForDelete(discord.ui.View, Button):
+    def __init__(self):
+        super().__init__(timeout=None)
+
+    @discord.ui.button(label='Delete', style=discord.ButtonStyle.green, custom_id='Delete')
+    async def delete(self, interaction: discord.Interaction, button: discord.ui.Button):
+        from eve_db.discord_api.services.pilot.delete import PilotCardDelete
+
+        delete = PilotCardDelete(interaction=interaction)
+        await delete.pilot_card_delete()
+
 
 class PersistentViewForRegister(discord.ui.View, Button):
     def __init__(self):
@@ -317,6 +330,13 @@ class PersistentViewForPilotFilterOffLine(discord.ui.View, Button):
         await asyncio.sleep(600)
         await interaction.delete_original_response()
 
+@BOT.command()
+@commands.is_owner()
+async def delete(ctx: commands.Context):
+    await ctx.send(
+        file=discord.File(os.path.join(base_dir, 'content/gray_cat.jpg')))
+    await ctx.send("Удаление учетных данных пилота",
+                   view=PersistentViewForDelete())
 
 @BOT.command()
 @commands.is_owner()

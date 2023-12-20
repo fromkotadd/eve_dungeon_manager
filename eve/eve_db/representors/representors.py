@@ -14,6 +14,13 @@ from eve_db.services.skill.create import CreateSkillService
 from eve_db.services.dungeon_pilot_visit.create import CreateDungeonVisitService
 from eve_db.services.skill.update import UpdateSkillService
 from eve_db.selectors.pilot import pilot_by_discord_id_exists_selector
+from eve_db.services.pilot.delete import DeletePilotService
+
+@sync_to_async()
+def pilot_card_delete(discord_id: str):
+	return str(
+		DeletePilotService(discord_id=discord_id).delete()
+	)
 
 @sync_to_async()
 def pilot_card_add(discord_id: str, name: str, corporation: str, tech_level: str):
@@ -25,7 +32,6 @@ def pilot_card_add(discord_id: str, name: str, corporation: str, tech_level: str
 			tech_level=int(tech_level),
 		)
 	)
-
 
 @sync_to_async()
 def pilot_card_upd(discord_id: str, name: str, corporation: str, tech_level: str):

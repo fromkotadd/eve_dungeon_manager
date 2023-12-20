@@ -19,6 +19,9 @@ def pilot_by_discord_id_exists_selector(discord_id: str) -> bool:
 		.filter(discord_id=discord_id) \
 		.exists()
 
+def _pilot_card_delete(pilot_id: str):
+	Pilot.objects.filter(discord_id=pilot_id).delete()
+
 
 def pilots_for_first_dungeon(pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2) -> QuerySet[Pilot]:
 	week_visits_limit = 10
