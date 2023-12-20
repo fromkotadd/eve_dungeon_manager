@@ -4,7 +4,6 @@ import discord
 from eve_db.discord_api.button_bot import BOT
 from eve_db.representors.representors import pilot_card_delete
 
-
 class PilotCardDelete():
 	def __init__(self, interaction: discord.Interaction):
 		self.interaction = interaction

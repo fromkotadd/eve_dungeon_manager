@@ -45,7 +45,7 @@ class PersistentViewForDelete(discord.ui.View, Button):
     def __init__(self):
         super().__init__(timeout=None)
 
-    @discord.ui.button(label='Delete', style=discord.ButtonStyle.green, custom_id='Delete')
+    @discord.ui.button(label='Delete', style=discord.ButtonStyle.red, custom_id='Delete')
     async def delete(self, interaction: discord.Interaction, button: discord.ui.Button):
         from eve_db.discord_api.services.pilot.delete import PilotCardDelete
 
@@ -351,8 +351,13 @@ async def register(ctx: commands.Context): #prepare 1
     # Call this method once just to store it somewhere.
     # In a more complicated program you might fetch the message_id from a database for use later.
     # However this is outside of the scope of this simple example.
+
     await ctx.send("Регистрация в системе",
                    view=PersistentViewForRegister())
+    await ctx.send(
+        file=discord.File(os.path.join(base_dir, 'content/gray_cat.jpg')))
+    await ctx.send("Удаление учетных данных пилота",
+                   view=PersistentViewForDelete())
     # The stored view can now be reused later on.
 
 @BOT.command()
