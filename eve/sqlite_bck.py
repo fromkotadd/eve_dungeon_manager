@@ -60,5 +60,5 @@ k.set_contents_from_filename(full_archive_file_path)
 k.set_acl("public-read")
 
 print('[S3] Clearing previous file archive ' + full_archive_name + '...')
-# shutil.rmtree(path)
+shutil.rmtree(path)
 print('Removed backup of Local database')
