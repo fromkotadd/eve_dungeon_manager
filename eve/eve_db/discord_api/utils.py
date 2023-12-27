@@ -12,25 +12,38 @@ async def prerry_table_output(interaction: discord.Interaction,
 							  status: str,
 							  dungeon_name:str,
 							  timeout: int):
-
 	if pilot_data == []:
-		await interaction.response.send_message('Подходящих пилотов не обнаружено', ephemeral=True)
+		await interaction.response.send_message(
+			'Подходящих пилотов не обнаружено',
+			ephemeral=True,
+			delete_after=timeout
+		)
 
 	else:
 		await interaction.response.send_message(
 			f"```\n=========={dungeon_name}===========\n```",
-			ephemeral=True
+			ephemeral=True,
+			delete_after=timeout
 		)
+		message_obj_list = []
 		for i in range(0, len(pilot_data), 5):
 			output = await table_create(pilots_cards=pilot_data[i:i + 5],
 										pilot_ships_func=pilot_ships_func)
-			await interaction.followup.send(
+			message = await interaction.followup.send(
 				f"```Статус пилотов: {status}\n"
 				f"УРОВЕНЬ ИМПЛАНТА>={implant_level} "
 				f" ПРОКАЧКА КОРАБЛЯ>={skills_rating} "
 				f"ПРОКАЧКА ОРУДИЙ>={gun_rating}"
-				f"\n{output}\n```", ephemeral=True
+				f"\n{output}\n```",
+				ephemeral=True,
 			)
-		await interaction.followup.send('==========END==========', ephemeral=True)
+			message_obj_list.append(message)
+
+		end_message = await interaction.followup.send(
+			'==========END==========',
+			ephemeral=True,
+		)
+		message_obj_list.append(end_message)
 		await asyncio.sleep(timeout)
-		await interaction.delete_original_response()
+		for i in message_obj_list:
+			await i.delete()
