@@ -606,12 +606,11 @@ async def v(interaction: discord.Interaction, dungeon_name: str,
 		discord_id = str(interaction.user.id)
 
 		for i in range(int(visit_count)):
-			await dungeon_visit_add(
+			result = await dungeon_visit_add(
 				discord_id=discord_id,
 				dungeon_name=dungeon_name
 			)
-		await interaction.response.send_message(
-			f'Посещение {dungeon_name} зарегистрировано')
+		await interaction.response.send_message(result)
 	except Exception as ex:
 		await interaction.response.send_message(
 			f'Неверный формат ввода данных: {ex}')
