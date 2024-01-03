@@ -33,6 +33,18 @@ class Registration:
                 f'Для регистрации перейди в канал - <#{channel.id}>',
                 ephemeral=True)
 
+            try:
+                if self.role not in self.user.roles:
+                    await self.user.add_roles(self.role)
+            except Exception as e:
+                print(e)
+                await channel.send('Не удалось добавить роль')
+                await channel.send(f'Ошибка- {e}')
+                await channel.send('Отправь пожалуйста скрин в канал bug-report')
+                await asyncio.sleep(60)
+                await self.interaction.delete_original_response()
+                await channel.delete()
+
             pilot_exist = await pilot_exists(discord_id=self.discord_id)
             if not pilot_exist:
                 pilot_card = await PilotCardAdd(self.interaction, channel).pilot_card_add()
@@ -49,17 +61,6 @@ class Registration:
             else:
                 write = await self.django_app_write(answers_ship, answer_gun_skill, answer_ship_skill, answer_implant, None)
             await channel.send(f'Ознакомится с функционалом бота можно в канале <#{self.faq_channel}>')
-            # await channel.send(write)
-            try:
-                if self.role not in self.user.roles:
-                    await self.user.add_roles(self.role)
-            except Exception as e:
-                print(e)
-                await channel.send('Не удалось добавить роль')
-                await channel.send(f'Ошибка- {e}')
-                await channel.send('Отправь пожалуйста скрин в канал bug-report')
-                await asyncio.sleep(60)
-                await channel.delete()
 
             await asyncio.sleep(60)
             await self.interaction.delete_original_response()
