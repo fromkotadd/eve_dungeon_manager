@@ -17,6 +17,7 @@ from eve_db.selectors.pilotship import ships_for_first_dungeon, \
 	ships_for_second_dungeon, ships_for_third_dungeon, ships_for_fourth_dungeon
 from eve_db.utils import table_create
 from eve_db.discord_api.utils import prerry_table_output
+from eve_db.discord_api.services.pilot.delete import PilotCardDelete
 
 base_dir = os.path.dirname(os.path.realpath(__file__))
 
