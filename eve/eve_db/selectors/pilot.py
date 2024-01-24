@@ -157,9 +157,9 @@ def pilots_for_second_dungeon(pilots_amount=20, implant_level=15, skills_rating=
 			.order_by('-skills_rating').distinct()[:pilots_amount]
 
 def pilots_for_third_dungeon(pilots_amount=20, implant_level=15, skills_rating=2, gun_rating=2) -> QuerySet[Pilot]:
-	a = pilots_for_third_dungeon_dread(pilots_amount, implant_level, skills_rating, gun_rating)
-	b = pilots_for_third_dungeon_carrier(pilots_amount, implant_level, skills_rating, gun_rating)
-	result_list = list(chain(a.values(), b.values()))
+	dread = pilots_for_third_dungeon_dread(pilots_amount, implant_level, skills_rating, gun_rating)
+	carrier = pilots_for_third_dungeon_carrier(pilots_amount, implant_level, skills_rating, gun_rating)
+	result_list = list(chain(dread.values(), carrier.values()))
 	id_by_dict = {i['id']: i for i in result_list}
 	clear_result_list = list(id_by_dict.values())
 
