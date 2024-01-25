@@ -11,6 +11,7 @@ from eve_db.discord_api.services.skill.create import PilotSkillAdd
 from eve_db.representors.representors import pilot_exists
 from eve_db.representors.representors import \
 	pilot_card_add, pilot_ship_add, pilot_implant_add, pilot_skill_add
+
 class Registration:
 
     def __init__(self, interaction: discord.Interaction):
@@ -28,11 +29,6 @@ class Registration:
         )
 
         async def normal_thread():
-            await channel.send(f'<@{str(self.interaction.user.id)}>')
-            await self.interaction.response.send_message(
-                f'Для регистрации перейди в канал - <#{channel.id}>',
-                ephemeral=True)
-
             try:
                 if self.role not in self.user.roles:
                     await self.user.add_roles(self.role)
@@ -44,6 +40,11 @@ class Registration:
                 await asyncio.sleep(60)
                 await self.interaction.delete_original_response()
                 await channel.delete()
+
+            await channel.send(f'<@{str(self.interaction.user.id)}>')
+            await self.interaction.response.send_message(
+                f'Для регистрации перейди в канал - <#{channel.id}>',
+                ephemeral=True)
 
             pilot_exist = await pilot_exists(discord_id=self.discord_id)
             if not pilot_exist:
@@ -61,6 +62,17 @@ class Registration:
             else:
                 write = await self.django_app_write(answers_ship, answer_gun_skill, answer_ship_skill, answer_implant, None)
             await channel.send(f'Ознакомится с функционалом бота можно в канале <#{self.faq_channel}>')
+            # # await channel.send(write)
+            # await channel.send(
+            #     f'pilot_card: {pilot_card}\n'
+            #     f'dungeon_choice: {dungeon_choice}\n'
+            #     f'answers_ship: {answers_ship}'
+            #     f'answer_gun_skill: {answer_gun_skill}'
+            #     f'answer_implant: {answer_implant}'
+            # )
+            # await channel.send(
+            #     f'write: {write}'
+            # )
 
             await asyncio.sleep(60)
             await self.interaction.delete_original_response()
