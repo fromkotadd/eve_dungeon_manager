@@ -24,7 +24,7 @@ class PilotCardAdd(BaseDiscordActionService):
             '(STEP, WGS, EVE, etc)',
         )
         answer_corporation = await BOT.wait_for('message', check=lambda
-			message: message.author == self.interaction.user).replace('[', '').replace(']', '')
+			message: message.author == self.interaction.user)
 
         message = await self.channel.send(
             'Выбери свой игровой уровень'
@@ -38,6 +38,6 @@ class PilotCardAdd(BaseDiscordActionService):
         return {
             'discord_id': self.discord_id,
             'name': answer_name.content,
-            'corporation': answer_corporation.content.upper(),
+            'corporation': answer_corporation.content.upper().replace('[', '').replace(']', ''),
             'tech_level': answer_tech_level,
         }
